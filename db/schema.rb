@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 0) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_22_061837) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -52,6 +52,7 @@ ActiveRecord::Schema[7.0].define(version: 0) do
   create_table "users", id: :serial, force: :cascade do |t|
     t.string "name", limit: 255
     t.string "email", limit: 255
+    t.string "password_digest"
     t.index ["email"], name: "users_email_unique", unique: true
   end
 
