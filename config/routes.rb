@@ -1,14 +1,15 @@
 Rails.application.routes.draw do
   get 'rifftube/index'
-
-  get "users", to: "users#index"
-  get "users/:id", to: "users#show"
+  get 'rifftube/riff'
+  get 'riff', to: "rifftube#riff"
 
   get "signup", to: "users#new"
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy"
+
   resources :users, except: [:new]
+  resources :riffs
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

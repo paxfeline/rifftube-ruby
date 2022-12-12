@@ -1,2 +1,8 @@
 <h1>Rifftube#index</h1>
 <p>Find me in app/views/rifftube/index.html.erb</p>
+
+<% if logged_in? %>
+  <%= link_to 'logout', '/logout', data: { turbo_method: :delete } %>
+<% else %>
+<%= link_to 'login', '/login' %>
+<% end %>
