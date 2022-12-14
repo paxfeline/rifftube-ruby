@@ -9,8 +9,10 @@ class RiffsController < ApplicationController
         movie.transcode("/tmp/movie.mp4") 
 
         debugger
+
+        mp4data = File.read("/tmp/movie.mp4")
         
-        @riff = Riff.new(audio_datum: movie, isText: false, user_id: 1, video_id: 1)
+        @riff = Riff.new(audio_datum: mp4data, isText: false, user_id: 1, video_id: 1)
 
         @riff.save
     end
