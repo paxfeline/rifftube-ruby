@@ -19,11 +19,11 @@ class UsersController < ApplicationController
         end
       elsif existing_user.password_digest.nil?
         # if user exists, add password
-        debugger
         @user = existing_user.dup
         @user.password = user_params[:password]
         if @user.save
           flash[:notice] = "OG User created."
+          existing_user.delete
           Riff.update_all :user_id => @user.id
           redirect_to root_path
         else
