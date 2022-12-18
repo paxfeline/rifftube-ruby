@@ -6,7 +6,17 @@ class UsersController < ApplicationController
       @user = User.new
     end
     def create
-      @user = User.new(user_params)
+      debugger
+      # check for user in the db with this email
+      existing_user = User.where(email: user_params[:email])
+      if existing_user.nil?
+        # if user doesn't exist, create a new one
+        @user = User.new(user_params)
+      else
+        # if user exists, add password
+        existing_user.password = user_params[:password]
+        @user = existing_user
+      end
       if @user.save
         flash[:notice] = "User created."
         redirect_to root_path
