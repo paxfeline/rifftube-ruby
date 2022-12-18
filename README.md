@@ -32,3 +32,19 @@ Things you may want to cover:
 To restore the db from a dump:
 
 heroku pg:backups:restore 'https://github.com/paxfeline/paxfeline.github.io/raw/master/db-backup' DATABASE_URL --app rifftube-ruby --confirm rifftube-ruby
+
+
+process:
+
+psql:
+drop database rifftube
+create database rifftube
+
+pg_restore -O -d rifftube /Users/davidnewberry/Downloads/052f5925-6965-4c43-af03-27a54c07f8fa 
+rails db:migrate
+
+psql:
+\c rifftube
+alter table users drop constraint users_email_unique;
+
+

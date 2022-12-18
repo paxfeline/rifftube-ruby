@@ -23,8 +23,8 @@ class UsersController < ApplicationController
         @user.password = user_params[:password]
         if @user.save
           flash[:notice] = "OG User created."
+          Riff.where(user_id: existing_user.id).update_all :user_id => @user.id
           existing_user.delete
-          Riff.update_all :user_id => @user.id
           redirect_to root_path
         else
           render 'new'
