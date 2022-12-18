@@ -6,22 +6,29 @@ class UsersController < ApplicationController
       @user = User.new
     end
     def create
-      debugger
       # check for user in the db with this email
-      existing_user = User.where(email: user_params[:email])
+      existing_user = User.where(email: user_params[:email])[0]
       if existing_user.nil?
         # if user doesn't exist, create a new one
         @user = User.new(user_params)
-      else
+        if @user.save
+          flash[:notice] = "User created."
+          redirect_to root_path
+        else
+          render 'new'
+        end
+      elsif existing_user.password_digest.nil?
         # if user exists, add password
-        existing_user.password = user_params[:password]
-        @user = existing_user
-      end
-      if @user.save
-        flash[:notice] = "User created."
-        redirect_to root_path
-      else
-        render 'new'
+        debugger
+        @user = existing_user.dup
+        @user.password = user_params[:password]
+        if @user.save
+          flash[:notice] = "OG User created."
+          Riff.update_all :user_id => @user.id
+          redirect_to root_path
+        else
+          render 'new'
+        end
       end
     end
     def show

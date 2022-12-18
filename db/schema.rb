@@ -40,7 +40,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_22_061837) do
     t.string "email", limit: 255
     t.binary "riff_pic"
     t.string "password_digest"
-    t.index ["email"], name: "users_email_unique", unique: true
   end
 
   create_table "videos", id: :serial, force: :cascade do |t|
