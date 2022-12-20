@@ -18,5 +18,9 @@ module TestRails
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    config.active_record.dump_schema_after_migration = false
+    config.active_record.schema_format = :sql
+
   end
 end
