@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   get 'rifftube/index'
   get 'rifftube/riff'
-  get 'riff', to: "rifftube#riff"
+  get 'riff/:video_id', to: "rifftube#riff"
 
   get "signup", to: "users#new"
   get "login", to: "sessions#new"

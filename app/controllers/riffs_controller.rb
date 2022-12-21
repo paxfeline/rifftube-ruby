@@ -1,8 +1,13 @@
 require 'streamio-ffmpeg'
 
 class RiffsController < ApplicationController
-    skip_before_action :verify_authenticity_token
+    # not needed because disabled for whole app?
+    #skip_before_action :verify_authenticity_token
 
+    def show
+        @riff = Riff.find(params[:id])
+        send_data @riff.audio_datum
+    end
     def create
         movie = FFMPEG::Movie.new(params[:blob].tempfile.path)
 
