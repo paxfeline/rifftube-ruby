@@ -5,8 +5,14 @@
 <%= flash[:notice] %>
 </p>
 
+<p>
 <% if logged_in? %>
   <%= link_to 'logout', '/logout', data: { turbo_method: :delete } %>
 <% else %>
 <%= link_to 'login', '/login' %>
 <% end %>
+</p>
+
+<p>
+<%= link_to "users", "/users/" %>
+</p>

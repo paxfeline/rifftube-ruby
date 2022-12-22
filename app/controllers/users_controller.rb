@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+    helper_method :obfuscate_email
+
     def index
       @users = User.all
     end
@@ -23,6 +25,7 @@ class UsersController < ApplicationController
         @user.password = user_params[:password]
         if @user.save
           flash[:notice] = "OG User created."
+          # put in a transaction and the unique constraint could be left in place
           Riff.where(user_id: existing_user.id).update_all :user_id => @user.id
           existing_user.delete
           redirect_to root_path
@@ -39,4 +42,9 @@ class UsersController < ApplicationController
       params.require(:user).permit(:name, :email, :password)
     end
 
+    def obfuscate_email(email)
+      email_parts = email.split('@')
+      email_parts[0] = email_parts[0][0..3] + "***"
+      @email = email_parts.join('@')
+    end
 end
