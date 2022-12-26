@@ -1,7 +1,7 @@
 require 'streamio-ffmpeg'
 
 class RiffsController < ApplicationController
-    # not needed because disabled for whole app?
+    # not needed because disabled for whole app
     #skip_before_action :verify_authenticity_token
 
     def show
@@ -9,11 +9,11 @@ class RiffsController < ApplicationController
         send_data @riff.audio_datum
     end
     def create
+        # check if logged in
+        
         movie = FFMPEG::Movie.new(params[:blob].tempfile.path)
 
         movie.transcode("/tmp/movie.mp4") 
-
-        debugger
 
         mp4data = File.read("/tmp/movie.mp4")
         

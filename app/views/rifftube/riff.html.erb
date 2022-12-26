@@ -1,6 +1,14 @@
 <h1>Rifftube#riff</h1>
 <p>do eet</p>
 
+<p>
+<%= @video.inspect %>
+</p>
+
+<p>
+<%= current_user.inspect %>
+</p>
+
 <% if logged_in? %>
   <%= link_to 'logout', '/logout', data: { turbo_method: :delete } %>
 
