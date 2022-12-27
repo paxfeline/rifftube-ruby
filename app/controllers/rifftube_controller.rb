@@ -49,21 +49,22 @@ class RifftubeController < ApplicationController
         cursor = riff.start_time + riff.duration
       end
       #puts input_files
+      puts input_files
       puts silences
       puts seqs
       puts "====="
       if file_ind == 0 then
         # this should always happen first
         #`ffmpeg -y -i #{file.path} -filter_complex "aevalsrc=exprs=0:d=#{riff.start_time}[silence], [silence] [0:a] concat=n=2:v=0:a=1[outa]" -map [outa] /tmp/mixing#{ind.to_s}.mp4`
-        `ffmpeg -y #{input_files} -filter_complex "#{silences}#{seqs}concat=n=#{n}:v=0:a=1[outa]" -map [outa] /tmp/mixing#{file_ind.to_s}.mp4`
+        `ffmpeg -y #{input_files} -filter_complex "#{silences}#{seqs}concat=n=#{n}:v=0:a=1[outa]" -map [outa] #{Rails.root}/tmp/mixing#{file_ind}.mp4`
       else
         #`ffmpeg -y -i /tmp/mixing#{ind - 1}.mp4 -i #{file.path} -filter_complex "aevalsrc=exprs=0:d=#{riff.start_time - cursor}[silence], [0:a] [silence] [1:a] concat=n=3:v=0:a=1[outa]" -map [outa] /tmp/mixing#{ind}.mp4`
-        `ffmpeg -y -i /tmp/mixing#{file_ind - 1}.mp4 #{input_files} -filter_complex "#{silences}#{seqs}concat=n=#{n + 1}:v=0:a=1[outa]" -map [outa] /tmp/mixing#{file_ind.to_s}.mp4`
+        `ffmpeg -y -i #{Rails.root}/tmp/mixing#{file_ind - 1}.mp4 #{input_files} -filter_complex "#{silences}#{seqs}concat=n=#{n + 1}:v=0:a=1[outa]" -map [outa] #{Rails.root}/tmp/mixing#{file_ind}.mp4`
       end
       last = file_ind
       file_ind = file_ind + 1
     end
-    single_data = File.read("/tmp/mixing#{last}.mp4");
+    single_data = File.read("#{Rails.root}/tmp/mixing#{last}.mp4");
     send_data single_data
   end
 end
