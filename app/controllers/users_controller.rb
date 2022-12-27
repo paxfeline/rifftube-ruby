@@ -15,27 +15,22 @@ class UsersController < ApplicationController
         @user = User.new(user_params)
         if @user.save
           flash[:notice] = "User created."
-          redirect_to root_path
+          redirect_to root_url
         else
           render 'new'
         end
       elsif existing_user.password_digest.nil?
-        # if user exists, add password
-        @user = existing_user.dup
-        @user.password = user_params[:password]
-        saved = true # fix
-        User.transaction do
-          existing_user.delete
-          saved = @user.save
-          Riff.where(user_id: existing_user.id).update_all :user_id => @user.id
-        end
-        if saved
+        # if user exists, update password
+        existing_user.password_digest = BCrypt::Password.create(user_params[:password])
+        @user = existing_user
+        if @user.save
           flash[:notice] = "OG User created."
-          redirect_to root_path
+          redirect_to root_url
         else
-          flash[:notice] = "user creation error."
           render 'new'
         end
+      else
+        puts 'awkward'
       end
     end
     def show
