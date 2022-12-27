@@ -20,7 +20,7 @@ module TestRails
     # config.eager_load_paths << Rails.root.join("extras")
 
     config.active_record.dump_schema_after_migration = false
-    config.active_record.schema_format = :sql
+    config.active_record.schema_format = :ruby # or :sql
 
   end
 end

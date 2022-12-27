@@ -23,13 +23,17 @@ class UsersController < ApplicationController
         # if user exists, add password
         @user = existing_user.dup
         @user.password = user_params[:password]
-        if @user.save
-          flash[:notice] = "OG User created."
-          # put in a transaction and the unique constraint could be left in place
-          Riff.where(user_id: existing_user.id).update_all :user_id => @user.id
+        saved = true # fix
+        User.transaction do
           existing_user.delete
+          saved = @user.save
+          Riff.where(user_id: existing_user.id).update_all :user_id => @user.id
+        end
+        if saved
+          flash[:notice] = "OG User created."
           redirect_to root_path
         else
+          flash[:notice] = "user creation error."
           render 'new'
         end
       end
