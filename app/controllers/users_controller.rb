@@ -29,8 +29,6 @@ class UsersController < ApplicationController
         else
           render 'new'
         end
-      else
-        puts 'awkward'
       end
     end
     def show
