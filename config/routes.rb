@@ -3,8 +3,9 @@ Rails.application.routes.draw do
   get 'rifftube/riff'
   get 'riff/:video_id', to: "rifftube#riff"
 
-  get 'riffs/video/:video_id/user/:user_id', to: "rifftube#riffZip"
-  get 'riffs/video/:video_id/user/:user_id/single', to: "rifftube#riffSingleFile"
+  get 'riffs/video/:video_id/user/:user_id', to: "rifftube#riff_zip"
+  get 'riffs/video/:video_id/user/:user_id/single', to: "rifftube#riff_single_file"
+  get 'download/:id', to: "rifftube#download"
 
   get "signup", to: "users#new"
   get "login", to: "sessions#new"
