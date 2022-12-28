@@ -82,6 +82,11 @@ class RifftubeController < ApplicationController
   end
   def download
     download = Download.find(params[:id])
-    send_data download.data
+    if download.data.nil?
+      @status = download.status
+      render :download
+    else
+      send_data download.data
+    end
   end
 end
