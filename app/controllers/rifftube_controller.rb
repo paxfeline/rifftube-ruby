@@ -135,7 +135,8 @@ class RifftubeController < ApplicationController
                 trimmed_name = "trimmed#{g_ind}"
               end
               #debugger
-              silences[j] += "aevalsrc=exprs=0:d=#{riff.start_time - sub_curs[j]}[silence#{j}-#{ind}]; "
+              # silence may be 0 length (due to timing? or because of trimming)
+              silences[j] += "aevalsrc=exprs=0:d=#{[riff.start_time - sub_curs[j], 0].max}[silence#{j}-#{ind}]; "
               seqs[j] += "[silence#{j}-#{ind}] [#{trimmed_name == "" ?  "#{g_ind}:a" : trimmed_name}] "
               sub_curs[j] = riff.start_time + riff.duration
               g_ind += 1
@@ -143,7 +144,7 @@ class RifftubeController < ApplicationController
 
             n = riff_track[j].riffs.count * 2 # silence + riff
             #debugger
-            track_commands << "#{silences[j]}#{seqs[j]}concat=n=#{file_ind == 0 ?
+            track_commands << "#{silences[j]}#{file_ind == 0 ? "" : "[0:a] "}#{seqs[j]}concat=n=#{file_ind == 0 ?
               n : n + 1}:v=0:a=1[out#{track_N == 1 ? "" : j}a]#{track_N == 1 ? "" : ";"} "
             mix_inputs << "[out#{j}a]"
           end
