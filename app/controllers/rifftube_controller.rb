@@ -1,6 +1,8 @@
 require 'tempfile'
 require 'zip'
 
+RiffTrack = Struct.new(:cursor, :riffs)
+
 class RifftubeController < ApplicationController
   def index
   end
@@ -37,8 +39,6 @@ class RifftubeController < ApplicationController
 
     render :riff_single_file
 
-    RiffTrack = Struct.new(:cursor, :riffs)
-
     Thread.new do
       Rails.application.executor.wrap do
         
@@ -65,6 +65,7 @@ class RifftubeController < ApplicationController
             j = 0
             while j < track_N and r.start_time < riff_track[j].cursor
               j += 1
+            end
             if j < track_N
               riff_track[j].riffs.push(r)
               riff_track[j].cursor = r.start_time + r.duration
@@ -78,7 +79,7 @@ class RifftubeController < ApplicationController
 
           # check for riffs that should be left for the next file too
           c = 0
-          for i in track_N.downto(1)
+          for i in (track_N - 1).downto(1)
             r = riff_track[i].riffs.last
             if r.start_time + r.duration > riff_track[0].cursor
               riffs.unshift(r)
@@ -98,8 +99,9 @@ class RifftubeController < ApplicationController
               i += 1
             end
             j = 1
-            while r.start_time < riff_track[j].cursor and j < track_N
+            while j < track_N and r.start_time < riff_track[j].cursor
               j += 1
+            end
             if j < track_N
               riff_track[j].riffs.push(r)
               riff_track[j].cursor = r.start_time + r.duration
@@ -112,56 +114,84 @@ class RifftubeController < ApplicationController
 
           # use files and  info to generate commands for each track
           input_files = ""
-          silences = [[""]] * track_N
-          seqs = [[""]] * track_N
+          trim_commands = ""
+          silences = [""] * track_N
+          seqs = [""] * track_N
           sub_curs = [cursor] * track_N
-          track_commands = ""
           mix_inputs = ""
           g_ind = 0
-          for j in 0..track_N
-            riffs_slice[j].each_with_index do |riff, ind|
+          track_commands = ""
+          for j in 0...track_N
+            riff_track[j].riffs.each_with_index do |riff, ind|
               file = Tempfile.new(binmode: true)
               file.write(riff.audio_datum.to_s)
               file.close()
 
               input_files << " -i #{file.path}"
-              silences[j] << "aevalsrc=exprs=0:d=#{riff.start_time - sub_curs[j]}[silence#{j}#{ind}], "
-              seqs[j] << "[silence#{j}#{ind}] [#{g_ind}:a] "
+              # if riff started before this section, trim it
+              trimmed_name = ""
+              if riff.start_time < cursor
+                trim_commands << "[#{g_ind}:a]atrim=start=#{cursor - riff.start_time}[trimmed#{g_ind}]; "
+                trimmed_name = "trimmed#{g_ind}"
+              end
+              #debugger
+              silences[j] += "aevalsrc=exprs=0:d=#{riff.start_time - sub_curs[j]}[silence#{j}-#{ind}]; "
+              seqs[j] += "[silence#{j}-#{ind}] [#{trimmed_name == "" ?  "#{g_ind}:a" : trimmed_name}] "
               sub_curs[j] = riff.start_time + riff.duration
               g_ind += 1
             end
 
-            n = riffs_slice[j].count * 2 # silence + riff
-            track_commands << "#{silences[j]}#{seqs[j]}concat=\
-              n=#{file_ind == 0 ? n : n + 1}:v=0:a=1[out#{track_N == 1 ? "" : j}a]; "
+            n = riff_track[j].riffs.count * 2 # silence + riff
+            #debugger
+            track_commands << "#{silences[j]}#{seqs[j]}concat=n=#{file_ind == 0 ?
+              n : n + 1}:v=0:a=1[out#{track_N == 1 ? "" : j}a]#{track_N == 1 ? "" : ";"} "
             mix_inputs << "[out#{j}a]"
           end
 
           # the first track (0) determines how long this current segment runs
-          cursor = sub_curs[0]
+          cursor = riff_track[0].cursor
 
-          for i in 0..track_N do
-            puts input_files[i]
-            puts silences[i]
-            puts seqs[i]
-            puts "====="
-          end
+          #puts "====="
+          #puts trim_commands
+          #for i in 0...track_N do
+          #  puts input_files[i]
+          #  puts silences[i]
+          #  puts seqs[i]
+          #  puts "====="
+          #end
 
           #`ffmpeg -y -i #{file.path} -filter_complex "aevalsrc=exprs=0:d=#{riff.start_time}[silence], [silence] [0:a] concat=n=2:v=0:a=1[outa]" -map [outa] /tmp/mixing#{ind.to_s}.mp4`
           #`ffmpeg -y #{input_files[i]} \
           #  -filter_complex "#{silences}#{seqs}concat=n=#{n}:v=0:a=1[outa]" -map [outa] \
           #  #{Rails.root}/tmp/mixing#{file_ind}.mp4`
-          `ffmpeg -y \
-            #{file_ind == 0 ? "" :
-              "-i #{Rails.root}/tmp/mixing#{file_ind - 1}.mp4 "} \
-            #{input_files[i]} \
-            -filter_complex "#{track_commands} \
-            #{track_N == 1 ? '"' :
-              "#{mix_inputs}amix=inputs=#{track_N}:duration=first:dropout_transition=0:normalize=0[outa]\""} \
-            -map [outa] #{Rails.root}/tmp/mixing#{file_ind}.mp4`
+          puts "====="
+          puts trim_commands
+          puts track_commands
+          puts "====="
+          ffmpeg_command = "ffmpeg -y " +
+            "#{file_ind == 0 ? "" :
+              "-i #{Rails.root}/tmp/mixing#{file_ind - 1}.mp4 "} " +
+            "#{input_files} " +
+            "-filter_complex \"#{trim_commands}#{track_commands}" +
+              "#{track_N == 1 ? "" :
+                "#{mix_inputs}amix=inputs=#{track_N}:duration=first:dropout_transition=0:normalize=0[outa]"}\" " +
+              "-map [outa] #{Rails.root}/tmp/mixing#{file_ind}.mp4"
+          puts ffmpeg_command
+          puts "====="
+
+          `#{ffmpeg_command}`
+
+          #`ffmpeg -y \
+          #  #{file_ind == 0 ? "" :
+          #    "-i #{Rails.root}/tmp/mixing#{file_ind - 1}.mp4 "} \
+          #  #{input_files[i]} \
+          #  -filter_complex "#{trim_commands} #{track_commands} \
+          #    #{track_N == 1 ? "" :
+          #      "#{mix_inputs}amix=inputs=#{track_N}:duration=first:dropout_transition=0:normalize=0[outa]"}" \
+          #    -map [outa] #{Rails.root}/tmp/mixing#{file_ind}.mp4`
 
           last_file = file_ind
-          file_ind = file_ind + 1
+          file_ind += 1
         end
         single_data = File.read("#{Rails.root}/tmp/mixing#{last_file}.mp4");
         download.data = single_data
