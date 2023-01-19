@@ -12,6 +12,8 @@ Rails.application.routes.draw do
   post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy"
 
+  get "send_email", to: "rifftube#send_email"
+
   resources :users, except: [:new]
   resources :riffs
 

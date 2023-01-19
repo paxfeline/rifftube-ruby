@@ -4,6 +4,9 @@ require 'zip'
 RiffTrack = Struct.new(:cursor, :riffs)
 
 class RifftubeController < ApplicationController
+  def send_email
+    UserMailer.with(user: nil).new_user_email.deliver_later
+  end
   def index
   end
   def riff
@@ -176,7 +179,7 @@ class RifftubeController < ApplicationController
             "-filter_complex \"#{trim_commands}#{track_commands}" +
               "#{track_N == 1 ? "" :
                 "#{mix_inputs}amix=inputs=#{track_N}:duration=first:dropout_transition=0:normalize=0[outa]"}\" " +
-              "-map [outa] #{Rails.root}/tmp/mixing#{file_ind}.mp4"
+            "-map [outa] #{Rails.root}/tmp/mixing#{file_ind}.mp4"
           puts ffmpeg_command
           puts "====="
 
