@@ -37,11 +37,11 @@ heroku pg:backups:restore 'https://github.com/paxfeline/paxfeline.github.io/raw/
 process:
 
 psql:
-drop database rifftube
-create database rifftube
+drop database rifftube;
+create database rifftube;
 
 pg_restore -O -d rifftube /Users/davidnewberry/Downloads/052f5925-6965-4c43-af03-27a54c07f8fa 
-rails db:migrate
+rake db:migrate
 
 psql:
 \c rifftube

@@ -10,12 +10,12 @@ class RiffsController < ApplicationController
     end
     def create
         # check if logged in
-        
+
         movie = FFMPEG::Movie.new(params[:blob].tempfile.path)
 
-        movie.transcode("/tmp/movie.mp4") 
+        movie.transcode("#{Rails.root}/tmp/movie.mp4") 
 
-        mp4data = File.read("/tmp/movie.mp4")
+        mp4data = File.read("#{Rails.root}/tmp/movie.mp4")
         
         @riff = Riff.new(audio_datum: mp4data, isText: false, user_id: 1, video_id: 1)
 

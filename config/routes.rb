@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   delete "logout", to: "sessions#destroy"
 
   get "send_email", to: "rifftube#send_email"
+  get "user/confirm/:uuid", to: "users#confirm"
 
   resources :users, except: [:new]
   resources :riffs
