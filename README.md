@@ -40,12 +40,16 @@ psql:
 drop database rifftube;
 create database rifftube;
 
+shorter:
+rake db:drop db:create
+
 pg_restore -O -d rifftube /Users/davidnewberry/Downloads/052f5925-6965-4c43-af03-27a54c07f8fa 
 rake db:migrate
 
-psql:
-\c rifftube
-alter table users drop constraint users_email_unique;
+no longer needed! :)
+    psql:
+    \c rifftube
+    alter table users drop constraint users_email_unique;
 
 
 
