@@ -13,3 +13,11 @@
  *= require_tree .
  *= require_self
  */
+
+
+ body::after {
+    content: 'Thanks!';
+    display: block;
+    position: fixed;
+    bottom: 0;
+ }
