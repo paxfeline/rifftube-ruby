@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cd frontend && npm install && npm build && cd ..",
+    "build": "yarn --cwd frontend install && yarn --cwd frontend build",
     "deploy": "cp -a frontend/build/. public/",
     "heroku-postbuild": "yarn build && yarn deploy"
   },
