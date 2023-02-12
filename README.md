@@ -58,3 +58,9 @@ no longer needed! :)
 ffmpeg command to concat two files w/ 5s of silence between
 
 ffmpeg -i riff530.mp3 -i riff531.mp3 -filter_complex "aevalsrc=exprs=0:d=5[silence], [0:a] [silence] [1:a] concat=n=3:v=0:a=1[outa]" -map [outa] out.mp3
+
+
+
+current node v
+
+v12.16.2

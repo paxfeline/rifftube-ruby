@@ -1,0 +1,30 @@
+{
+  "name": "test_rails",
+  "version": "1.0.0",
+  "description": "This README would normally document whatever steps are necessary to get the application up and running.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "yarn --cwd frontend install && yarn --cwd frontend build",
+    "deploy": "cp -a frontend/build/. public/",
+    "heroku-postbuild": "yarn build && yarn deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paxfeline/rifftube-backend-v2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/paxfeline/rifftube-backend-v2/issues"
+  },
+  "homepage": "https://github.com/paxfeline/rifftube-backend-v2#readme",
+  "dependencies": {
+    "nvm": "0.0.4"
+  }
+}
