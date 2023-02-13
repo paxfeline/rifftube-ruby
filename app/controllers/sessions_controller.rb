@@ -4,7 +4,8 @@ class SessionsController < ApplicationController
       if user && user.authenticate(params[:session][:password])
         session[:user_id] = user.id
         flash[:notice] = "Logged in successfully."
-        redirect_to user
+        send_data user.as_json(except: [:riff_pic, :password_digest])
+        #redirect_to user
       else
         flash.now[:alert] = "There was something wrong with your login details."
         render 'new'
@@ -13,8 +14,9 @@ class SessionsController < ApplicationController
     def destroy
       session[:user_id] = nil
       flash[:notice] = "You have been logged out."
+      render plain: "OK"
       #redirect_to root_path
-      redirect_back(fallback_location: root_path)
+      #redirect_back(fallback_location: root_path)
     end
 
 end

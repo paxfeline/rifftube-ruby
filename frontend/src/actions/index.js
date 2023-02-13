@@ -2,6 +2,9 @@ import axios from 'axios';
 
 export const GOOGLE_USER_SIGNIN = 'GOOGLE_USER_SIGNIN';
 
+export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
+
 export const CREATE_TEMP_AUDIO_RIFF = 'CREATE_TEMP_AUDIO_RIFF';
 export const CREATE_TEMP_TEXT_RIFF = 'CREATE_TEMP_TEXT_RIFF';
 
@@ -61,6 +64,22 @@ export const WEB_SOCKET_UPDATE = 'WEB_SOCKET_UPDATE';
 
 export const SAVE_PIC_SUCCESS = 'SAVE_PIC_SUCCESS';
 export const SAVE_PIC_FAILURE = 'SAVE_PIC_FAILURE';
+
+/******** Login and logout */
+
+export const attemptLogin = (email, password) => {
+  return (dispatch) => {
+    axios({
+      method: 'post',
+      url: `/login`,
+      data: { email, password },
+    }).then((res) => {
+      debugger;
+      dispatch({ type: LOGIN, userInfo: res.data });
+    }).catch(err =>
+      console.log("error", err));
+  };
+};
 
 /******** WebSockets */
 
