@@ -74,3 +74,5 @@ group :test do
 end
 
 gem "streamio-ffmpeg", "~> 3.0"
+
+gem "googleauth"

@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   get "signup", to: "users#new"
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"
+  post "login-with-google", to: "sessions#create_with_token"
   delete "logout", to: "sessions#destroy"
 
   get "send_email", to: "rifftube#send_email"

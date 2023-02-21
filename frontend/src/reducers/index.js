@@ -19,6 +19,10 @@ import immediateRecordReducer from './immediate-record-reducer';
 import recorderReducer from './recorder-reducer';
 import acctImgKeyReducer from './acctImgKey-reducer';
 
+import userInfoReducer from './user-info-reducer';
+
+// TODO: move appropriate state variables to respective components?
+
 export default combineReducers({
   riffs: riffsReducer,
   riffsAudio: riffsAudioReducer,
@@ -26,16 +30,18 @@ export default combineReducers({
   mode: modeReducer,
   googleUser: googleUserReducer,
   riffsPlaying: riffsPlayingReducer,
-  name: nameReducer,
-  user_id: useridReducer,
+  name: nameReducer, // remove?
+  user_id: useridReducer, // remove
   videoID: videoIDReducer,
   duration: videoDurationReducer,
   websocket: webSocketReducer,
-  userData: userDataReducer,
-  publicProfileData: publicProfileDataReducer,
-  publicProfileName: publicProfileNameReducer,
+  userData: userDataReducer, // inc video list
+  publicProfileData: publicProfileDataReducer, // combine with publicProfileName?
+  publicProfileName: publicProfileNameReducer, // see above
   globalVideoList: globalVideoListReducer,
   immediateRecord: immediateRecordReducer,
   recorder: recorderReducer,
   acctImgKey: acctImgKeyReducer,
+
+  userInfo: userInfoReducer,
 });

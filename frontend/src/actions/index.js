@@ -81,6 +81,21 @@ export const attemptLogin = (email, password) => {
   };
 };
 
+export const checkGoogleCredentials = (credentialResponse) => {
+  console.log(credentialResponse);
+  debugger;
+  return (dispatch) => {
+    axios({
+      method: 'post',
+      url: `/login-with-google`,
+      data: { credentials: credentialResponse },
+    }).then((res) => {
+      console.log(res);
+      dispatch({  });
+    }).catch(err => console.log("error", err));
+  };
+};
+
 /******** WebSockets */
 
 export const setWebSocket = (payload) => ({
