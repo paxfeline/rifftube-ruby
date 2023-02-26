@@ -22,7 +22,6 @@ class Collaboration extends React.Component {
 
 const mapStateToProps = (state) => ({
   videoID: state.videoID,
-  googleUser: state.googleUser,
   name: state.name,
 });
 

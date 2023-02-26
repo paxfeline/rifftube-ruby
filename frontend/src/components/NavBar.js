@@ -1,7 +1,8 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
-const NavBar = ({ color }) => (
+const NavBar = ({ color, loggedIn }) => (
   <nav className="navbar">
     <NavLink
       exact
@@ -24,14 +25,32 @@ const NavBar = ({ color }) => (
     <NavLink activeClassName="navbar-link-active" style={{ color }} to="/about">
       About
     </NavLink>
-    <NavLink
-      activeClassName="navbar-link-active"
-      style={{ color }}
-      to="/account"
-    >
-      My Account
-    </NavLink>
+    {loggedIn ? 
+      (
+        <NavLink
+          activeClassName="navbar-link-active"
+          style={{ color }}
+          to="/account"
+        >
+          My Account
+        </NavLink>
+      ) : (
+        <NavLink
+          activeClassName="navbar-link-active"
+          style={{ color }}
+          to="/signup"
+        >
+          Signup
+        </NavLink>
+      )}
   </nav>
 );
+let mapStateToProps = (state) => ({
+  loggedIn: state.loggedIn,
+});
 
-export default NavBar;
+const mapDispatchToProps = {
+  //getPublicUserData,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NavBar);

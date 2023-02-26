@@ -16,6 +16,8 @@ Rails.application.routes.draw do
   get "send_email", to: "rifftube#send_email"
   get "user/confirm/:uuid", to: "users#confirm"
 
+  get "riffer-pic/:id(.:format)", to: "users#get_pic"
+
   resources :users, except: [:new]
   resources :riffs
 

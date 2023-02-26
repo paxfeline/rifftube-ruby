@@ -23,8 +23,7 @@ class EditInterface extends React.Component {
   componentDidMount = () => {
     if (this.props.match.params.videoID) {
       this.props.setVideoID(
-        this.props.match.params.videoID,
-        this.props.googleUser
+        this.props.match.params.videoID
       );
       this.videoIDRef.current.value = this.props.match.params.videoID;
     }
@@ -33,22 +32,22 @@ class EditInterface extends React.Component {
   componentDidUpdate = (prevProps, prevState) => {
     if (this.props.match.params.videoID !== this.props.videoID) {
       this.props.setVideoID(
-        this.props.match.params.videoID,
-        this.props.googleUser
+        this.props.match.params.videoID
       );
       this.videoIDRef.current.value = this.props.match.params.videoID;
     }
 
     if (
-      this.loggedIn() &&
+      this.props.loggedIn &&
       this.props.videoID &&
-      this.props.googleUser !== prevProps.googleUser
+      this.props.userInfo !== prevProps.userInfo
     ) {
-      this.props.getRiffs(this.props.videoID, this.props.googleUser);
+      this.props.getRiffs(this.props.videoID);
     }
 
+    /*
     if (
-      this.loggedIn() &&
+      this.props.loggedIn &&
       (!this.props.websocket || this.props.videoID !== prevProps.videoID)
     ) {
       //const websocket = new WebSocket( `ws://localhost:3300/riff?videoID=${this.props.match.params.videoID}&googleToken=${this.props.googleUser.getAuthResponse().id_token}` );
@@ -72,16 +71,11 @@ class EditInterface extends React.Component {
       };
       this.props.setWebSocket(websocket);
     }
-  };
-
-  loggedIn = () => {
-    if (this.props.googleUser) return this.props.googleUser.isSignedIn();
-
-    return false;
+    */
   };
 
   authCheck = (Component, DefaultComponent) => {
-    return this.loggedIn() ? <Component /> : <DefaultComponent />;
+    return this.props.loggedIn ? <Component /> : <DefaultComponent />;
   };
   /* extracts the youtube id from a url. got help from: https://ctrlq.org/code/19797-regex-youtube-id */
   extractVideoID = (url) => {
@@ -106,7 +100,7 @@ class EditInterface extends React.Component {
             </div>
           </div>
           <h4 className="get-started-instructions">
-            {this.loggedIn() ? null : (
+            {this.props.loggedIn ? null : (
               <React.Fragment>
                 <Login /> <p>to get started</p>
               </React.Fragment>
@@ -123,7 +117,7 @@ class EditInterface extends React.Component {
 
               this.props.history.push(`/riff/${vID}`);
 
-              this.props.setVideoID(vID, this.props.googleUser);
+              this.props.setVideoID(vID);
             }}>
             Change Video
           </button>
@@ -134,7 +128,7 @@ class EditInterface extends React.Component {
               href={
                 '/view/' +
                 this.props.videoID +
-                (this.props.user_id ? '?solo=' + this.props.user_id : '')
+                (this.props.userInfo ? '?solo=' + this.props.userInfo.user_id : '')
               }
               target="_blank"
               rel="noopener noreferrer"
@@ -143,7 +137,7 @@ class EditInterface extends React.Component {
             </a>
           </div>
         </div>
-        {this.loggedIn() ? <EditControls /> : null}
+        {this.props.loggedIn ? <EditControls /> : null}
       </React.Fragment>
     ) : (
       <Redirect to={`/riff/${this.props.videoID}`} />
@@ -154,10 +148,11 @@ class EditInterface extends React.Component {
 const mapStateToProps = (state) => ({
   riffs: state.riffs.all,
   videoID: state.videoID,
-  googleUser: state.googleUser,
-  user_id: state.user_id,
   websocket: state.websocket,
   recorder: state.recorder,
+
+  loggedIn: state.loggedIn,
+  userInfo: state.userInfo,
 });
 
 const mapDispatchToProps = {

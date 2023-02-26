@@ -9,36 +9,31 @@ import VideoList from './VideoList';
 
 const Account = ({
   name,
-  googleUser,
   setRifferName,
   setRiffPic,
   userData,
   getUserData,
-  userid,
+  user_id,
   acctImgKey,
+  loggedIn,
 }) => {
   const [userName, setUserName] = useState(name);
 
   useEffect(() => {
-    if (googleUser) getUserData(googleUser);
-  }, [getUserData, googleUser]);
-
-  const loggedIn = () => {
-    if (googleUser) return googleUser.isSignedIn();
-    return false;
-  };
+    if (loggedIn) getUserData();
+  }, [getUserData, loggedIn]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     if (userName !== '') {
-      setRifferName(userName, googleUser);
+      setRifferName(userName);
     }
   };
 
   const picSubmit = (event) => {
     event.preventDefault();
     //console.log(event.target.children[0].value);
-    setRiffPic(event.target.children[0].files[0], googleUser);
+    setRiffPic(event.target.children[0].files[0]);
   };
 
   const handleChange = (event) => {
@@ -55,10 +50,10 @@ const Account = ({
         </h1>
       </div>
       <section className="top-part">
-        {loggedIn() ? (
+        {loggedIn ? (
           <React.Fragment>
             <h3>
-              visit <Link to={`/profile/${userid}`}>public profile</Link>
+              visit <Link to={`/profile/${user_id}`}>public profile</Link>
             </h3>
             <form onSubmit={(event) => handleSubmit(event)}>
               <label>
@@ -73,7 +68,7 @@ const Account = ({
               </label>
               <input type="submit" value="Submit" className="btn" />
             </form>
-            <img key={acctImgKey} src={`/get-riffer-pic/${userid}.png?${acctImgKey}`} />
+            <img key={acctImgKey} src={`/get-riffer-pic/${user_id}.png?${acctImgKey}`} />
             <form onSubmit={(event) => picSubmit(event)}>
               <input type="file" name="image" /><br /><br />
               <button type="submit">Upload</button>
@@ -93,10 +88,10 @@ const Account = ({
 
 let mapStateToProps = (state) => ({
   name: state.name,
-  googleUser: state.googleUser,
   userData: state.userData,
-  userid: state.user_id,
+  user_id: state.user_id,
   acctImgKey: state.acctImgKey,
+  loggedIn: state.loggedIn,
 });
 
 const mapDispatchToProps = {

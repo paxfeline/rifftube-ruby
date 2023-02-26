@@ -82,7 +82,6 @@ class EditRiff extends React.Component {
                 disabled={!this.props.tempAudio}
                 onClick={() => {
                   this.props.saveRiff(
-                    this.props.googleUser.getAuthResponse().id_token,
                     {
                       payload: this.props.tempAudio,
                       time: Number(this.startTimeField.current.value),
@@ -122,7 +121,6 @@ class EditRiff extends React.Component {
               <button
                 onClick={() => {
                   this.props.saveRiff(
-                    this.props.googleUser.getAuthResponse().id_token,
                     {
                       payload: this.htmlPayloadField.current.value,
                       duration: Number(this.durationField.current.value),

@@ -4,7 +4,6 @@ import riffsReducer from './riffs-reducer';
 import riffsAudioReducer from './riffsAudio-reducer';
 import riffsMetaReducer from './riffsMeta-reducer';
 import modeReducer from './mode-reducer';
-import googleUserReducer from './googleUser-reducer';
 import riffsPlayingReducer from './riffsPlaying-reducer';
 import nameReducer from './name-reducer';
 import useridReducer from './userid-reducer';
@@ -20,15 +19,15 @@ import recorderReducer from './recorder-reducer';
 import acctImgKeyReducer from './acctImgKey-reducer';
 
 import userInfoReducer from './user-info-reducer';
+import loggedInReducer from './logged-in-reducer';
 
 // TODO: move appropriate state variables to respective components?
 
 export default combineReducers({
   riffs: riffsReducer,
   riffsAudio: riffsAudioReducer,
-  riffsMeta: riffsMetaReducer,
+  riffsMeta: riffsMetaReducer, // unused?
   mode: modeReducer,
-  googleUser: googleUserReducer,
   riffsPlaying: riffsPlayingReducer,
   name: nameReducer, // remove?
   user_id: useridReducer, // remove
@@ -36,12 +35,13 @@ export default combineReducers({
   duration: videoDurationReducer,
   websocket: webSocketReducer,
   userData: userDataReducer, // inc video list
-  publicProfileData: publicProfileDataReducer, // combine with publicProfileName?
-  publicProfileName: publicProfileNameReducer, // see above
-  globalVideoList: globalVideoListReducer,
+  publicProfileData: publicProfileDataReducer, // move to component state; combine with publicProfileName?
+  publicProfileName: publicProfileNameReducer, // move to component state; see above
+  globalVideoList: globalVideoListReducer, // move to component state
   immediateRecord: immediateRecordReducer,
   recorder: recorderReducer,
-  acctImgKey: acctImgKeyReducer,
+  acctImgKey: acctImgKeyReducer, // move to comp. (Account)
 
   userInfo: userInfoReducer,
+  loggedIn: loggedInReducer,
 });

@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { GoogleLogout } from 'react-google-login';
 
 import RiffList from './RiffList.js';
 import EditRiff from './EditRiff.js';
 import RiffButton from './RiffButton.js';
-import { setRifferName, googleUserLogout } from '../../actions'; // this and below are the same file
+import { setRifferName } from '../../actions'; // this and below are the same file
 import { EDIT_MODE, EDIT_NEW_MODE } from '../../actions';
 
 import { createTempRiff, togglePlayerMode, setRecorder } from '../../actions/index.js';
@@ -59,11 +58,6 @@ function EditControls(props) {
               Riffer Name:&nbsp;
               {props.name}
             </div>
-            <GoogleLogout
-              clientId="941154439836-s6iglcrdckcj6od74kssqsom58j96hd8.apps.googleusercontent.com"
-              buttonText="Logout"
-              onLogoutSuccess={() => props.googleUserLogout()}
-            ></GoogleLogout>
           </React.Fragment>
         ) : null
       }
@@ -125,7 +119,6 @@ function EditControls(props) {
 let mapStateToProps = (state) => ({
   mode: state.mode,
   name: state.name,
-  googleUser: state.googleUser,
   videoID: state.videoID,
   duration: state.duration,
   recorder: state.recorder,
@@ -133,7 +126,6 @@ let mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   setRifferName,
-  googleUserLogout,
   createTempRiff,
   togglePlayerMode,
   setRecorder,

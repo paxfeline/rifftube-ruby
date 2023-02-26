@@ -67,7 +67,7 @@ export const SAVE_PIC_FAILURE = 'SAVE_PIC_FAILURE';
 
 /******** Login and logout */
 
-export const attemptLogin = (email, password) => {
+export const login = (email, password) => {
   return (dispatch) => {
     axios({
       method: 'post',
@@ -75,13 +75,13 @@ export const attemptLogin = (email, password) => {
       data: { email, password },
     }).then((res) => {
       debugger;
-      dispatch({ type: LOGIN, userInfo: res.data });
+      dispatch({ type: LOGIN, payload: res.data });
     }).catch(err =>
       console.log("error", err));
   };
 };
 
-export const checkGoogleCredentials = (credentialResponse) => {
+export const loginWithGoogle = (credentialResponse) => {
   console.log(credentialResponse);
   debugger;
   return (dispatch) => {
@@ -91,8 +91,51 @@ export const checkGoogleCredentials = (credentialResponse) => {
       data: { credentials: credentialResponse },
     }).then((res) => {
       console.log(res);
-      dispatch({  });
+      dispatch({ type: LOGIN, userInfo: res.data });
     }).catch(err => console.log("error", err));
+  };
+};
+
+export const logout = () => {
+  return (dispatch) => {
+    axios({
+      method: 'delete',
+      url: `/logout`,
+    }).then((res) => {
+      debugger;
+      dispatch({ type: LOGIN, userInfo: res.data });
+    }).catch(err =>
+      console.log("error", err));
+  };
+};
+
+/* signup */
+
+export const signup = (email, password, name, pic) => {
+  return (dispatch) => {
+    axios({
+      method: 'get',
+      url: `/signup`,
+      data: { email, password, name, pic },
+    }).then((res) => {
+      debugger;
+      dispatch({ type: LOGIN, userInfo: res.data });
+    }).catch(err =>
+      console.log("error", err));
+  };
+};
+
+export const signupWithGoogle = (name, pic) => {
+  return (dispatch) => {
+    axios({
+      method: 'get',
+      url: `/signupWithGoogle`,
+      data: { name, pic },
+    }).then((res) => {
+      debugger;
+      dispatch({ type: LOGIN, userInfo: res.data });
+    }).catch(err =>
+      console.log("error", err));
   };
 };
 
@@ -110,22 +153,21 @@ export const setVideoDuration = (payload) => ({
   payload,
 });
 
-export const setRifferName = (newName, googleUser) => {
+export const setRifferName = (newName) => {
   return (dispatch) => {
     axios({
       method: 'post',
       url: `/set-name`,
-      data: { token: googleUser.getAuthResponse().id_token, newName },
+      data: { newName },
     }).then((res) => {
       dispatch({ type: RECEIVE_NAME_UPDATE, payload: res.data });
     }).catch(err => console.log("error", err));
   };
 };
 
-export const setRiffPic = (payload, googleUser) => {
+export const setRiffPic = (payload) => {
   return (dispatch) => {
     let fd = new FormData();
-    fd.append('token', googleUser.getAuthResponse().id_token);
     fd.append('image', payload);
     axios({
       method: 'post',
@@ -143,12 +185,12 @@ export const setRiffPic = (payload, googleUser) => {
   };
 };
 
-export const getRiffs = (videoID, googleUser) => {
+export const getRiffs = (videoID) => {
   return (dispatch) => {
     axios({
       method: 'post',
       url: `/get-riffs`,
-      data: { token: googleUser.getAuthResponse().id_token, videoID },
+      data: { videoID },
     }).then((res) => {
       dispatch({ type: RECEIVE_RIFF_LIST, payload: res.data });
     }).catch(err => console.log("error", err));
@@ -162,7 +204,7 @@ export const getRiffs = (videoID, googleUser) => {
   }
 };
 
-export const setVideoID = (videoID, googleUser) => {
+export const setVideoID = (videoID) => {
   return (dispatch) => {
     dispatch({
       type: SET_VIDEO_ID,
@@ -176,29 +218,26 @@ export const setVideoID = (videoID, googleUser) => {
     }).catch(error => {
       dispatch({ type: RECEIVE_RIFF_META, payload: { body: [] } });
     });
-    if (googleUser && googleUser.getAuthResponse) {
-      axios({
-        method: 'post',
-        url: `/get-riffs`,
-        data: { token: googleUser.getAuthResponse().id_token, videoID },
-      }).then((res) => {
-        dispatch({ type: RECEIVE_RIFF_LIST, payload: res.data });
-      }).catch(error => {
-        console.error(error);
-      });
-    }
+  
+    axios({
+      method: 'get',
+      url: `/get-riffs`,
+      data: { videoID },
+    }).then((res) => {
+      dispatch({ type: RECEIVE_RIFF_LIST, payload: res.data });
+    }).catch(error => {
+      console.error(error);
+    });
+  
   };
 };
 
 //Delete Riff
-export const deleteRiff = (riffID, googleUser, video_id, websocket) => {
+export const deleteRiff = (riffID, video_id, websocket) => {
   return (dispatch) => {
     axios({
       method: 'delete',
-      url: `/riff-remove/${riffID}`,
-      data: {
-        token: googleUser.getAuthResponse().id_token,
-      },
+      url: `/riff-remove/${riffID}`
     }).then((res) => {
       dispatch({ type: DELETE_RIFF, id: riffID });
 
@@ -210,21 +249,6 @@ export const deleteRiff = (riffID, googleUser, video_id, websocket) => {
 
 // perhaps this action should somehow call the above action (setVideoID)?
 
-// this shit really needs to be decoupled
-export const setGoogleUser = (googleUser) => {
-  return (dispatch) => {
-    dispatch({
-      type: GOOGLE_USER_SIGNIN,
-      payload: googleUser,
-    });
-  };
-};
-
-// perhaps this action should somehow call the above action (setVideoID)?
-export const googleUserLogout = () => ({
-  type: GOOGLE_USER_SIGNIN,
-  payload: null,
-});
 
 export const getRiffsMeta = (videoID) => {
   return (dispatch) => {
@@ -248,11 +272,11 @@ export const getViewRiffs = (videoID) => {
   };
 };
 
-export const getUserData = (googleUser) => {
+export const getUserData = () => {
   return (dispatch) => {
     axios({
       method: 'get',
-      url: `/get-user-data/${googleUser.getAuthResponse().id_token}`,
+      url: '/get-user-data',
     }).then((res) => {
       dispatch({ type: LOAD_USER_DATA, payload: res.data });
     }).catch(err => console.log("error", err));

@@ -20,6 +20,7 @@ class UsersController < ApplicationController
           UserMailer.with(user: @user).new_user_email.deliver_later
           redirect_to root_url
         else
+          flash.now[:notice] = "User save failed."
           render 'new'
         end
       elsif existing_user.password_digest.nil?
@@ -31,8 +32,12 @@ class UsersController < ApplicationController
           UserMailer.with(user: @user).new_user_email.deliver_later
           redirect_to root_url
         else
+          flash.now[:notice] = "User save failed."
           render 'new'
         end
+      else
+        flash.now[:notice] = "User save failed."
+        render 'new'
       end
     end
 
@@ -52,9 +57,18 @@ class UsersController < ApplicationController
     end
 
 
+
+    def get_pic
+      user = User.find(params[:id])
+      print "get pic"
+      print user.inspect
+      send_data user.riff_pic, :type => "image/png", :disposition => "inline"
+    end
+
+
     private
     def user_params
-      params.require(:user).permit(:name, :email, :password)
+      params.require(:user).permit(:name, :email, :password, :password_confirmation)
     end
 
     def obfuscate_email(email)

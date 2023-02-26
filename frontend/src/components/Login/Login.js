@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { GoogleLogin } from '@react-oauth/google';
-import { attemptLogin, checkGoogleCredentials } from '../../actions/index.js';
+import { login, loginWithGoogle } from '../../actions/index.js';
 
-const Login = ({ attemptLogin, checkGoogleCredentials /*, videoID */ }) => {
+const Login = ({ login, loginWithGoogle /*, videoID */ }) => {
   const email_ref = React.createRef();
   const pwd_ref = React.createRef();
   return (
@@ -17,14 +17,14 @@ const Login = ({ attemptLogin, checkGoogleCredentials /*, videoID */ }) => {
         <input className="form-control" type="password" name="session[password]" id="session_password" ref={pwd_ref} />
       </div>
       <button onClick={() => {console.log(email_ref); debugger;
-        attemptLogin(email_ref.current.value, pwd_ref.current.value);
+        login(email_ref.current.value, pwd_ref.current.value);
         }}>login</button>
       <br />or
       <GoogleLogin
         onSuccess={credentialResponse => {
           console.log(credentialResponse);
-          checkGoogleCredentials(credentialResponse.credential);
-        }}      
+          loginWithGoogle(credentialResponse.credential);
+        }}
         onError={() => {
           console.log('Login Failed');
         }}
@@ -38,8 +38,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  attemptLogin,
-  checkGoogleCredentials,
+  login,
+  loginWithGoogle,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
