@@ -6,7 +6,6 @@ import riffsMetaReducer from './riffsMeta-reducer';
 import modeReducer from './mode-reducer';
 import riffsPlayingReducer from './riffsPlaying-reducer';
 import nameReducer from './name-reducer';
-import useridReducer from './userid-reducer';
 import videoIDReducer from './videoID-reducer';
 import videoDurationReducer from './videoDuration-reducer';
 import webSocketReducer from './websocket-reducer';
@@ -30,7 +29,6 @@ export default combineReducers({
   mode: modeReducer,
   riffsPlaying: riffsPlayingReducer,
   name: nameReducer, // remove?
-  user_id: useridReducer, // remove
   videoID: videoIDReducer,
   duration: videoDurationReducer,
   websocket: webSocketReducer,

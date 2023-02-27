@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-export const GOOGLE_USER_SIGNIN = 'GOOGLE_USER_SIGNIN';
-
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
+
+export const SIGNUP = 'SIGNUP';
 
 export const CREATE_TEMP_AUDIO_RIFF = 'CREATE_TEMP_AUDIO_RIFF';
 export const CREATE_TEMP_TEXT_RIFF = 'CREATE_TEMP_TEXT_RIFF';
@@ -91,7 +91,7 @@ export const loginWithGoogle = (credentialResponse) => {
       data: { credentials: credentialResponse },
     }).then((res) => {
       console.log(res);
-      dispatch({ type: LOGIN, userInfo: res.data });
+      dispatch({ type: LOGIN, payload: res.data });
     }).catch(err => console.log("error", err));
   };
 };
@@ -103,7 +103,7 @@ export const logout = () => {
       url: `/logout`,
     }).then((res) => {
       debugger;
-      dispatch({ type: LOGIN, userInfo: res.data });
+      dispatch({ type: LOGOUT, payload: res.data });
     }).catch(err =>
       console.log("error", err));
   };
@@ -113,27 +113,39 @@ export const logout = () => {
 
 export const signup = (email, password, name, pic) => {
   return (dispatch) => {
+    let fd = new FormData();
+    fd.append('user[email]', email);
+    fd.append('user[password]', password);
+    fd.append('user[name]', name);
+    fd.append('user[pic]', pic)
     axios({
-      method: 'get',
-      url: `/signup`,
-      data: { email, password, name, pic },
+      method: 'post',
+      url: `/users`,
+      data: fd,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+    /*axios({
+      method: 'post',
+      url: `/users`,
+      data: { email, password, name, pic },*/
     }).then((res) => {
       debugger;
-      dispatch({ type: LOGIN, userInfo: res.data });
+      dispatch({ type: SIGNUP, payload: res.data });
     }).catch(err =>
       console.log("error", err));
   };
 };
 
-export const signupWithGoogle = (name, pic) => {
+export const signupWithGoogle = (credentials, password, name, pic) => {
   return (dispatch) => {
     axios({
-      method: 'get',
-      url: `/signupWithGoogle`,
-      data: { name, pic },
+      method: 'post',
+      url: `/signup-with-google`,
+      data: { credentials, password, name, pic },
     }).then((res) => {
       debugger;
-      dispatch({ type: LOGIN, userInfo: res.data });
+      dispatch({ type: SIGNUP, payload: res.data });
     }).catch(err =>
       console.log("error", err));
   };
@@ -185,12 +197,12 @@ export const setRiffPic = (payload) => {
   };
 };
 
+// updated to use get
 export const getRiffs = (videoID) => {
   return (dispatch) => {
     axios({
-      method: 'post',
-      url: `/get-riffs`,
-      data: { videoID },
+      method: 'get',
+      url: `/get-riffs/${videoID}`,
     }).then((res) => {
       dispatch({ type: RECEIVE_RIFF_LIST, payload: res.data });
     }).catch(err => console.log("error", err));

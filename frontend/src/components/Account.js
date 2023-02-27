@@ -8,16 +8,15 @@ import NavBar from './NavBar.js';
 import VideoList from './VideoList';
 
 const Account = ({
-  name,
   setRifferName,
   setRiffPic,
   userData,
   getUserData,
-  user_id,
+  userInfo,
   acctImgKey,
   loggedIn,
 }) => {
-  const [userName, setUserName] = useState(name);
+  const [userName, setUserName] = useState(userInfo?.name);
 
   useEffect(() => {
     if (loggedIn) getUserData();
@@ -53,7 +52,7 @@ const Account = ({
         {loggedIn ? (
           <React.Fragment>
             <h3>
-              visit <Link to={`/profile/${user_id}`}>public profile</Link>
+              visit <Link to={`/profile/${userInfo.id}`}>public profile</Link>
             </h3>
             <form onSubmit={(event) => handleSubmit(event)}>
               <label>
@@ -62,13 +61,13 @@ const Account = ({
                   onChange={(event) => handleChange(event)}
                   type="text"
                   name="name"
-                  defaultValue={name}
+                  defaultValue={userInfo.name}
                   className="form-field"
                 />
               </label>
               <input type="submit" value="Submit" className="btn" />
             </form>
-            <img key={acctImgKey} src={`/get-riffer-pic/${user_id}.png?${acctImgKey}`} />
+            <img key={acctImgKey} src={`/riffer-pic/${userInfo.id}.png?${acctImgKey}`} />
             <form onSubmit={(event) => picSubmit(event)}>
               <input type="file" name="image" /><br /><br />
               <button type="submit">Upload</button>
@@ -87,11 +86,10 @@ const Account = ({
 };
 
 let mapStateToProps = (state) => ({
-  name: state.name,
   userData: state.userData,
-  user_id: state.user_id,
   acctImgKey: state.acctImgKey,
   loggedIn: state.loggedIn,
+  userInfo: state.userInfo,
 });
 
 const mapDispatchToProps = {

@@ -154,7 +154,6 @@ const mapStateToProps = (state) => ({
   tempRiff: state.riffs.temp,
   tempAudio: state.riffsAudio.temp,
   editIndex: state.riffs.editIndex,
-  googleUser: state.googleUser,
   websocket: state.websocket,
 });
 

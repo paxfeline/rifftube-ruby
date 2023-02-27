@@ -63,7 +63,6 @@ function RiffDetail(props) {
         ref={timeRef}
         onChange={() => {
           props.updateRiffTime(
-            props.googleUser.getAuthResponse().id_token,
             timeRef.current.value,
             props.video_id,
             props.id,
@@ -90,7 +89,6 @@ function RiffDetail(props) {
             if (window.confirm('Delete?'))
               props.deleteRiff(
                 props.id,
-                props.googleUser,
                 props.video_id,
                 props.websocket
               );
@@ -104,7 +102,6 @@ function RiffDetail(props) {
 }
 
 const mapStateToProps = (state) => ({
-  googleUser: state.googleUser,
   riffsAudio: state.riffsAudio,
   websocket: state.websocket,
 });

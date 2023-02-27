@@ -6,7 +6,8 @@ import NavBar from './NavBar.js';
 
 const Signup = ({
     signup,
-    signupWithGoogle
+    signupWithGoogle,
+    history
   //publicProfileData,
   //publicProfileName,
   //getPublicUserData,
@@ -29,36 +30,38 @@ const Signup = ({
         </h1>
         </div>
         <section className="top-part">
-        <div class="form-group">
-        <label for="user_email">Email</label><br/>
-        <input class="form-control" type="email" name="user[email]" id="user_email" ref={email_ref} />
+        <div className="form-group">
+        <label htmlFor="user_email">Email</label><br/>
+        <input className="form-control" type="email" name="user[email]" id="user_email" ref={email_ref} />
         </div>
-        <div class="form-group">
-        <label for="user_password">Password</label><br/>
-        <input class="form-control" type="password" name="user[password]" id="user_password" ref={pwd_ref} />
+        <div className="form-group">
+        <label htmlFor="user_password">Password</label><br/>
+        <input className="form-control" type="password" name="user[password]" id="user_password" ref={pwd_ref} />
         </div>
-        <div class="form-group">
-        <label for="user_password_confirmation">Password confirmation</label><br/>
-        <input class="form-control" type="password" name="user[password_confirmation]" id="user_password_confirmation" />
+        <div className="form-group">
+        <label htmlFor="user_password_confirmation">Password confirmation</label><br/>
+        <input className="form-control" type="password" name="user[password_confirmation]" id="user_password_confirmation" />
         </div>
-        <div class="form-group">
-        <label for="user_name">Riffer Name</label><br/>
-        <input class="form-control" type="text" name="user[name]" id="user_name" ref={name_ref} />
+        <div className="form-group">
+        <label htmlFor="user_name">Riffer Name</label><br/>
+        <input className="form-control" type="text" name="user[name]" id="user_name" ref={name_ref} />
         </div>
-        <div class="form-group">
-        <label for="profile_pic">Profile Pic (optional)</label><br/>
+        <div className="form-group">
+        <label htmlFor="profile_pic">Profile Pic (optional)</label><br/>
         <input type="file" name="image" id="profile_pic" ref={pic_ref} />
         </div>
-        <div class="form-group">
+        <div className="form-group">
         <button onClick={() => {console.log(email_ref); debugger;
-            signup(email_ref.current.value, pwd_ref.current.value, name_ref.current.value, pic_ref.current.value);
+            signup(email_ref.current.value, pwd_ref.current.value, name_ref.current.value, pic_ref.current.files[0]);
+            history.push('/');
         }}>Create User</button>
         </div>
         or
         <GoogleLogin
             onSuccess={credentialResponse => {
                 console.log(credentialResponse);
-                signupWithGoogle(credentialResponse.credential);
+                signupWithGoogle(credentialResponse.credential, pwd_ref.current.value, name_ref.current.value, pic_ref.current.files[0]);
+                history.push('/');
             }}
             onError={() => {
                 console.log('Login Failed');
@@ -66,7 +69,7 @@ const Signup = ({
             className="google-login"
             text="signup_with"
         />
-        (email and password are ignored)
+        (email is provided by google signin)
         </section>
     </div>
     );

@@ -310,7 +310,6 @@ const mapStateToProps = (state) => ({
   mode: state.mode,
   //riffs: state.riffs.all,
   riffsPlaying: state.riffsPlaying,
-  googleUser: state.googleUser,
   duration: state.duration,
   riffsAudio: state.riffsAudio,
 });

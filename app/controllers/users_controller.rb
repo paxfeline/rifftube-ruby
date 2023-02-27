@@ -1,3 +1,5 @@
+require 'googleauth'
+
 class UsersController < ApplicationController
     helper_method :obfuscate_email
 
@@ -9,9 +11,48 @@ class UsersController < ApplicationController
       @user = User.new
     end
 
+    def create_with_token
+      begin
+        payload = Google::Auth::IDTokens.verify_oidc google_login_credentials, aud: "941154439836-s6iglcrdckcj6od74kssqsom58j96hd8.apps.googleusercontent.com"
+        print payload
+        # check for user in the db with this email
+        existing_user = User.find_by(email: payload["email"].downcase!)
+        if existing_user.nil?
+          # if user doesn't exist, create a new one
+          params[:email] = payload["email"]
+          @user = User.new(user_params)
+          if @user.save
+            flash[:notice] = "User created."
+            UserMailer.with(user: @user).new_user_email.deliver_later
+            redirect_to root_url
+          else
+            flash.now[:notice] = "User save failed."
+            render 'new'
+          end
+        elsif existing_user.password_digest.nil?
+          # if user exists, update password
+          existing_user.password_digest = BCrypt::Password.create(user_params[:password])
+          @user = existing_user
+          if @user.save
+            flash[:notice] = "OG User created."
+            UserMailer.with(user: @user).new_user_email.deliver_later
+            redirect_to root_url
+          else
+            flash.now[:notice] = "User save failed."
+            render 'new'
+          end
+        else
+          flash.now[:notice] = "User save failed."
+          render 'new'
+        end
+      rescue => e
+        render plain: "User creation failed"
+      end
+    end
+
     def create
       # check for user in the db with this email
-      existing_user = User.where(email: user_params[:email])[0]
+      existing_user = User.find_by(email: user_params[:email].downcase)
       if existing_user.nil?
         # if user doesn't exist, create a new one
         @user = User.new(user_params)
@@ -41,6 +82,7 @@ class UsersController < ApplicationController
       end
     end
 
+
     def show
       @user = User.find(params[:id])
     end
@@ -68,7 +110,8 @@ class UsersController < ApplicationController
 
     private
     def user_params
-      params.require(:user).permit(:name, :email, :password, :password_confirmation)
+      params[:user][:email].downcase!
+      params.require(:user).permit(:name, :email, :password, :password_confirmation, :pic)
     end
 
     def obfuscate_email(email)

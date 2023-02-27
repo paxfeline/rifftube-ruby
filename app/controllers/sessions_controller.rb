@@ -1,12 +1,13 @@
 require 'googleauth'
 
 class SessionsController < ApplicationController
+
   def create
     user = User.find_by(email: params[:session][:email].downcase)
     if user && user.authenticate(params[:session][:password])
       session[:user_id] = user.id
       flash[:notice] = "Logged in successfully."
-      send_data user.as_json(except: [:riff_pic, :password_digest])
+      send_data user.to_json(except: [:riff_pic, :password_digest])
       #redirect_to user
     else
       flash.now[:alert] = "There was something wrong with your login details."
@@ -14,6 +15,7 @@ class SessionsController < ApplicationController
       render plain: "Login Failed"
     end
   end
+
   def create_with_token
     # ...
     print "google token"
@@ -26,7 +28,7 @@ class SessionsController < ApplicationController
       if user
         session[:user_id] = user.id
         flash[:notice] = "Logged in successfully."
-        send_data user.as_json(except: [:riff_pic, :password_digest])
+        send_data user.to_json(except: [:riff_pic, :password_digest])
       else
         flash.now[:alert] = "User not found."
         raise "Login Failed"
@@ -35,6 +37,7 @@ class SessionsController < ApplicationController
       render plain: "Login Failed"
     end
   end
+
   def destroy
     session[:user_id] = nil
     flash[:notice] = "You have been logged out."

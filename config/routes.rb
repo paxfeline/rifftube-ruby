@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   get 'download/:id', to: "rifftube#download"
 
   get "signup", to: "users#new"
+  post "signup-with-google", to: "users#create_with_token"
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"
   post "login-with-google", to: "sessions#create_with_token"
