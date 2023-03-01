@@ -117,7 +117,8 @@ export const signup = (email, password, name, pic) => {
     fd.append('user[email]', email);
     fd.append('user[password]', password);
     fd.append('user[name]', name);
-    fd.append('user[pic]', pic)
+    fd.append('user[riff_pic]', pic)
+    debugger;
     axios({
       method: 'post',
       url: `/users`,

@@ -48,10 +48,10 @@ const Signup = ({
         </div>
         <div className="form-group">
         <label htmlFor="profile_pic">Profile Pic (optional)</label><br/>
-        <input type="file" name="image" id="profile_pic" ref={pic_ref} />
+        <input type="file" name="user[riff_pic]" id="profile_pic" ref={pic_ref} />
         </div>
         <div className="form-group">
-        <button onClick={() => {console.log(email_ref); debugger;
+        <button onClick={() => {
             signup(email_ref.current.value, pwd_ref.current.value, name_ref.current.value, pic_ref.current.files[0]);
             history.push('/');
         }}>Create User</button>
