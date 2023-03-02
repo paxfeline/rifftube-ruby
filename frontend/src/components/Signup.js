@@ -1,17 +1,57 @@
-import React, { useEffect } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { GoogleLogin } from '@react-oauth/google';
-import { signup, signupWithGoogle } from '../actions';
 import NavBar from './NavBar.js';
 
 const Signup = ({
-    signup,
-    signupWithGoogle,
-    history
-  //publicProfileData,
-  //publicProfileName,
-  //getPublicUserData,
+    history,
 }) => {
+
+    const [lastError, setLastError] = useState(null);
+    
+    const signup = (email, password, name, pic) =>
+    {
+        let fd = new FormData();
+        fd.append('user[email]', email);
+        fd.append('user[password]', password);
+        fd.append('user[name]', name);
+        fd.append('user[riff_pic]', pic)
+        axios({
+            method: 'post',
+            url: `/users`,
+            data: fd,
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+        }).then((res) => {
+            debugger;
+            history.push('/');
+            //dispatch({ type: SIGNUP, payload: res.data });
+        }).catch(err => {
+            console.log("error", err);
+            setLastError(err?.response?.data);
+            //dispatch({ type: SET_ERROR, payload: err?.response?.data })
+        });
+    };
+
+    const signupWithGoogle = (credentials, password, name, pic) =>
+    {
+        axios({
+            method: 'post',
+            url: `/signup-with-google`,
+            data: { credentials, password, name, pic },
+        }).then((res) => {
+            debugger;
+            history.push('/');
+            //dispatch({ type: SIGNUP, payload: res.data });
+        }).catch(err => {
+            console.log("error", err);
+            setLastError(err?.response?.data);
+            //dispatch({ type: SET_ERROR, payload: err?.response?.data })
+        });
+    };
+
     const email_ref = React.createRef();
     const pwd_ref = React.createRef();
     const name_ref = React.createRef();
@@ -28,6 +68,14 @@ const Signup = ({
         <h1 className="heading-primary-main account-heading">
             Sign up for RiffTube
         </h1>
+        {
+            lastError ?
+                <pre className="error_alert">
+                    { lastError }
+                </pre>
+            :
+                null
+        }
         </div>
         <section className="top-part">
         <div className="form-group">
@@ -53,7 +101,7 @@ const Signup = ({
         <div className="form-group">
         <button onClick={() => {
             signup(email_ref.current.value, pwd_ref.current.value, name_ref.current.value, pic_ref.current.files[0]);
-            history.push('/');
+            //history.push('/');
         }}>Create User</button>
         </div>
         or
@@ -61,7 +109,7 @@ const Signup = ({
             onSuccess={credentialResponse => {
                 console.log(credentialResponse);
                 signupWithGoogle(credentialResponse.credential, pwd_ref.current.value, name_ref.current.value, pic_ref.current.files[0]);
-                history.push('/');
+                //history.push('/');
             }}
             onError={() => {
                 console.log('Login Failed');
@@ -76,13 +124,10 @@ const Signup = ({
 };
 
 let mapStateToProps = (state) => ({
-  //publicProfileData: state.publicProfileData,
-  //publicProfileName: state.publicProfileName,
+  //lastError: state.lastError,
 });
 
 const mapDispatchToProps = {
-    signup,
-    signupWithGoogle,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Signup);

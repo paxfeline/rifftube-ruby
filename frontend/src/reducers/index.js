@@ -19,6 +19,7 @@ import acctImgKeyReducer from './acctImgKey-reducer';
 
 import userInfoReducer from './user-info-reducer';
 import loggedInReducer from './logged-in-reducer';
+import lastErrorReducer from './last-error-reducer';
 
 // TODO: move appropriate state variables to respective components?
 
@@ -42,4 +43,5 @@ export default combineReducers({
 
   userInfo: userInfoReducer,
   loggedIn: loggedInReducer,
+  lastError: lastErrorReducer,
 });

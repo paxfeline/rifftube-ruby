@@ -3,8 +3,6 @@ import axios from 'axios';
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 
-export const SIGNUP = 'SIGNUP';
-
 export const CREATE_TEMP_AUDIO_RIFF = 'CREATE_TEMP_AUDIO_RIFF';
 export const CREATE_TEMP_TEXT_RIFF = 'CREATE_TEMP_TEXT_RIFF';
 
@@ -65,6 +63,9 @@ export const WEB_SOCKET_UPDATE = 'WEB_SOCKET_UPDATE';
 export const SAVE_PIC_SUCCESS = 'SAVE_PIC_SUCCESS';
 export const SAVE_PIC_FAILURE = 'SAVE_PIC_FAILURE';
 
+export const SET_ERROR = 'SET_ERROR';
+export const CLEAR_ERROR = 'CLEAR_ERROR';
+
 /******** Login and logout */
 
 export const login = (email, password) => {
@@ -104,49 +105,6 @@ export const logout = () => {
     }).then((res) => {
       debugger;
       dispatch({ type: LOGOUT, payload: res.data });
-    }).catch(err =>
-      console.log("error", err));
-  };
-};
-
-/* signup */
-
-export const signup = (email, password, name, pic) => {
-  return (dispatch) => {
-    let fd = new FormData();
-    fd.append('user[email]', email);
-    fd.append('user[password]', password);
-    fd.append('user[name]', name);
-    fd.append('user[riff_pic]', pic)
-    debugger;
-    axios({
-      method: 'post',
-      url: `/users`,
-      data: fd,
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-    /*axios({
-      method: 'post',
-      url: `/users`,
-      data: { email, password, name, pic },*/
-    }).then((res) => {
-      debugger;
-      dispatch({ type: SIGNUP, payload: res.data });
-    }).catch(err =>
-      console.log("error", err));
-  };
-};
-
-export const signupWithGoogle = (credentials, password, name, pic) => {
-  return (dispatch) => {
-    axios({
-      method: 'post',
-      url: `/signup-with-google`,
-      data: { credentials, password, name, pic },
-    }).then((res) => {
-      debugger;
-      dispatch({ type: SIGNUP, payload: res.data });
     }).catch(err =>
       console.log("error", err));
   };
