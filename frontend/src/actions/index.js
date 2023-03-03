@@ -192,8 +192,7 @@ export const setVideoID = (videoID) => {
   
     axios({
       method: 'get',
-      url: `/get-riffs`,
-      data: { videoID },
+      url: `/get-riffs/${videoID}`,
     }).then((res) => {
       dispatch({ type: RECEIVE_RIFF_LIST, payload: res.data });
     }).catch(error => {
