@@ -235,7 +235,7 @@ export const getViewRiffs = (videoID) => {
   return (dispatch) => {
     axios({
       method: 'get',
-      url: `/get-view-riffs/${videoID}`,
+      url: `/riffs?video_id=${videoID}`,
     }).then((res) => {
       dispatch({ type: RECEIVE_RIFF_LIST, payload: res.data });
     }).catch(err => console.log("error", err));

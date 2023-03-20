@@ -16,53 +16,36 @@ class UsersController < ApplicationController
         payload = Google::Auth::IDTokens.verify_oidc google_login_credentials, aud: "941154439836-s6iglcrdckcj6od74kssqsom58j96hd8.apps.googleusercontent.com"
         print payload
         # check for user in the db with this email
-        existing_user = User.find_by(email: payload["email"].downcase!)
-        if existing_user.nil?
-          # if user doesn't exist, create a new one
-          params[:email] = payload["email"]
-          @user = User.new(user_params)
-          if @user.save
-            flash[:notice] = "User created."
-            UserMailer.with(user: @user).new_user_email.deliver_later
-            redirect_to root_url
-          else
-            flash.now[:notice] = "User save failed."
-            render 'new'
-          end
-        elsif existing_user.password_digest.nil?
-          # if user exists, update password
-          existing_user.password_digest = BCrypt::Password.create(user_params[:password])
-          @user = existing_user
-          if @user.save
-            flash[:notice] = "OG User created."
-            UserMailer.with(user: @user).new_user_email.deliver_later
-            redirect_to root_url
-          else
-            flash.now[:notice] = "User save failed."
-            render 'new'
-          end
-        else
-          flash.now[:notice] = "User save failed."
-          render 'new'
-        end
+        params[:user][:email] = payload["email"].downcase!
+        params[:user][:confirmed] = true
+        #existing_user.confirmed = true # creation with google = auto confirmed (good idea?)
+        create_helper
       rescue => e
-        render plain: "User creation failed"
+        render plain: "User creation failed. Google auth token failed to verify.", status: :internal_server_error
       end
     end
 
     def create
       # check for user in the db with this email
-      existing_user = User.find_by(email: user_params[:email].downcase)
+      params[:user][:email].downcase!
+      params[:user][:confirmed] = false
+      create_helper
+    end
+
+    def create_helper
+      existing_user = User.find_by(email: user_params[:email])
       if existing_user.nil?
         # if user doesn't exist, create a new one
         @user = User.new(user_params)
+        print @user.inspect
         if @user.save
           flash[:notice] = "User created."
           UserMailer.with(user: @user).new_user_email.deliver_later
-          redirect_to root_url
+          render plain: "User created.", status: :ok
         else
-          flash.now[:notice] = "User save failed."
-          render 'new'
+          print @user.errors.full_messages
+          flash.now[:notice] = "User save failed. (1) Error(s): #{@user.errors.full_messages}"
+          render plain: "User save failed. (1)\nError(s): #{@user.errors.full_messages}", status: :internal_server_error
         end
       elsif existing_user.password_digest.nil?
         # if user exists, update password
@@ -71,17 +54,17 @@ class UsersController < ApplicationController
         if @user.save
           flash[:notice] = "OG User created."
           UserMailer.with(user: @user).new_user_email.deliver_later
-          redirect_to root_url
+          render plain: "OG User created.", status: :ok
         else
-          flash.now[:notice] = "User save failed."
-          render 'new'
+          print @user.errors.full_messages
+          flash.now[:notice] = "User save failed. (2) Error(s): #{@user.errors.full_messages}"
+          render plain: "User save failed. (2)\nError(s): #{@user.errors.full_messages}", status: :internal_server_error
         end
       else
-        flash.now[:notice] = "User save failed."
-        render 'new'
+        flash.now[:notice] = "User creation failed. (3) User already exists."
+        render plain: "User creation failed. (3)\nUser already exists.", status: :internal_server_error
       end
     end
-
 
     def show
       @user = User.find(params[:id])
@@ -110,8 +93,8 @@ class UsersController < ApplicationController
 
     private
     def user_params
-      params[:user][:email].downcase!
-      params.require(:user).permit(:name, :email, :password, :password_confirmation, :pic)
+      #params[:user][:email].downcase!
+      params.require(:user).permit(:name, :email, :password, :password_confirmation, :riff_pic, :confirmed)
     end
 
     def obfuscate_email(email)

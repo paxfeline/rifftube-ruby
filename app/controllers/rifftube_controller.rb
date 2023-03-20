@@ -4,14 +4,50 @@ require 'zip'
 RiffTrack = Struct.new(:cursor, :riffs)
 
 class RifftubeController < ApplicationController
+
+  def riffs_for_video
+    riffs = Video.find_by(url: params[:video_id])&.riffs.select(:id, :user_id, :duration, :start_time, :isText, :text)
+    if riffs.nil?
+      render json: { "body" => [], "status" => "ok" }
+    end
+    # convert records to hash; don't include audio data; add name of riffer
+    riffs = riffs.map{ |r|
+      ret = r.as_json(except: :audio_datum);
+      ret["name"] = r.user.name;
+      ret
+    }
+    render json: { "body" => riffs, "status" => "ok" }
+  end
+
+  def riffs_for_video_current_user
+    if logged_in?
+      video = @current_user.videos.find_by(url: params[:video_id])
+      if video.present?
+        riffs = video.riffs.select(:id, :user_id, :duration, :start_time, :isText, :text)
+        # convert records to hash; don't include audio data; add name of riffer
+        riffs = riffs.map{|r| ret = r.as_json(except: :audio_datum); ret["name"] = r.user.name; ret}
+        ret = { "body" => riffs, "status" => "ok" }
+        render json: ret
+      else
+        ret = { "body" => [], "status" => "ok" }
+        render json: ret
+      end
+    else
+      render plain: "not logged in", status: :unauthorized
+    end
+  end
+
   def send_email
     UserMailer.with(user: nil).new_user_email.deliver_later
   end
+
   def index
   end
+
   def riff
-    @video = Video.find(params[:video_id])
+    @video = Video.find_by(url: params[:video_id])
   end
+
   def riff_zip
     video = Video.where(url: params[:video_id]).first
     user = User.find(params[:user_id])
@@ -30,6 +66,7 @@ class RifftubeController < ApplicationController
 
     send_data zip_data
   end
+
   def riff_single_file
     video = Video.where(url: params[:video_id]).first
     user = User.find(params[:user_id])
@@ -204,6 +241,7 @@ class RifftubeController < ApplicationController
       end
     end
   end
+
   def download
     download = Download.find(params[:id])
     if download.data.nil?
@@ -213,4 +251,5 @@ class RifftubeController < ApplicationController
       send_data download.data
     end
   end
+
 end

@@ -1,0 +1,97 @@
+<dialog>
+
+<audio controls
+    src="<%= @blob_url %>">
+</audio>
+
+<div>
+<button
+    onMouseDown="rifftube.rifftube_record_start(this)"
+    onMouseUp="rifftube.rifftube_record_stop(this)">
+    record
+</button>
+</div>
+
+<div>
+<textarea></textarea>
+</div>
+
+<button>cancel</button>
+
+<button
+    onClick="rifftube.rifftube_close_modal();">ok</button>
+
+<script>
+
+var rifftube = rifftube || {};
+
+rifftube.curScript = document.currentScript;
+rifftube.curDial = rifftube.curScript.parentElement;
+rifftube.curPlayer = rifftube.curDial.querySelector("audio");
+
+if (navigator.mediaDevices)
+{
+    navigator.mediaDevices
+        .getUserMedia({ audio: true, video: false })
+        .then((stream) =>
+        {
+            rifftube.stream = stream;
+            
+            rifftube.recorder = new MediaRecorder(stream);
+
+            rifftube.chunks = [];
+        
+            rifftube.recorder.ondataavailable = function(e)
+            {
+                rifftube.chunks.push(e.data);
+            }
+        
+            rifftube.recorder.onstop = function(e)
+            {
+                console.log("recorder stopped, saving ", rifftube.recorder.mimeType);
+
+                const blob = new Blob(rifftube.chunks, { 'type' : rifftube.recorder.mimeType });
+                
+                rifftube.chunks = [];
+                
+                const audio_URL = URL.createObjectURL(blob);
+
+                rifftube.curPlayer.src = audio_URL;
+
+                
+                const event = new CustomEvent("rifftube:save-riff", { detail: { id: <%= @id %>, audio_URL, } });
+                document.dispatchEvent(event);
+            }
+
+        })
+        .catch(function (err) {
+            //enable the record button if getUSerMedia() fails
+            console.log("oops, can't get stream", err);
+        });
+}
+
+rifftube.rifftube_record_start = function(el)
+{
+    el.innerHTML = "recording..."
+
+    rifftube.recorder.start();
+}
+
+
+rifftube.rifftube_record_stop = function(el)
+{
+    el.innerHTML = "record"
+
+    rifftube.recorder.stop();
+}
+
+rifftube.rifftube_close_modal = function()
+{
+    rifftube.curDial.close();
+}
+
+rifftube.curScript.parentElement.showModal();
+
+</script>
+
+</dialog>

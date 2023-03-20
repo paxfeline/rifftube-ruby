@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_23_052918) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_16_060809) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -59,9 +59,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_23_052918) do
   end
 
   create_table "riffs", id: :serial, force: :cascade do |t|
-    t.binary "audio_datum"
+    t.binary "audio"
     t.float "duration"
-    t.float "start_time"
+    t.float "start"
     t.text "text"
     t.integer "rating"
     t.boolean "isText", default: false, null: false
