@@ -58,8 +58,7 @@ if (navigator.mediaDevices)
 
                 rifftube.curPlayer.src = audio_URL;
 
-                
-                const event = new CustomEvent("rifftube:save-riff", { detail: { id: <%= @id %>, audio_URL, } });
+                const event = new CustomEvent("rifftube:save-riff", { detail: { id: "<%= @id %>", audio_URL, } });
                 document.dispatchEvent(event);
             }
 

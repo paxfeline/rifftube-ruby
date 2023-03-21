@@ -93,7 +93,7 @@ ALTER SEQUENCE public.knex_migrations_lock_index_seq OWNED BY public.knex_migrat
 
 CREATE TABLE public.riffs (
     id integer NOT NULL,
-    audio_datum bytea,
+    audio bytea,
     duration real,
     start_time real,
     text text,

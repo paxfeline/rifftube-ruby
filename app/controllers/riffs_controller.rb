@@ -31,6 +31,7 @@ class RiffsController < ApplicationController
 
     #   GET	/photos/new	photos#new	return an HTML form for creating a new photo
     def new
+        @video_id = params[:video_id]
         render layout: false
     end
 
@@ -38,21 +39,32 @@ class RiffsController < ApplicationController
     def create
         # check if logged in
 
-        movie = FFMPEG::Movie.new(params[:blob].tempfile.path)
+        if logged_in?
 
-        movie.transcode("#{Rails.root}/tmp/movie.mp4") 
+            movie = FFMPEG::Movie.new(params[:blob].tempfile.path)
 
-        mp4data = File.read("#{Rails.root}/tmp/movie.mp4")
-        
-        @riff = Riff.new(audio_datum: mp4data, isText: false, user_id: 1, video_id: 1)
+            riff_path = "#{Rails.root}/tmp/riff-#{current_user.id}-#{Time.now.to_i}.mp4"
 
-        @riff.save
+            movie.transcode(riff_path) 
+
+            mp4data = File.read(riff_path)
+            
+            # fix up (see Users)
+            @riff = Riff.new(audio: mp4data, text: params[:riff][:text], user_id: current_user.id, video_id: params[:video_id], duration: params[:duration])
+
+            @riff.save
+
+            render json: @riff, except: :audio
+
+        else
+            render plain: "Not logged in", status: :unauthorized
+        end
     end
 
     #  GET	/photos/:id	photos#show	display a specific photo
     def show
         riff = Riff.find(params[:id])
-        send_data riff.audio_datum
+        send_data riff.audio
     end
 
     # GET	/photos/:id/edit	photos#edit	return an HTML form for editing a photo

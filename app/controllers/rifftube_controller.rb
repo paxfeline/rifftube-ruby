@@ -12,7 +12,7 @@ class RifftubeController < ApplicationController
     end
     # convert records to hash; don't include audio data; add name of riffer
     riffs = riffs.map{ |r|
-      ret = r.as_json(except: :audio_datum);
+      ret = r.as_json(except: :audio);
       ret["name"] = r.user.name;
       ret
     }
@@ -25,7 +25,7 @@ class RifftubeController < ApplicationController
       if video.present?
         riffs = video.riffs.select(:id, :user_id, :duration, :start_time, :isText, :text)
         # convert records to hash; don't include audio data; add name of riffer
-        riffs = riffs.map{|r| ret = r.as_json(except: :audio_datum); ret["name"] = r.user.name; ret}
+        riffs = riffs.map{|r| ret = r.as_json(except: :audio); ret["name"] = r.user.name; ret}
         ret = { "body" => riffs, "status" => "ok" }
         render json: ret
       else
@@ -58,7 +58,7 @@ class RifftubeController < ApplicationController
 
     Zip::File.open(zipfile.path, create: true) do |zf|
       riffs.each do |riff|
-        zf.get_output_stream("riff" + riff.id.to_s + ".mp4") { |f| f.write riff.audio_datum.to_s }
+        zf.get_output_stream("riff" + riff.id.to_s + ".mp4") { |f| f.write riff.audio.to_s }
       end
     end
 
@@ -164,7 +164,7 @@ class RifftubeController < ApplicationController
           for j in 0...track_N
             riff_track[j].riffs.each_with_index do |riff, ind|
               file = Tempfile.new(binmode: true)
-              file.write(riff.audio_datum.to_s)
+              file.write(riff.audio.to_s)
               file.close()
 
               input_files << " -i #{file.path}"
