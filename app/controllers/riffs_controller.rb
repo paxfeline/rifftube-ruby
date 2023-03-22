@@ -73,8 +73,9 @@ class RiffsController < ApplicationController
     # GET	/photos/:id/edit	photos#edit	return an HTML form for editing a photo
     # URL: riffs/:id/edit?blob_url=xxx
     def edit
-        @blob_url = params[:blob_url]
+        @video_id = params[:video_id]
         @id = params[:id]
+        @riff = Riff.find(@id)
         render layout: false
     end
 

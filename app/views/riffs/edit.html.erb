@@ -1,33 +1,59 @@
 <dialog>
 
 <audio controls
-    src="<%= @blob_url %>">
+    src="<%= riff_path(@id) %>">
 </audio>
 
 <div>
 <button
-    onMouseDown="rifftube.rifftube_record_start(this)"
-    onMouseUp="rifftube.rifftube_record_stop(this)">
+    onMouseDown="rifftube.record_start(this)"
+    onMouseUp="rifftube.record_stop(this)">
     record
 </button>
 </div>
 
+<%= form_with model: @riff, multipart: true do |form| %>
+
+<input type="hidden" name="riff[video_id]" value="<%= @video_id %>">
+
+<input type="file" name="riff[blob]">
+
 <div>
-<textarea></textarea>
+<%= form.label :text %><br>
+<%= form.text_area :text %><br>
 </div>
 
-<button>cancel</button>
+<div>
+<%= form.label :start %><br>
+<%= form.number_field :start, step: 0.5 %><br>
+</div>
 
 <button
-    onClick="rifftube.rifftube_close_modal();">ok</button>
+    onClick="rifftube.close_modal(); event.preventDefault();">
+    cancel
+</button>
+
+<button
+    onClick="rifftube.save_riff();">
+    ok
+</button>
+
+<% end %>
 
 <script>
+
+function duplicate_blob(blob)
+{
+    return blob.slice(0, blob.size, blob.type);
+}
 
 var rifftube = rifftube || {};
 
 rifftube.curScript = document.currentScript;
 rifftube.curDial = rifftube.curScript.parentElement;
 rifftube.curPlayer = rifftube.curDial.querySelector("audio");
+rifftube.curForm = rifftube.curDial.querySelector("form");
+rifftube.curFile = rifftube.curDial.querySelector("input[type='file']")
 
 if (navigator.mediaDevices)
 {
@@ -50,15 +76,23 @@ if (navigator.mediaDevices)
             {
                 console.log("recorder stopped, saving ", rifftube.recorder.mimeType);
 
-                const blob = new Blob(rifftube.chunks, { 'type' : rifftube.recorder.mimeType });
+                rifftube.temp_audio = new Blob(rifftube.chunks, { 'type' : rifftube.recorder.mimeType });
+
+                console.log(rifftube.temp_audio);
                 
                 rifftube.chunks = [];
                 
-                const audio_URL = URL.createObjectURL(blob);
+                const audio_URL = URL.createObjectURL(duplicate_blob(rifftube.temp_audio));
 
                 rifftube.curPlayer.src = audio_URL;
 
-                const event = new CustomEvent("rifftube:save-riff", { detail: { id: "<%= @id %>", audio_URL, } });
+                // file input box stuff
+                let file = new File([rifftube.temp_audio], "riff", {type: rifftube.recorder.mimeType, lastModified: Date.now()});
+                let container = new DataTransfer();
+                container.items.add(file);
+                rifftube.curFile.files = container.files;
+
+                const event = new CustomEvent("rifftube:riff:save", { detail: { id: "<%= @id %>", audio_URL, } });
                 document.dispatchEvent(event);
             }
 
@@ -69,25 +103,45 @@ if (navigator.mediaDevices)
         });
 }
 
-rifftube.rifftube_record_start = function(el)
+rifftube.record_start = function(el)
 {
     el.innerHTML = "recording..."
+
+    rifftube.record_start_time = Date.now();
 
     rifftube.recorder.start();
 }
 
 
-rifftube.rifftube_record_stop = function(el)
+rifftube.record_stop = function(el)
 {
     el.innerHTML = "record"
+
+    rifftube.riff_duration = (Date.now() - rifftube.record_start_time) / 1000;
 
     rifftube.recorder.stop();
 }
 
-rifftube.rifftube_close_modal = function()
+rifftube.close_modal = function()
 {
     rifftube.curDial.close();
 }
+
+rifftube.close_modal = function()
+{
+    rifftube.curDial.close();
+}
+
+rifftube.save_riff = function(e)
+{
+    rifftube.close_modal();
+}
+
+rifftube.curForm.addEventListener("formdata", event =>
+    {
+        //event.formData.set("riff[blob]", rifftube.temp_audio);
+        event.formData.set("riff[duration]", rifftube.riff_duration);
+    });
 
 rifftube.curScript.parentElement.showModal();
 

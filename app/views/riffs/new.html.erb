@@ -12,9 +12,11 @@
 </button>
 </div>
 
-<%= form_with model: Riff.new, html: { enctype: "multipart/form-data" } do |form| %>
+<%= form_with model: Riff.new, multipart: true do |form| %>
 
 <input type="hidden" name="riff[video_id]" value="<%= @video_id %>">
+
+<input type="file" name="riff[blob]">
 
 <div>
 <%= form.label :text %><br>
@@ -51,6 +53,14 @@ rifftube.curScript = document.currentScript;
 rifftube.curDial = rifftube.curScript.parentElement;
 rifftube.curPlayer = rifftube.curDial.querySelector("audio");
 rifftube.curForm = rifftube.curDial.querySelector("form");
+rifftube.curFile = rifftube.curDial.querySelector("input[type='file']")
+
+if (rifftube.curFile.files.length == 1)
+{
+    const audio_URL = URL.createObjectURL(duplicate_blob(rifftube.curFile.files[0]));
+    rifftube.curPlayer.src = audio_URL;
+    console.log("did it", rifftube.curFile.files[0]);
+}
 
 if (navigator.mediaDevices)
 {
@@ -82,6 +92,12 @@ if (navigator.mediaDevices)
                 const audio_URL = URL.createObjectURL(duplicate_blob(rifftube.temp_audio));
 
                 rifftube.curPlayer.src = audio_URL;
+
+                // file input box stuff
+                let file = new File([rifftube.temp_audio], "riff", {type: rifftube.recorder.mimeType, lastModified: Date.now()});
+                let container = new DataTransfer();
+                container.items.add(file);
+                rifftube.curFile.files = container.files;
 
                 const event = new CustomEvent("rifftube:riff:save", { detail: { id: "<%= @id %>", audio_URL, } });
                 document.dispatchEvent(event);
@@ -130,7 +146,7 @@ rifftube.save_riff = function(e)
 
 rifftube.curForm.addEventListener("formdata", event =>
     {
-        event.formData.set("riff[blob]", rifftube.temp_audio);
+        //event.formData.set("riff[blob]", rifftube.temp_audio);
         event.formData.set("riff[duration]", rifftube.riff_duration);
     });
 
