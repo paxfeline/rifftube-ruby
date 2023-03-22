@@ -55,9 +55,11 @@ class RiffsController < ApplicationController
             # fix up (see Users)
             @riff = Riff.new(riff_params)
 
-            @riff.save
-
-            render json: @riff, except: :audio
+            if @riff.save
+                render json: @riff, except: :audio
+            else
+                render plain: "Error saving riff", status: :internal_server_error
+            end
 
         else
             render plain: "Not logged in", status: :unauthorized
@@ -73,7 +75,6 @@ class RiffsController < ApplicationController
     # GET	/photos/:id/edit	photos#edit	return an HTML form for editing a photo
     # URL: riffs/:id/edit?blob_url=xxx
     def edit
-        @video_id = params[:video_id]
         @id = params[:id]
         @riff = Riff.find(@id)
         render layout: false
@@ -82,6 +83,17 @@ class RiffsController < ApplicationController
     # PATCH	/photos/:id	photos#update	update a specific photo
     # URL: PATCH /riffs/xxx[?fields=yyy[,zzz]]
     def update
+        if params[:fields].present?
+
+        else
+            riff = Riff.find(params[:id])
+            if riff.update(riff_params)
+                render json: riff, except: :audio
+            else
+                render plain: "Error updating riff", status: :internal_server_error
+            end
+
+        end
     end
 
     # DELETE	/photos/:id	photos#destroy	delete a specific photo
