@@ -10,13 +10,12 @@
     onMouseUp="rifftube.record_stop(this)">
     record
 </button>
+(press and hold)
 </div>
 
 <%= form_with model: Riff.new, multipart: true do |form| %>
 
 <input type="hidden" name="riff[video_id]" value="<%= @video_id %>">
-
-<input type="file" name="riff[blob]">
 
 <div>
 <%= form.label :text %><br>
@@ -27,6 +26,12 @@
 <%= form.label :start %><br>
 <%= form.number_field :start, step: 0.5 %><br>
 </div>
+
+<details>
+    <summary>Advanced Options</summary>
+    <input type="file" name="riff[blob]" accept="audio/mp4">
+</details>
+
 
 <button
     onClick="rifftube.close_modal(); event.preventDefault();">
