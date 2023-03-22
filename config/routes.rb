@@ -15,6 +15,8 @@ Rails.application.routes.draw do
   DELETE	/photos/:id	photos#destroy	delete a specific photo
   '''
 
+  get 'riffs/:id/modify_start', to: "riffs#modify_start"
+
   # URL: GET /riffs?video_id=xxx[&user_id={"self", yyy}]
   # riffs#index
   # Replaces:

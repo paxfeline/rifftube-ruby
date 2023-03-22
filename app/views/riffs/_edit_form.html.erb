@@ -163,14 +163,14 @@ rifftube.save_riff = function(event)
         body,
     }).then(res =>
     {
-        const event = new CustomEvent("rifftube:riff:save:success", { detail: { id: <%= id.present? ? id : "null"  %>, blob: rifftube.temp_audio, } });
+        const event = new CustomEvent("rifftube:riff:save:success", { detail: { id: <%= id.present? ? id : "null"  %>, audio: rifftube.temp_audio, } });
         document.dispatchEvent(event);
         console.log(event);
         rifftube.close_modal();
     }).catch(err =>
     {
         console.log(err);
-        const event = new CustomEvent("rifftube:riff:save:error", { detail: { id: <%= id.present? ? id : "null"  %>, blob: rifftube.temp_audio, err } });
+        const event = new CustomEvent("rifftube:riff:save:error", { detail: { id: <%= id.present? ? id : "null"  %>, audio: rifftube.temp_audio, err } });
         document.dispatchEvent(event);
         console.log(event);
         rifftube.close_modal();

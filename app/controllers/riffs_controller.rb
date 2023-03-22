@@ -65,7 +65,7 @@ class RiffsController < ApplicationController
     end
 
     # GET	/photos/:id/edit	photos#edit	return an HTML form for editing a photo
-    # URL: riffs/:id/edit?blob_url=xxx
+    # URL: riffs/:id/edit
     def edit
         @id = params[:id]
         @riff = Riff.find(@id)
@@ -78,10 +78,22 @@ class RiffsController < ApplicationController
         if logged_in?
             riff = Riff.find(params[:id])
 
+            puts riff.inspect
+
             return render plain: "Unauthorized", status: :unauthorized if current_user.id != riff.user_id
 
             if params[:fields].present?
-
+                puts params.inspect
+                fields = params[:fields].split(",")
+                fields.each { |field|
+                    puts field
+                    riff[field.to_sym] = riff_params[field.to_sym]
+                }
+                if riff.save
+                    render json: riff, except: :audio
+                else
+                    render plain: "Error updating riff", status: :internal_server_error
+                end
             else
                 recode_audio
                 if riff.update(riff_params)
@@ -89,14 +101,19 @@ class RiffsController < ApplicationController
                 else
                     render plain: "Error updating riff", status: :internal_server_error
                 end
-
             end
-
+        else
+            render plain: "Not logged in", status: :unauthorized
         end
     end
 
     # DELETE	/photos/:id	photos#destroy	delete a specific photo
     def destroy
+    end
+
+    def modify_start
+        @id = params[:id]
+        @riff = Riff.find(@id)
     end
 
 end
@@ -109,7 +126,7 @@ def riff_params
 end
 
 def recode_audio
-    movie = FFMPEG::Movie.new(params[:riff][:blob].tempfile.path)
+    movie = FFMPEG::Movie.new(params[:riff][:audio].tempfile.path)
     riff_path = "#{Rails.root}/tmp/riff-#{current_user.id}-#{Time.now.to_i}.mp4"
     movie.transcode(riff_path) 
     mp4data = File.read(riff_path)
