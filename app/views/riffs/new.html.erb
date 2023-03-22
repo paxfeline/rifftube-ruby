@@ -14,7 +14,7 @@
 
 <%= form_with model: Riff.new, html: { enctype: "multipart/form-data" } do |form| %>
 
-<input type="hidden" name="video_id" value="<%= @video_id %>">
+<input type="hidden" name="riff[video_id]" value="<%= @video_id %>">
 
 <div>
 <%= form.label :text %><br>
@@ -130,8 +130,8 @@ rifftube.save_riff = function(e)
 
 rifftube.curForm.addEventListener("formdata", event =>
     {
-        event.formData.set("blob", rifftube.temp_audio);
-        event.formData.set("duration", rifftube.riff_duration);
+        event.formData.set("riff[blob]", rifftube.temp_audio);
+        event.formData.set("riff[duration]", rifftube.riff_duration);
     });
 
 rifftube.curScript.parentElement.showModal();

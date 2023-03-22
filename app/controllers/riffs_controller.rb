@@ -41,16 +41,19 @@ class RiffsController < ApplicationController
 
         if logged_in?
 
-            movie = FFMPEG::Movie.new(params[:blob].tempfile.path)
+            movie = FFMPEG::Movie.new(params[:riff][:blob].tempfile.path)
 
             riff_path = "#{Rails.root}/tmp/riff-#{current_user.id}-#{Time.now.to_i}.mp4"
 
             movie.transcode(riff_path) 
 
             mp4data = File.read(riff_path)
+
+            params[:riff][:audio] = mp4data
+            params[:riff][:user_id] = current_user.id
             
             # fix up (see Users)
-            @riff = Riff.new(audio: mp4data, text: params[:riff][:text], user_id: current_user.id, video_id: params[:video_id], duration: params[:duration])
+            @riff = Riff.new(riff_params)
 
             @riff.save
 
@@ -84,4 +87,11 @@ class RiffsController < ApplicationController
     def destroy
     end
 
+end
+
+
+private
+def riff_params
+  #params[:user][:email].downcase!
+  params.require(:riff).permit(:audio, :text, :start, :duration, :user_id, :video_id)
 end
