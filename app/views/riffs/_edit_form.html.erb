@@ -41,9 +41,11 @@
 </button>
 
 <button
-    onClick="rifftube.save_riff();">
+    onClick="rifftube.save_riff(event);">
     Save
 </button>
+</div>
+
 </div>
 
 <% end %>
@@ -98,9 +100,9 @@ if (navigator.mediaDevices)
                 
                 rifftube.chunks = [];
                 
-                const audio_URL = URL.createObjectURL(duplicate_blob(rifftube.temp_audio));
+                rifftube.audio_URL = URL.createObjectURL(duplicate_blob(rifftube.temp_audio));
 
-                rifftube.curPlayer.src = audio_URL;
+                rifftube.curPlayer.src = rifftube.audio_URL;
 
                 // file input box stuff
                 let file = new File([rifftube.temp_audio], `recorded audio ${new Date().toLocaleTimeString()}`, {type: rifftube.recorder.mimeType, lastModified: Date.now()});
@@ -109,7 +111,7 @@ if (navigator.mediaDevices)
                 rifftube.curFile.files = container.files;
 
                 const event = new CustomEvent("rifftube:riff:save", { detail: { id: <%= id.present? ? id : "null"  %>, audio_URL, } });
-                document.dispatchEvent(event);
+                //document.dispatchEvent(event);
                 console.log(event);
             }
 
@@ -149,15 +151,34 @@ rifftube.close_modal = function()
     rifftube.curDial.close();
 }
 
-rifftube.save_riff = function(e)
+rifftube.save_riff = function(event)
 {
-    rifftube.close_modal();
-}
+    event.preventDefault();
 
-rifftube.curForm.addEventListener("formdata", event =>
+    let body = new FormData(rifftube.curForm);
+    body.set("riff[duration]", rifftube.riff_duration);
+
+    fetch(rifftube.curForm.action, {
+        method: rifftube.curForm.method,
+        body,
+    }).then(res =>
     {
-        event.formData.set("riff[duration]", rifftube.riff_duration);
-    });
+        const event = new CustomEvent("rifftube:riff:save:success", { detail: { id: <%= id.present? ? id : "null"  %>, blob: rifftube.temp_audio, } });
+        document.dispatchEvent(event);
+        console.log(event);
+        rifftube.close_modal();
+    }).catch(err =>
+    {
+        console.log(err);
+        const event = new CustomEvent("rifftube:riff:save:error", { detail: { id: <%= id.present? ? id : "null"  %>, blob: rifftube.temp_audio, err } });
+        document.dispatchEvent(event);
+        console.log(event);
+        rifftube.close_modal();
+    })
+
+    rifftube.curDial.innerHTML = "Processing...";
+
+}
 
 rifftube.curScript.parentElement.showModal();
 

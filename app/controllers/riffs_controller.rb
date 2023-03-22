@@ -41,15 +41,7 @@ class RiffsController < ApplicationController
 
         if logged_in?
 
-            movie = FFMPEG::Movie.new(params[:riff][:blob].tempfile.path)
-
-            riff_path = "#{Rails.root}/tmp/riff-#{current_user.id}-#{Time.now.to_i}.mp4"
-
-            movie.transcode(riff_path) 
-
-            mp4data = File.read(riff_path)
-
-            params[:riff][:audio] = mp4data
+            recode_audio
             params[:riff][:user_id] = current_user.id
             
             # fix up (see Users)
@@ -83,14 +75,21 @@ class RiffsController < ApplicationController
     # PATCH	/photos/:id	photos#update	update a specific photo
     # URL: PATCH /riffs/xxx[?fields=yyy[,zzz]]
     def update
-        if params[:fields].present?
-
-        else
+        if logged_in?
             riff = Riff.find(params[:id])
-            if riff.update(riff_params)
-                render json: riff, except: :audio
+
+            return render plain: "Unauthorized", status: :unauthorized if current_user.id != riff.user_id
+
+            if params[:fields].present?
+
             else
-                render plain: "Error updating riff", status: :internal_server_error
+                recode_audio
+                if riff.update(riff_params)
+                    render json: riff, except: :audio
+                else
+                    render plain: "Error updating riff", status: :internal_server_error
+                end
+
             end
 
         end
@@ -107,4 +106,12 @@ private
 def riff_params
   #params[:user][:email].downcase!
   params.require(:riff).permit(:audio, :text, :start, :duration, :user_id, :video_id)
+end
+
+def recode_audio
+    movie = FFMPEG::Movie.new(params[:riff][:blob].tempfile.path)
+    riff_path = "#{Rails.root}/tmp/riff-#{current_user.id}-#{Time.now.to_i}.mp4"
+    movie.transcode(riff_path) 
+    mp4data = File.read(riff_path)
+    params[:riff][:audio] = mp4data 
 end

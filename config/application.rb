@@ -22,5 +22,7 @@ module TestRails
     #config.active_record.dump_schema_after_migration = false
     config.active_record.schema_format = :ruby # or :sql
 
+    config.action_view.form_with_generates_remote_forms = true
+
   end
 end
