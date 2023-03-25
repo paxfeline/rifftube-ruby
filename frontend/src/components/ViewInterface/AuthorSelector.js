@@ -26,7 +26,7 @@ class AuthorSelector extends React.Component {
   toggleMute = (id) => {
     //this.setMute(id, !this.state.muted[id]);
 
-    debugger;
+    //debugger;
 
     const m = { ...this.state.muted, [id]: !this.state.muted[id] };
 
@@ -39,7 +39,7 @@ class AuthorSelector extends React.Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    debugger;
+    //debugger;
 
     /*
     if (

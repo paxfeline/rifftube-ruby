@@ -9,7 +9,7 @@ import { createTempRiff, togglePlayerMode, setRecorder } from '../../actions/ind
 
 function executeScriptElements(containerElement)
 {
-  debugger;
+  //debugger;
   
   console.log("reworking scripts");
 
@@ -33,16 +33,28 @@ function executeScriptElements(containerElement)
 /*This component houses all of the riff buttons and the rifflist*/
 function EditControls(props)
 {
-  function keyup(e)
+  const [dial, setDial] = useState(null);
+
+  let templateRef = React.useRef(null);
+
+
+  function startNewRiff(immediateRecord)
   {
-    if (e.key == 'r' && !dial)
+    let td = templateRef.current.content.firstChild.cloneNode(true);
+    if (immediateRecord)
+      td.setAttribute("data-immediate-record", "");
+    console.log('set dial', td);
+    document.body.append(td);
+    td.showModal();
+    setDial(td);
+  }
+
+  function keydown(e)
+  {
+    console.log('kd', dial)
+    if (!dial && e.key == 'r')
     {
-      let td = templateRef.current.content.firstChild.cloneNode(true);
-      setDial(td);
-      document.body.append(td);
-      console.log(td);
-      debugger;
-      td.showModal();
+      startNewRiff(true);
     }
   }
 
@@ -55,10 +67,20 @@ function EditControls(props)
   {
     console.log( detail );
   }
+  
+  useEffect(() =>
+  {
+        document.addEventListener('rifftube:riff:save', saveRiff, false);
+        document.addEventListener('rifftube:riff:save:close', closeDial, false);
+        document.addEventListener('keydown', keydown, false);
 
-  let [dial, setDial] = useState(null);
-
-  let templateRef = React.useRef(null);
+        return () =>
+        {
+          document.removeEventListener('rifftube:riff:save', saveRiff, false);
+          document.removeEventListener('rifftube:riff:save:close', closeDial, false);
+          document.removeEventListener('keydown', keydown, false);
+        }
+  }, [dial]);
   
   useEffect(() =>
   {
@@ -70,17 +92,6 @@ function EditControls(props)
           el.innerHTML = text;
           executeScriptElements(el.content);
         });
-    
-        document.addEventListener('rifftube:riff:save', saveRiff, false);
-        document.addEventListener('rifftube:riff:save:close', closeDial, false);
-        document.addEventListener('keyup', keyup, false);
-
-        return () =>
-        {
-          document.removeEventListener('rifftube:riff:save', saveRiff, false);
-          document.removeEventListener('rifftube:riff:save:close', closeDial, false);
-          document.removeEventListener('keyup', keyup, false);
-        }
   }, [props.videoID]);
 
 

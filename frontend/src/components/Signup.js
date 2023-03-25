@@ -25,7 +25,7 @@ const Signup = ({
                 'Content-Type': 'multipart/form-data'
             },
         }).then((res) => {
-            debugger;
+            //debugger;
             history.push('/');
             //dispatch({ type: SIGNUP, payload: res.data });
         }).catch(err => {
@@ -42,7 +42,7 @@ const Signup = ({
             url: `/signup-with-google`,
             data: { credentials, password, name, pic },
         }).then((res) => {
-            debugger;
+            //debugger;
             history.push('/');
             //dispatch({ type: SIGNUP, payload: res.data });
         }).catch(err => {

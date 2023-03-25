@@ -6,8 +6,9 @@
 
 <div>
 <button
-    onMouseDown="rifftube.record_start(this)"
-    onMouseUp="rifftube.record_stop(this)">
+    class="rifftube-record-btn"
+    onMouseDown="rifftube.record_start()"
+    onMouseUp="rifftube.record_stop()">
     record
 </button>
 (press and hold)
@@ -63,7 +64,8 @@ var rifftube = rifftube || {};
 // data-riff-id or data-new-riff attribute for edit / new
 var dialSel = ".rifftube-riff-edit-dialog[data-<%= id.present? ? "riff-id='#{id}'" : "new-riff" %>]";
 rifftube.curDial = document.querySelector(dialSel);
-debugger;
+rifftube.curRecBtn = rifftube.curDial.querySelector(".rifftube-record-btn")
+//debugger;
 rifftube.curPlayer = rifftube.curDial.querySelector("audio");
 rifftube.curForm = rifftube.curDial.querySelector("form");
 rifftube.curFile = rifftube.curDial.querySelector("input[type='file']")
@@ -114,6 +116,9 @@ if (navigator.mediaDevices)
                 rifftube.curFile.files = container.files;
             }
 
+            // immediate start
+            if (rifftube.curDial.hasAttribute("data-immediate-record"))
+                rifftube.record_start();
         })
         .catch(function (err) {
             //enable the record button if getUSerMedia() fails
@@ -121,9 +126,13 @@ if (navigator.mediaDevices)
         });
 }
 
-rifftube.record_start = function(el)
+rifftube.record_start = function()
 {
-    el.innerHTML = "recording..."
+    if (rifftube.recording) return;
+
+    rifftube.recording = true;
+
+    rifftube.curRecBtn.innerHTML = "recording..."
 
     rifftube.record_start_time = Date.now();
 
@@ -131,9 +140,11 @@ rifftube.record_start = function(el)
 }
 
 
-rifftube.record_stop = function(el)
+rifftube.record_stop = function()
 {
-    el.innerHTML = "record"
+    rifftube.recording = false;
+
+    rifftube.curRecBtn.innerHTML = "record"
 
     rifftube.riff_duration = (Date.now() - rifftube.record_start_time) / 1000;
 
@@ -169,7 +180,24 @@ rifftube.save_riff = function(event)
     //rifftube.close_modal();
 }
 
-console.log("hi", this);
+//console.log("hi", this);
+
+//debugger;
+
+rifftube.rec_keydown = function(e)
+{
+    if (e.key == 'r')
+        rifftube.record_start();
+}
+
+rifftube.rec_keyup = function(e)
+{
+    if (e.key == 'r')
+        rifftube.record_stop();
+}
+
+document.addEventListener('keydown', rifftube.rec_keydown, false);
+document.addEventListener('keyup', rifftube.rec_keyup, false);
 
 //rifftube.curDial.showModal();
 

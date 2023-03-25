@@ -75,7 +75,7 @@ export const login = (email, password) => {
       url: `/login`,
       data: { email, password },
     }).then((res) => {
-      debugger;
+      //debugger;
       dispatch({ type: LOGIN, payload: res.data });
     }).catch(err =>
       console.log("error", err));
@@ -84,7 +84,7 @@ export const login = (email, password) => {
 
 export const loginWithGoogle = (credentialResponse) => {
   console.log(credentialResponse);
-  debugger;
+  //debugger;
   return (dispatch) => {
     axios({
       method: 'post',
@@ -103,7 +103,7 @@ export const logout = () => {
       method: 'delete',
       url: `/logout`,
     }).then((res) => {
-      debugger;
+     // debugger;
       dispatch({ type: LOGOUT, payload: res.data });
     }).catch(err =>
       console.log("error", err));

@@ -16,7 +16,7 @@ const Login = ({ login, loginWithGoogle /*, videoID */ }) => {
         <label htmlFor="session_password">Password</label><br/>
         <input className="form-control" type="password" name="session[password]" id="session_password" ref={pwd_ref} />
       </div>
-      <button onClick={() => {console.log(email_ref); debugger;
+      <button onClick={() => {console.log(email_ref); //debugger;
         login(email_ref.current.value, pwd_ref.current.value);
         }}>login</button>
       <br />or

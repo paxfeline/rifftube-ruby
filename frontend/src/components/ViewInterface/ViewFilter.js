@@ -94,7 +94,7 @@ class ViewFilter extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.riffs !== this.props.riffs) {
-      debugger;
+      //debugger;
 
       // if riffs have changed, we need to recalculate
 
