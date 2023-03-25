@@ -59,15 +59,17 @@ function duplicate_blob(blob)
 
 var rifftube = rifftube || {};
 
-rifftube.curScript = document.currentScript;
-rifftube.curDial = rifftube.curScript.parentElement;
+// rifftube-riff-edit-dialog class
+// data-riff-id or data-new-riff attribute for edit / new
+let diagSel = ".rifftube-riff-edit-dialog[data-<%= id.present? ? "riff-id='#{id}'" : "new-riff" %>]";
+rifftube.curDial = document.querySelector(diagSel);
 rifftube.curPlayer = rifftube.curDial.querySelector("audio");
 rifftube.curForm = rifftube.curDial.querySelector("form");
 rifftube.curFile = rifftube.curDial.querySelector("input[type='file']")
 
 if (rifftube.curFile.files.length == 1)
 {
-    const audio_URL = URL.createObjectURL(duplicate_blob(rifftube.curFile.files[0]));
+    let audio_URL = URL.createObjectURL(duplicate_blob(rifftube.curFile.files[0]));
     rifftube.curPlayer.src = audio_URL;
     rifftube.temp_audio = duplicate_blob(rifftube.curFile.files[0])
     console.log("did it", rifftube.curFile.files[0]);
@@ -95,8 +97,6 @@ if (navigator.mediaDevices)
                 console.log("recorder stopped, saving ", rifftube.recorder);
 
                 rifftube.temp_audio = new Blob(rifftube.chunks, { 'type' : rifftube.recorder.mimeType });
-
-                console.log(rifftube.temp_audio);
                 
                 rifftube.chunks = [];
                 
@@ -104,15 +104,13 @@ if (navigator.mediaDevices)
 
                 rifftube.curPlayer.src = rifftube.audio_URL;
 
-                // file input box stuff
+                // Wrap audio blob as File; use DataTransfer to create a files object; assign to file input.
+                // This keeps the audio in place in case of navigation away and back.
+                // Other code reads it from the input and restores the audio player's src attr.
                 let file = new File([rifftube.temp_audio], `recorded audio ${new Date().toLocaleTimeString()}`, {type: rifftube.recorder.mimeType, lastModified: Date.now()});
                 let container = new DataTransfer();
                 container.items.add(file);
                 rifftube.curFile.files = container.files;
-
-                const event = new CustomEvent("rifftube:riff:save", { detail: { id: <%= id.present? ? id : "null"  %>, audio_URL, } });
-                //document.dispatchEvent(event);
-                console.log(event);
             }
 
         })
@@ -155,31 +153,23 @@ rifftube.save_riff = function(event)
 {
     event.preventDefault();
 
-    let body = new FormData(rifftube.curForm);
-    body.set("riff[duration]", rifftube.riff_duration);
+    // move fetch to background script and issue another custom event
 
-    fetch(rifftube.curForm.action, {
-        method: rifftube.curForm.method,
-        body,
-    }).then(res =>
-    {
-        const event = new CustomEvent("rifftube:riff:save:success", { detail: { id: <%= id.present? ? id : "null"  %>, audio: rifftube.temp_audio, } });
-        document.dispatchEvent(event);
-        console.log(event);
-        rifftube.close_modal();
-    }).catch(err =>
-    {
-        console.log(err);
-        const event = new CustomEvent("rifftube:riff:save:error", { detail: { id: <%= id.present? ? id : "null"  %>, audio: rifftube.temp_audio, err } });
-        document.dispatchEvent(event);
-        console.log(event);
-        rifftube.close_modal();
-    })
+    let cust_event = new CustomEvent("rifftube:riff:save",
+        {
+            detail: {
+                id: <%= id.present? ? id : "null"  %>,
+                audio: rifftube.temp_audio,
+            }
+        });
+    document.dispatchEvent(cust_event);
+    console.log(cust_event);
 
-    rifftube.curDial.innerHTML = "Processing...";
-
+    rifftube.close_modal();
 }
 
-rifftube.curScript.parentElement.showModal();
+console.log("hi", this);
+
+//rifftube.curDial.showModal();
 
 </script>

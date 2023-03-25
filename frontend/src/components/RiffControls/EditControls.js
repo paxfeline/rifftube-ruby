@@ -2,17 +2,51 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import RiffList from './RiffList.js';
-import EditRiff from './EditRiff.js';
 import RiffButton from './RiffButton.js';
 import { setRifferName } from '../../actions'; // this and below are the same file
-import { EDIT_MODE, EDIT_NEW_MODE } from '../../actions';
 
 import { createTempRiff, togglePlayerMode, setRecorder } from '../../actions/index.js';
 
+function executeScriptElements(containerElement)
+{
+  console.log("reworking scripts");
+
+  const scriptElements = containerElement.querySelectorAll("script");
+
+  Array.from(scriptElements).forEach((scriptElement) => {
+    const clonedElement = document.createElement("script");
+
+    Array.from(scriptElement.attributes).forEach((attribute) => {
+      clonedElement.setAttribute(attribute.name, attribute.value);
+    });
+    
+    clonedElement.text = scriptElement.text;
+
+    console.log("rework: ", clonedElement);
+
+    scriptElement.parentNode.replaceChild(clonedElement, scriptElement);
+  });
+}
+
 /*This component houses all of the riff buttons and the rifflist*/
 function EditControls(props) {
-  useEffect(() => {
-    const blurEvent = () => {
+  useEffect(() =>
+  {
+    fetch("/riffs/new")
+      .then(response => response.text())
+      .then(text =>
+        {
+          let el = document.createElement("template");
+          el.innerHTML = text;
+          document.body.appendChild(el);
+          executeScriptElements(el.content);
+        });
+  }, [props]);
+
+
+    /*
+    const blurEvent = () =>
+    {
       setTimeout(() => {
         document.activeElement.blur();
       }, 100);
@@ -47,6 +81,7 @@ function EditControls(props) {
       window.removeEventListener('keydown', keydownEvent);
     };
   }, [props]);
+  */
 
   return (
     <div className="control-panel">
@@ -106,9 +141,6 @@ function EditControls(props) {
         }
         <RiffButton type="text" />
 
-        {props.mode === EDIT_MODE || props.mode === EDIT_NEW_MODE ? (
-          <EditRiff />
-        ) : null}
       </div>
       <h2 className="riff-list-title">Control Panel</h2>
       <RiffList />
