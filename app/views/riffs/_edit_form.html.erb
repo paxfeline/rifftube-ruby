@@ -64,7 +64,8 @@ var rifftube = rifftube || {};
 // data-riff-id or data-new-riff attribute for edit / new
 var dialSel = ".rifftube-riff-edit-dialog[data-<%= id.present? ? "riff-id='#{id}'" : "new-riff" %>]";
 rifftube.curDial = document.querySelector(dialSel);
-rifftube.curRecBtn = rifftube.curDial.querySelector(".rifftube-record-btn")
+rifftube.curRecBtn = rifftube.curDial.querySelector(".rifftube-record-btn");
+console.log("btn", rifftube.curRecBtn);
 //debugger;
 rifftube.curPlayer = rifftube.curDial.querySelector("audio");
 rifftube.curForm = rifftube.curDial.querySelector("form");
@@ -78,6 +79,7 @@ if (rifftube.curFile.files.length == 1)
     console.log("did it", rifftube.curFile.files[0]);
 }
 
+//debugger;
 if (navigator.mediaDevices)
 {
     navigator.mediaDevices
@@ -87,9 +89,8 @@ if (navigator.mediaDevices)
             rifftube.stream = stream;
             
             rifftube.recorder = new MediaRecorder(stream);
-
-            rifftube.chunks = [];
         
+            rifftube.chunks = [];
             rifftube.recorder.ondataavailable = function(e)
             {
                 rifftube.chunks.push(e.data);
@@ -116,11 +117,15 @@ if (navigator.mediaDevices)
                 rifftube.curFile.files = container.files;
             }
 
+            console.log("checking for immediate record")
+
+            //debugger;
+
             // immediate start
             if (rifftube.curDial.hasAttribute("data-immediate-record"))
                 rifftube.record_start();
         })
-        .catch(function (err) {
+        .catch( (err) => {
             //enable the record button if getUSerMedia() fails
             console.log("oops, can't get stream", err);
         });
@@ -129,6 +134,10 @@ if (navigator.mediaDevices)
 rifftube.record_start = function()
 {
     if (rifftube.recording) return;
+
+    //debugger;
+
+    console.log("start rec", rifftube)
 
     rifftube.recording = true;
 
@@ -142,6 +151,10 @@ rifftube.record_start = function()
 
 rifftube.record_stop = function()
 {
+    if (!rifftube.recording) return;
+
+    console.log("end rec", rifftube)
+
     rifftube.recording = false;
 
     rifftube.curRecBtn.innerHTML = "record"
@@ -163,6 +176,8 @@ rifftube.close_modal = function()
 
 rifftube.save_riff = function(event)
 {
+    //debugger;
+
     event.preventDefault();
 
     // move fetch to background script and issue another custom event
@@ -180,24 +195,42 @@ rifftube.save_riff = function(event)
     //rifftube.close_modal();
 }
 
-//console.log("hi", this);
+console.log("injected script running");
 
 //debugger;
 
 rifftube.rec_keydown = function(e)
 {
+    if ( event.getModifierState("Control") +
+            event.getModifierState("Alt") +
+            event.getModifierState("Meta") > 1 )
+        return;
+
     if (e.key == 'r')
+    {
         rifftube.record_start();
+        e.stopPropagation();
+    }
 }
 
 rifftube.rec_keyup = function(e)
 {
+    if ( event.getModifierState("Control") +
+            event.getModifierState("Alt") +
+            event.getModifierState("Meta") > 1 )
+        return;
+
     if (e.key == 'r')
+    {
         rifftube.record_stop();
+        e.stopPropagation();
+    }
 }
 
-document.addEventListener('keydown', rifftube.rec_keydown, false);
-document.addEventListener('keyup', rifftube.rec_keyup, false);
+rifftube.curDial.addEventListener('keydown', rifftube.rec_keydown, false);
+rifftube.curDial.addEventListener('keyup', rifftube.rec_keyup, false);
+
+rifftube.curDial.addEventListener("cancel", () => { rifftube.close_modal(); });
 
 //rifftube.curDial.showModal();
 

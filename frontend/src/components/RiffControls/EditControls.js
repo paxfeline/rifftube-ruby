@@ -43,18 +43,25 @@ function EditControls(props)
     let td = templateRef.current.content.firstChild.cloneNode(true);
     if (immediateRecord)
       td.setAttribute("data-immediate-record", "");
-    console.log('set dial', td);
     document.body.append(td);
     td.showModal();
+    console.log('set dial', td);
     setDial(td);
   }
 
   function keydown(e)
   {
+
+    if ( e.getModifierState("Control") +
+            e.getModifierState("Alt") +
+            e.getModifierState("Meta") > 1 )
+        return;
+
     console.log('kd', dial)
     if (!dial && e.key == 'r')
     {
       startNewRiff(true);
+      e.stopPropagation();
     }
   }
 
