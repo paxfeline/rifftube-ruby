@@ -41,7 +41,7 @@
 </button>
 
 <button
-    onClick="rifftube.save_riff(event);">
+    onClick="rifftube.save_riff(event); event.preventDefault();">
     Save
 </button>
 </div>
@@ -61,8 +61,9 @@ var rifftube = rifftube || {};
 
 // rifftube-riff-edit-dialog class
 // data-riff-id or data-new-riff attribute for edit / new
-let diagSel = ".rifftube-riff-edit-dialog[data-<%= id.present? ? "riff-id='#{id}'" : "new-riff" %>]";
-rifftube.curDial = document.querySelector(diagSel);
+var dialSel = ".rifftube-riff-edit-dialog[data-<%= id.present? ? "riff-id='#{id}'" : "new-riff" %>]";
+rifftube.curDial = document.querySelector(dialSel);
+debugger;
 rifftube.curPlayer = rifftube.curDial.querySelector("audio");
 rifftube.curForm = rifftube.curDial.querySelector("form");
 rifftube.curFile = rifftube.curDial.querySelector("input[type='file']")
@@ -141,12 +142,12 @@ rifftube.record_stop = function(el)
 
 rifftube.close_modal = function()
 {
-    rifftube.curDial.close();
-}
+    let cust_event = new CustomEvent("rifftube:riff:save:close");
+    document.dispatchEvent(cust_event);
+    console.log(cust_event);
 
-rifftube.close_modal = function()
-{
     rifftube.curDial.close();
+    rifftube.curDial.remove();
 }
 
 rifftube.save_riff = function(event)
@@ -165,7 +166,7 @@ rifftube.save_riff = function(event)
     document.dispatchEvent(cust_event);
     console.log(cust_event);
 
-    rifftube.close_modal();
+    //rifftube.close_modal();
 }
 
 console.log("hi", this);
