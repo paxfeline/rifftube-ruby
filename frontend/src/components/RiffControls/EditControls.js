@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
 import RiffList from './RiffList.js';
@@ -29,19 +29,47 @@ function executeScriptElements(containerElement)
 }
 
 /*This component houses all of the riff buttons and the rifflist*/
-function EditControls(props) {
+function EditControls(props)
+{
+  function keyup(e)
+  {
+    if (e.key == 'r')
+    {
+      let td = templateRef.current.content.firstChild.cloneNode(true);
+      setDial(td);
+      document.body.append(td);
+      console.log(td);
+      debugger;
+      td.showModal();
+    }
+  }
+
+  let [dial, setDial] = useState(null);
+
+  let templateRef = React.useRef(null);
+  
   useEffect(() =>
   {
     fetch("/riffs/new")
       .then(response => response.text())
       .then(text =>
         {
-          let el = document.createElement("template");
+          let el = templateRef.current;
           el.innerHTML = text;
-          document.body.appendChild(el);
           executeScriptElements(el.content);
         });
-  }, [props]);
+    
+        document.addEventListener('rifftube:riff:save', function({ detail }) {
+          console.log( detail );
+        });
+
+        document.addEventListener('keyup', keyup);
+
+        return () =>
+        {
+          // cleanup function
+        }
+  }, []);
 
 
     /*
@@ -144,6 +172,7 @@ function EditControls(props) {
       </div>
       <h2 className="riff-list-title">Control Panel</h2>
       <RiffList />
+      <template ref={templateRef}></template>
     </div>
   );
 }
