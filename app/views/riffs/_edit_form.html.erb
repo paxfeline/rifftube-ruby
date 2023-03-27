@@ -20,6 +20,9 @@
 <input type="hidden" name="riff[video_id]" value="<%= video_id %>">
 <% end %>
 
+<%# form.hidden_field inserts autocomplete="off" which prevents bfcaching %>
+<%= form.number_field :duration, { style: "display: none;" } %>
+
 <div>
 <%= form.label :text, "Riff Text" %><br>
 <%= form.text_area :text %><br>
@@ -62,7 +65,7 @@ var rifftube = rifftube || {};
 
 // rifftube-riff-edit-dialog class
 // data-riff-id or data-new-riff attribute for edit / new
-var dialSel = ".rifftube-riff-edit-dialog[data-<%= id.present? ? "riff-id='#{id}'" : "new-riff" %>]";
+var dialSel = ".rifftube-riff-edit-dialog[data-<%= id.present? ? "riff-id='#{id}'".html_safe : "new-riff" %>]";
 rifftube.curDial = document.querySelector(dialSel);
 rifftube.curRecBtn = rifftube.curDial.querySelector(".rifftube-record-btn");
 console.log("btn", rifftube.curRecBtn);
@@ -70,6 +73,7 @@ console.log("btn", rifftube.curRecBtn);
 rifftube.curPlayer = rifftube.curDial.querySelector("audio");
 rifftube.curForm = rifftube.curDial.querySelector("form");
 rifftube.curFile = rifftube.curDial.querySelector("input[type='file']")
+rifftube.curDur = rifftube.curForm.querySelector("[name='riff[duration]']")
 
 if (rifftube.curFile.files.length == 1)
 {
@@ -153,6 +157,8 @@ rifftube.record_stop = function()
 {
     if (!rifftube.recording) return;
 
+    rifftube.recorder.stop();
+
     console.log("end rec", rifftube)
 
     rifftube.recording = false;
@@ -161,7 +167,8 @@ rifftube.record_stop = function()
 
     rifftube.riff_duration = (Date.now() - rifftube.record_start_time) / 1000;
 
-    rifftube.recorder.stop();
+    //debugger;
+    rifftube.curDur.value = rifftube.riff_duration;
 }
 
 rifftube.close_modal = function()
@@ -180,15 +187,17 @@ rifftube.save_riff = function(event)
 
     event.preventDefault();
 
-    // move fetch to background script and issue another custom event
+    /*  old detail object:
+    detail:
+    {
+        id: <%= id.present? ? id : "null"  %>,
+        audio: rifftube.temp_audio,
+    }
+    */
 
-    let cust_event = new CustomEvent("rifftube:riff:save",
-        {
-            detail: {
-                id: <%= id.present? ? id : "null"  %>,
-                audio: rifftube.temp_audio,
-            }
-        });
+    let detail = new FormData(rifftube.curForm);
+
+    let cust_event = new CustomEvent("rifftube:riff:save", { detail });
     document.dispatchEvent(cust_event);
     console.log(cust_event);
 
@@ -232,6 +241,6 @@ rifftube.curDial.addEventListener('keyup', rifftube.rec_keyup, false);
 
 rifftube.curDial.addEventListener("cancel", () => { rifftube.close_modal(); });
 
-//rifftube.curDial.showModal();
+rifftube.curDial.showModal();
 
 </script>

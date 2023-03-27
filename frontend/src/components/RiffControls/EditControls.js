@@ -42,9 +42,9 @@ function EditControls(props)
   {
     let td = templateRef.current.content.firstChild.cloneNode(true);
     if (immediateRecord)
-      td.setAttribute("data-immediate-record", "");
+      td.setAttribute("data-immediate-record", "true");
     document.body.append(td);
-    td.showModal();
+    //td.showModal();
     console.log('set dial', td);
     setDial(td);
   }
