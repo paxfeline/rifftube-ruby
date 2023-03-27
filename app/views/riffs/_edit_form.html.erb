@@ -68,7 +68,7 @@ var rifftube = rifftube || {};
 var dialSel = ".rifftube-riff-edit-dialog[data-<%= id.present? ? "riff-id='#{id}'".html_safe : "new-riff" %>]";
 rifftube.curDial = document.querySelector(dialSel);
 rifftube.curRecBtn = rifftube.curDial.querySelector(".rifftube-record-btn");
-console.log("btn", rifftube.curRecBtn);
+//console.log("btn", rifftube.curRecBtn);
 //debugger;
 rifftube.curPlayer = rifftube.curDial.querySelector("audio");
 rifftube.curForm = rifftube.curDial.querySelector("form");
