@@ -103,7 +103,7 @@ export const logout = () => {
       method: 'delete',
       url: `/logout`,
     }).then((res) => {
-     // debugger;
+      //debugger;
       dispatch({ type: LOGOUT, payload: res.data });
     }).catch(err =>
       console.log("error", err));
@@ -116,7 +116,7 @@ export const currentUserStatus = () => {
       method: 'get',
       url: `/user-status`,
     }).then((res) => {
-      debugger;
+      //debugger;
       dispatch({ type: LOGIN, payload: res.data });
     }).catch(err =>
       console.log("error", err));

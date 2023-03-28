@@ -5,7 +5,7 @@ import RiffList from './RiffList.js';
 import RiffButton from './RiffButton.js';
 import { setRifferName } from '../../actions'; // this and below are the same file
 
-import { createTempRiff, togglePlayerMode, setRecorder, currentUserStatus } from '../../actions/index.js';
+import { createTempRiff, togglePlayerMode, setRecorder } from '../../actions/index.js';
 
 import { executeScriptElements } from './util.js';
 
@@ -30,17 +30,20 @@ function EditControls(props)
 
   function keydown(e)
   {
+    console.log('kd meta count', e.getModifierState("Control") +
+      e.getModifierState("Alt") +
+      e.getModifierState("Meta"));
 
     if ( e.getModifierState("Control") +
             e.getModifierState("Alt") +
-            e.getModifierState("Meta") > 1 )
+            e.getModifierState("Meta") > 0 )
         return;
 
     console.log('kd', dial)
     if (!dial && e.key == 'r')
     {
       startNewRiff(true);
-      e.stopPropagation();
+      //e.stopPropagation();
     }
   }
 
@@ -53,11 +56,6 @@ function EditControls(props)
   {
     console.log( detail );
   }
-
-  useEffect(() =>
-  {
-    currentUserStatus();
-  })
   
   useEffect(() =>
   {
@@ -204,7 +202,6 @@ const mapDispatchToProps = {
   createTempRiff,
   togglePlayerMode,
   setRecorder,
-  currentUserStatus,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditControls);
