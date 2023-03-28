@@ -12,10 +12,7 @@ import { executeScriptElements } from './util.js';
 /*This component houses all of the riff buttons and the rifflist*/
 function EditControls(props)
 {
-  const [dial, setDial] = useState(null);
-
   let templateRef = React.useRef(null);
-
 
   function startNewRiff(immediateRecord)
   {
@@ -23,9 +20,6 @@ function EditControls(props)
     if (immediateRecord)
       td.setAttribute("data-immediate-record", "true");
     document.body.append(td);
-    //td.showModal();
-    console.log('set dial', td);
-    setDial(td);
   }
 
   function keydown(e)
@@ -39,17 +33,11 @@ function EditControls(props)
             e.getModifierState("Meta") > 0 )
         return;
 
-    console.log('kd', dial)
-    if (!dial && e.key == 'r')
+    if (e.key == 'r')
     {
       startNewRiff(true);
       //e.stopPropagation();
     }
-  }
-
-  function closeDial()
-  {
-    setDial(null);
   }
 
   function saveRiff({ detail })
@@ -60,16 +48,14 @@ function EditControls(props)
   useEffect(() =>
   {
         document.addEventListener('rifftube:riff:save', saveRiff, false);
-        document.addEventListener('rifftube:riff:save:close', closeDial, false);
         document.addEventListener('keydown', keydown, false);
 
         return () =>
         {
           document.removeEventListener('rifftube:riff:save', saveRiff, false);
-          document.removeEventListener('rifftube:riff:save:close', closeDial, false);
           document.removeEventListener('keydown', keydown, false);
         }
-  }, [dial]);
+  }, []);
   
   useEffect(() =>
   {
