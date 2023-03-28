@@ -6,6 +6,8 @@ import Edit from '../../images/edit-24px.svg';
 import Audio from '../../images/settings_voice-24px.svg';
 import Text from '../../images/chat-24px.svg';
 
+import { executeScriptElements } from './util.js';
+
 /* this component is where a user can edit their riff */
 function RiffDetail(props) {
   const [visible, setVisible] = useState(false);
@@ -74,11 +76,24 @@ function RiffDetail(props) {
         <button
           className="riff-button"
           onClick={() =>
+            {
+              fetch(`/riffs/${props.id}/edit`)
+                .then(response => response.text())
+                .then(text =>
+                  {
+                    let el = document.createElement("div");
+                    el.innerHTML = text;
+                    executeScriptElements(el.content);
+                    document.body.append(el.firstChild);
+                  });
+            }
+            /*
             props.editRiff(
               props.index,
               props.type === 'audio' ? props.id : null, // weird but ok; yields id or null/false
               !props.riffsAudio.all[props.id]
             )
+            */
           }
         >
           <img alt="edit button" src={Edit} />

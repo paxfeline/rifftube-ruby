@@ -7,28 +7,7 @@ import { setRifferName } from '../../actions'; // this and below are the same fi
 
 import { createTempRiff, togglePlayerMode, setRecorder } from '../../actions/index.js';
 
-function executeScriptElements(containerElement)
-{
-  //debugger;
-  
-  console.log("reworking scripts");
-
-  const scriptElements = containerElement.querySelectorAll("script");
-
-  Array.from(scriptElements).forEach((scriptElement) => {
-    const clonedElement = document.createElement("script");
-
-    Array.from(scriptElement.attributes).forEach((attribute) => {
-      clonedElement.setAttribute(attribute.name, attribute.value);
-    });
-    
-    clonedElement.text = scriptElement.text;
-
-    console.log("rework: ", clonedElement);
-
-    scriptElement.parentNode.replaceChild(clonedElement, scriptElement);
-  });
-}
+import { executeScriptElements } from './util.js';
 
 /*This component houses all of the riff buttons and the rifflist*/
 function EditControls(props)
