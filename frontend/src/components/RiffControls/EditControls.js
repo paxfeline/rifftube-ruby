@@ -5,7 +5,7 @@ import RiffList from './RiffList.js';
 import RiffButton from './RiffButton.js';
 import { setRifferName } from '../../actions'; // this and below are the same file
 
-import { createTempRiff, togglePlayerMode, setRecorder } from '../../actions/index.js';
+import { createTempRiff, togglePlayerMode, setRecorder, currentUserStatus } from '../../actions/index.js';
 
 import { executeScriptElements } from './util.js';
 
@@ -53,6 +53,11 @@ function EditControls(props)
   {
     console.log( detail );
   }
+
+  useEffect(() =>
+  {
+    currentUserStatus();
+  })
   
   useEffect(() =>
   {
@@ -199,6 +204,7 @@ const mapDispatchToProps = {
   createTempRiff,
   togglePlayerMode,
   setRecorder,
+  currentUserStatus,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditControls);

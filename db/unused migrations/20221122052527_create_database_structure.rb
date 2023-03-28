@@ -30,7 +30,7 @@ class CreateDatabaseStructure < ActiveRecord::Migration[7.0]
       create_table "riffs", id: :serial, force: :cascade do |t|
         t.binary "audio"
         t.float "duration"
-        t.float "start_time"
+        t.float "start"
         t.text "text"
         t.integer "rating"
         t.boolean "isText", default: false, null: false

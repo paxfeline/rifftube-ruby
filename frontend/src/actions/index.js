@@ -110,6 +110,20 @@ export const logout = () => {
   };
 };
 
+export const currentUserStatus = () => {
+  return (dispatch) => {
+    axios({
+      method: 'get',
+      url: `/user-status`,
+    }).then((res) => {
+      debugger;
+      dispatch({ type: LOGIN, payload: res.data });
+    }).catch(err =>
+      console.log("error", err));
+  };
+};
+
+
 /******** WebSockets */
 
 export const setWebSocket = (payload) => ({
@@ -313,16 +327,16 @@ export const cancelEdit = () => ({
   type: CANCEL_EDIT,
 });
 
-export const updateRiffTime = (token, start_time, video_id, riff_id, websocket) => {
+export const updateRiffTime = (token, start, video_id, riff_id, websocket) => {
   return (dispatch) => {
     axios({
       method: 'post',
       url: `/update-riff-time`,
-      data: { token, start_time, id: riff_id },
+      data: { token, start, id: riff_id },
     })
       .then((res) => {
         // res.data.data
-        dispatch({ type: UPDATE_RIFF_TIME_SUCCESS, id: riff_id, time: start_time });
+        dispatch({ type: UPDATE_RIFF_TIME_SUCCESS, id: riff_id, time: start });
         // websocket call
         websocket.send(
           JSON.stringify({ type: 'update', video_id: video_id })
@@ -346,7 +360,7 @@ export const saveRiff = (token, payload, riff, websocket) => {
       'duration',
       riff.type === 'text' ? payload.duration : riff.duration // how can this be right? (I should just relax)
     );
-    fd.append('start_time', payload.time);
+    fd.append('start', payload.time);
     fd.append('video_id', riff.video_id);
     fd.append('tempId', riff.tempId);
 
@@ -410,7 +424,7 @@ export const loadRiff = (id, load) => {
 const rawLoadAxios = (dispatch, id) => {
   axios({
     method: 'get',
-    url: `/load-riff/${id}`,
+    url: `/riffs/${id}`,
     responseType: 'arraybuffer',
   }).then((res) => {
     dispatch({ type: RIFF_LOADED, payload: res.data, id });

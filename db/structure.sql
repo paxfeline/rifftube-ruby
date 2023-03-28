@@ -95,7 +95,7 @@ CREATE TABLE public.riffs (
     id integer NOT NULL,
     audio bytea,
     duration real,
-    start_time real,
+    start real,
     text text,
     rating integer,
     "isText" boolean DEFAULT false NOT NULL,

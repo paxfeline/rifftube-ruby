@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
     if user && user.authenticate(params[:session][:password])
       session[:user_id] = user.id
       flash[:notice] = "Logged in successfully."
-      send_data user.to_json(except: [:riff_pic, :password_digest])
+      render json: user.to_json(except: [:riff_pic, :password_digest])
       #redirect_to user
     else
       flash.now[:alert] = "There was something wrong with your login details."
@@ -28,7 +28,7 @@ class SessionsController < ApplicationController
       if user
         session[:user_id] = user.id
         flash[:notice] = "Logged in successfully."
-        send_data user.to_json(except: [:riff_pic, :password_digest])
+        render json: user.to_json(except: [:riff_pic, :password_digest])
       else
         flash.now[:alert] = "User not found."
         raise "Login Failed"
@@ -45,7 +45,6 @@ class SessionsController < ApplicationController
     #redirect_to root_path
     #redirect_back(fallback_location: root_path)
   end
-
 
   private 
   def google_login_credentials

@@ -48,6 +48,8 @@ Rails.application.routes.draw do
   post "login-with-google", to: "sessions#create_with_token"
   delete "logout", to: "sessions#destroy"
 
+  get "user-status", to: "users#status"
+
   get "send_email", to: "rifftube#send_email" # just for testing
 
   get "user/confirm/:uuid", to: "users#confirm"

@@ -26,6 +26,8 @@ function RiffDetail(props) {
 
   const timeRef = createRef();
 
+  //console.log(props);
+
   return (
     <div
       ref={divRef}
@@ -83,7 +85,7 @@ function RiffDetail(props) {
                   {
                     let el = document.createElement("div");
                     el.innerHTML = text;
-                    executeScriptElements(el.content);
+                    executeScriptElements(el);
                     document.body.append(el.firstChild);
                   });
             }

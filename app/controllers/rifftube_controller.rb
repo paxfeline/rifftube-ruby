@@ -6,7 +6,7 @@ RiffTrack = Struct.new(:cursor, :riffs)
 class RifftubeController < ApplicationController
 
   def riffs_for_video
-    riffs = Video.find_by(url: params[:video_id])&.riffs.select(:id, :user_id, :duration, :start_time, :isText, :text)
+    riffs = Video.find_by(url: params[:video_id])&.riffs.select(:id, :user_id, :duration, :start, :isText, :text)
     if riffs.nil?
       render json: { "body" => [], "status" => "ok" }
     end
@@ -23,7 +23,7 @@ class RifftubeController < ApplicationController
     if logged_in?
       video = @current_user.videos.find_by(url: params[:video_id])
       if video.present?
-        riffs = video.riffs.select(:id, :user_id, :duration, :start_time, :isText, :text)
+        riffs = video.riffs.select(:id, :user_id, :duration, :start, :isText, :text)
         # convert records to hash; don't include audio data; add name of riffer
         riffs = riffs.map{|r| ret = r.as_json(except: :audio); ret["name"] = r.user.name; ret}
         ret = { "body" => riffs, "status" => "ok" }
@@ -84,7 +84,7 @@ class RifftubeController < ApplicationController
         
         # pick out audio riffs and sort by start time
         riffs = riffs.filter { |e| !e.isText }
-        riffs = riffs.sort_by(&:start_time)
+        riffs = riffs.sort_by(&:start)
 
         # concatenate silence and riffs
 
@@ -103,14 +103,14 @@ class RifftubeController < ApplicationController
             # starting with track 0, skip tracks where r won't fit
             # if none work, make a new one
             j = 0
-            while j < track_N and r.start_time < riff_track[j].cursor
+            while j < track_N and r.start < riff_track[j].cursor
               j += 1
             end
             if j < track_N
               riff_track[j].riffs.push(r)
-              riff_track[j].cursor = r.start_time + r.duration
+              riff_track[j].cursor = r.start + r.duration
             else
-              new_track = RiffTrack.new(r.start_time + r.duration, [r])
+              new_track = RiffTrack.new(r.start + r.duration, [r])
               riff_track.push(new_track)
               track_N += 1
             end
@@ -121,7 +121,7 @@ class RifftubeController < ApplicationController
           c = 0
           for i in (track_N - 1).downto(1)
             r = riff_track[i].riffs.last
-            if r.start_time + r.duration > riff_track[0].cursor
+            if r.start + r.duration > riff_track[0].cursor
               riffs.unshift(r)
               c += 1
             end
@@ -131,22 +131,22 @@ class RifftubeController < ApplicationController
           # this should be changed so that these riffs are also included
           # on the next file / riff set
           i = c
-          while i < riffs.length and riffs[i].start_time < riff_track[0].cursor
+          while i < riffs.length and riffs[i].start < riff_track[0].cursor
             r = riffs[i]
-            if r.start_time + riff.duration <= riff_track[0].cursor
+            if r.start + riff.duration <= riff_track[0].cursor
               riffs.delete_at(i)
             else
               i += 1
             end
             j = 1
-            while j < track_N and r.start_time < riff_track[j].cursor
+            while j < track_N and r.start < riff_track[j].cursor
               j += 1
             end
             if j < track_N
               riff_track[j].riffs.push(r)
-              riff_track[j].cursor = r.start_time + r.duration
+              riff_track[j].cursor = r.start + r.duration
             else
-              new_track = RiffTrack.new(r.start_time + r.duration, [r])
+              new_track = RiffTrack.new(r.start + r.duration, [r])
               riff_track.push(new_track)
               track_N += 1
             end
@@ -170,15 +170,15 @@ class RifftubeController < ApplicationController
               input_files << " -i #{file.path}"
               # if riff started before this section, trim it
               trimmed_name = ""
-              if riff.start_time < cursor
-                trim_commands << "[#{g_ind}:a]atrim=start=#{cursor - riff.start_time}[trimmed#{g_ind}]; "
+              if riff.start < cursor
+                trim_commands << "[#{g_ind}:a]atrim=start=#{cursor - riff.start}[trimmed#{g_ind}]; "
                 trimmed_name = "trimmed#{g_ind}"
               end
               #debugger
               # silence may be 0 length (due to timing? or because of trimming)
-              silences[j] += "aevalsrc=exprs=0:d=#{[riff.start_time - sub_curs[j], 0].max}[silence#{j}-#{ind}]; "
+              silences[j] += "aevalsrc=exprs=0:d=#{[riff.start - sub_curs[j], 0].max}[silence#{j}-#{ind}]; "
               seqs[j] += "[silence#{j}-#{ind}] [#{trimmed_name == "" ?  "#{g_ind}:a" : trimmed_name}] "
-              sub_curs[j] = riff.start_time + riff.duration
+              sub_curs[j] = riff.start + riff.duration
               g_ind += 1
             end
 
@@ -201,7 +201,7 @@ class RifftubeController < ApplicationController
           #  puts "====="
           #end
 
-          #`ffmpeg -y -i #{file.path} -filter_complex "aevalsrc=exprs=0:d=#{riff.start_time}[silence], [silence] [0:a] concat=n=2:v=0:a=1[outa]" -map [outa] /tmp/mixing#{ind.to_s}.mp4`
+          #`ffmpeg -y -i #{file.path} -filter_complex "aevalsrc=exprs=0:d=#{riff.start}[silence], [silence] [0:a] concat=n=2:v=0:a=1[outa]" -map [outa] /tmp/mixing#{ind.to_s}.mp4`
           #`ffmpeg -y #{input_files[i]} \
           #  -filter_complex "#{silences}#{seqs}concat=n=#{n}:v=0:a=1[outa]" -map [outa] \
           #  #{Rails.root}/tmp/mixing#{file_ind}.mp4`

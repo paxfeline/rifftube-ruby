@@ -74,12 +74,13 @@ const riffsReducer = (state = initialState, action) => {
         editIndex: null,
       };
     case RECEIVE_RIFF_LIST:
+      //debugger;
       return {
         ...state,
-        timestamp: action.payload.timestamp,
-        all: action.payload.body.map((el) => ({
+        timestamp: Date.now(),
+        all: action.payload.map((el) => ({
           ...el,
-          time: el.start_time,
+          time: el.start,
           payload: el.isText ? el.text : null,
           type: el.isText ? 'text' : 'audio',
         })),

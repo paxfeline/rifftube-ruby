@@ -12,7 +12,7 @@ class RiffsController < ApplicationController
         if user.present? and video.present?
             if user == "self"
                 if logged_in?
-                    riffs = current_user.videos.find_by(url: video).&riffs.as_json&.each { |r| r.delete("audio") }
+                    riffs = current_user.videos.find_by(url: video)&.riffs.as_json&.each { |r| r.delete("audio") }
                     render json: (riffs or [])
                 else
                     render plain: "Not logged in", status: :unauthorized
