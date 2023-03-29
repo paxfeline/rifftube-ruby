@@ -5,6 +5,13 @@ RiffTrack = Struct.new(:cursor, :riffs)
 
 class RifftubeController < ApplicationController
 
+  def video_list
+    vids = Video.where(host: params[:host])
+    hash = vids.as_json
+    hash&.each { |v| v["count"] = Video.find(v["id"]).riffs.count }
+    render json: hash
+  end
+
   def riffs_for_video
     riffs = Video.find_by(url: params[:video_id])&.riffs.select(:id, :user_id, :duration, :start, :isText, :text)
     if riffs.nil?
@@ -12,8 +19,8 @@ class RifftubeController < ApplicationController
     end
     # convert records to hash; don't include audio data; add name of riffer
     riffs = riffs.map{ |r|
-      ret = r.as_json(except: :audio);
-      ret["name"] = r.user.name;
+      ret = r.as_json(except: :audio)
+      ret["name"] = r.user.name
       ret
     }
     render json: { "body" => riffs, "status" => "ok" }

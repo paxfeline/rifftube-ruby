@@ -78,9 +78,6 @@ class EditInterface extends React.Component {
     */
   };
 
-  authCheck = (Component, DefaultComponent) => {
-    return this.props.loggedIn ? <Component /> : <DefaultComponent />;
-  };
   /* extracts the youtube id from a url. got help from: https://ctrlq.org/code/19797-regex-youtube-id */
   extractVideoID = (url) => {
     var regExp =

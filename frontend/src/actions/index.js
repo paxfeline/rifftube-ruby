@@ -283,7 +283,7 @@ export const getGlobalVideoList = () => {
   return (dispatch) => {
     axios({
       method: 'get',
-      url: '/get-global-video-list',
+      url: '/videos?host=www.youtube.com',
     }).then((res) => {
       dispatch({ type: LOAD_GLOBAL_VIDEO_LIST, payload: res.data });
     }).catch(err => console.log("error", err));

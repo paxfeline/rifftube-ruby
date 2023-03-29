@@ -55,6 +55,9 @@ Rails.application.routes.draw do
   get "user/confirm/:uuid", to: "users#confirm"
   get "riffer-pic/:id(.:format)", to: "users#get_pic"
 
+  # URL: /videos?host=www.youtube.com
+  get "videos", to: "rifftube#video_list"
+
   resources :users, except: [:new]
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
