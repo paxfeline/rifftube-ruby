@@ -1,25 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const VideoList = ({ userData }) => (
-  <ul className="my-videos-list">
-    {userData &&
-      userData.map(({ url, title, count }) => (
+const VideoList = ({ videoData }) => (
+  <ul>
+    {videoData &&
+      videoData.map(({ url, title, count }) => (
         <li className="my-video">
           <h3 className="my-video-title">
-            {title.length > 40 ? title.slice(0, 40) + '...' : title}
-            &nbsp; ({count} riff{count === 1 ? '' : 's'})
-            <br />
-            <Link to={`/riff/${url}`}>Riff</Link>
-            &nbsp;/&nbsp;
-            <Link to={`/view/${url}`}>View</Link>
+            <Link to={`/view/${url}`}>
+              <img
+                alt="video frame"
+                src={`https://img.youtube.com/vi/${url}/1.jpg`}
+                style={ {verticalAlign: "middle"} }
+              />
+            &nbsp; {title.length > 40 ? title.slice(0, 40) + '...' : title} &nbsp;
+            &nbsp; ({count} riff{count === 1 ? '' : 's'}) &nbsp; (View) &nbsp;
+            </Link>
+            <Link to={`/riff/${url}`}>(Riff)</Link>
           </h3>
-          <Link to={`/riff/${url}`}>
-            <img
-              alt="video frame"
-              src={`https://img.youtube.com/vi/${url}/0.jpg`}
-            />
-          </Link>
         </li>
       ))}
   </ul>

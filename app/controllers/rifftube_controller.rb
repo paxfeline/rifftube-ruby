@@ -9,6 +9,7 @@ class RifftubeController < ApplicationController
     vids = Video.where(host: params[:host])
     hash = vids.as_json
     hash&.each { |v| v["count"] = Video.find(v["id"]).riffs.count }
+    hash = hash&.sort { |a,b| b["count"] <=> a["count"] }
     render json: hash
   end
 

@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 
 const NavBar = ({ color, loggedIn }) => (
   <nav className="navbar">
+    <span className="heading-primary-nav">RiffTube</span>
     <NavLink
       exact
       activeClassName="navbar-link-active"

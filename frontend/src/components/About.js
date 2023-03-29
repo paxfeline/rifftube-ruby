@@ -9,7 +9,7 @@ const About = () => (
       <div className="middle-text">
         <h1
           style={{ color: 'white', marginTop: '6rem' }}
-          className="heading-primary-main"
+          className="heading-primary-sub"
         >
           About RiffTube
         </h1>

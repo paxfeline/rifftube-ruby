@@ -1,11 +1,24 @@
 .navbar {
   font-size: $small;
   display: flex;
+  align-items: center;
   justify-content: flex-start;
   width: 50rem;
   position: absolute;
   top: 0;
   left: 0;
+
+
+  .heading-primary-nav {
+    font-size: $medium;
+    color: $color-gray;
+    font-weight: 700;
+    font-family: Limelight;
+
+  // @media (min-width: 700px) {
+  //   font-size: $extra-large;
+  // }
+}
 
   @media (min-width: 700px) {
     width: 70%;

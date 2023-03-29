@@ -20,7 +20,7 @@ const TheList = ({ globalVideoList, getGlobalVideoList }) => {
         <h2 className="account-section-title">
           every movie with at least one riff added to it
         </h2>
-        <VideoList userData={globalVideoList} />
+        <VideoList videoData={globalVideoList} />
       </section>
     </div>
   );
