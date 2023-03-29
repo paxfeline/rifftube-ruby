@@ -129,11 +129,7 @@ class EditInterface extends React.Component {
           <MetaBar />
           <div className="view-share-riff-link">
             <a
-              href={
-                '/view/' +
-                this.props.videoID +
-                (this.props.userInfo ? '?solo=' + this.props.userInfo.user_id : '')
-              }
+              href={`/view/${this.props.videoID}${this.props.userInfo ? `?solo=${this.props.userInfo.id}` : ''}`}
               target="_blank"
               rel="noopener noreferrer"
             >
