@@ -95,11 +95,6 @@ class EditInterface extends React.Component {
       <React.Fragment>
         <NavBar color="grey" />
         <div className="youtube-section">
-          <div className="top-section">
-            <div className="title-and-url">
-              <h1 className="heading-primary-main">RiffTube</h1>
-            </div>
-          </div>
           <h4 className="get-started-instructions">
             {this.props.loggedIn ? null : (
               <React.Fragment>

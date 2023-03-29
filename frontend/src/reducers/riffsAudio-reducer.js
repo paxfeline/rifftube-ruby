@@ -66,6 +66,7 @@ const riffsAudioReducer = (state = initialState, action) => {
     case LOAD_RIFF: {
       return {
         ...state,
+        // add [this riff's id]: true to state.loading object
         loading: {
           ...state.loading,
           [action.payload]: true,
@@ -73,7 +74,11 @@ const riffsAudioReducer = (state = initialState, action) => {
       };
     }
     case RIFF_LOADED: {
-      const { [action.id]: foo, ...loading } = state.loading; // foo is discarded
+      // unpack state.loading object, selecting (and discarding) the entry for the loaded riff's id (foo)
+      // the new loading var holds the loading object minus the loaded riff
+      const { [action.id]: foo, ...loading } = state.loading;
+      // create blob for audio and add to state.all
+      debugger;
       const audio = new Blob(new Array(action.payload), {
             type: 'audio/mp3',
           });

@@ -45,8 +45,8 @@ class YouTubeVideo extends React.Component {
 
     this.player = new window.YT.Player('rifftube-player', {
       videoId: id,
-      height: 390,
-      width: 640,
+      height: "100%",
+      width: "100%",
       playerVars: {
         playsinline: 1, // allows it to play inline on iOS
       },
