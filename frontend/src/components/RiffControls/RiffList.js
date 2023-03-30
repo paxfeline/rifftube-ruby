@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import RiffDetail from './RiffDetail.js';
 
+const size = 25; // 2.5em
+
 /* this component maps over all of the user's riffs for this video */
 function RiffList(props) {
   var totalLength = 0;
@@ -16,12 +18,12 @@ function RiffList(props) {
     const posStyles = {};
     if (riff.time > totalLength) {
       posStyles.top = `${riff.time / 10}em`;
-      totalLength = riff.time + Math.max(riff.duration, 45);
+      totalLength = riff.time + Math.max(riff.duration, size);
     } else {
       posStyles.top = `${totalLength / 10}em`;
-      totalLength += Math.max(riff.duration, 45);
+      totalLength += Math.max(riff.duration, size);
     }
-    posStyles.height = `${Math.max(riff.duration / 10, 4.5)}em`;
+    //posStyles.height = `${Math.max(riff.duration / 10, size / 10)}em`;
     riffDetails[index] = (
       <RiffDetail
         key={riff.id}

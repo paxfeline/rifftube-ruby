@@ -1,6 +1,6 @@
 .youtube-section {
   margin-top: 5vh;
-  width: 70%;
+  width: 80%;
   font-size: $small;
 
   a {
@@ -156,9 +156,9 @@
   border-radius: 5px;
   color: $color-black;
   background-color: $color-white;
-  border: 5px solid $color-primary;
+  //border: 5px solid $color-primary;
   width: 100%;
-  min-height: 4.5em;
+  min-height: 2.5em;
   box-sizing: border-box;
   position: absolute;
   transition: 0.5s all;
@@ -171,7 +171,6 @@
 
   .audio-icon {
     flex: auto;
-    padding: 1rem;
   }
 
   .riff-type-icon {
@@ -185,7 +184,7 @@
   .edit-time {
     flex: 4em;
     min-width: 2em;
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 
   .edit-riff-buttons {
@@ -194,10 +193,11 @@
     justify-content: flex-end;
 
     button {
-      width: 4em;
-      height: 4em;
+      width: 3em;
+      height: 2em;
       &:hover {
         cursor: pointer;
+        outline: 1px solid pink;
       }
     }
   }
@@ -260,7 +260,7 @@
   .control-panel {
     height: 100vh;
     // ?? min-height: 125vh;
-    width: 30%;
+    width: 20%;
     margin-top: 0;
     scrollbar-color: white;
     font-size: $small;

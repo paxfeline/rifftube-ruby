@@ -41,7 +41,7 @@ function RiffDetail(props) {
           window.rifftubePlayer.seekTo(Math.max(props.time - 3, 0), true);
         }}
       >
-        jump to
+        ⇥
       </button>
       {props.type === 'audio' ? (
         <div className="audio-icon riff-type-icon">
@@ -98,7 +98,7 @@ function RiffDetail(props) {
             */
           }
         >
-          <img alt="edit button" src={Edit} />
+          ✎
         </button>
         <button
           className="riff-button"
@@ -111,7 +111,7 @@ function RiffDetail(props) {
               );
           }}
         >
-          <img alt="delete button" src={Delete} />
+          🗑
         </button>
       </div>
     </div>
