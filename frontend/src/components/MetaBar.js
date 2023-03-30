@@ -2,8 +2,7 @@ import React, { createRef, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 const MetaBar = ({ riffsMeta, riffs, duration }) => {
-  useEffect(()=>window.metaPlayHead = createRef(), []);
-  debugger;
+  window.metaPlayHead = createRef();
   return (
     <div className="container-riff-meta">
       <div id="meta-play-head" ref={window.metaPlayHead} />
