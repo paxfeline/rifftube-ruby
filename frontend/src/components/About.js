@@ -1,15 +1,64 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import HorrorMovie from '../images/undraw_horror_movie_3988.svg';
 import NavBar from './NavBar.js';
+import MaterialIcon from 'material-icons-react';
+import MovieImage from '../images/undraw_movie_night_93wl.svg';
 
 const About = () => (
   <div className="landing-page">
-    <NavBar color="white" />
+    <NavBar />
+    <section className="top-part">
+      <div className="heading">
+        <span className="heading-primary-main">RiffTube</span>
+        <span className="heading-primary-sub">
+          Add Your Voice to YouTube Videos
+        </span>
+      </div>
+    </section>
+    <section className="middle-part">
+      <div className="middle-text">
+        <h3>Riffing for the Riff Raff</h3>
+      </div>
+      <div className="about">
+        <div className="about-text">
+          <p>
+            In the glorious tradition of Mystery Science Theater 3000, The Film
+            Crew, RiffTrax, Cinematic Titanic, MST3k again, and others...
+          </p>
+          <p>
+            Now presenting: <em>you!</em>
+          </p>
+          <p>
+            RiffTube allows you to add your own riffs to any video on YouTube.
+          </p>
+        </div>
+      </div>
+      <div className="features">
+        <div className="feature feature-one">
+          <MaterialIcon icon="mic" color="#a41320" size="medium" />
+          <p>Record your voice</p>
+        </div>
+        <div className="feature feature-two">
+          <MaterialIcon icon="edit" color="#a41320" size="medium" />
+          <p>Edit your recordings</p>
+        </div>
+        <div className="feature feature-three">
+          <MaterialIcon icon="people" color="#a41320" size="medium" />
+          <p>Add your friends' voices</p>
+        </div>
+        <div className="feature feature-three">
+          <MaterialIcon icon="share" color="#a41320" size="medium" />
+          <p>Share with anybody</p>
+        </div>
+      </div>
+      <img alt="movie theater" className="movie-image" src={MovieImage}></img>
+    </section>
     <section className="middle-part" style={{ height: 'initial' }}>
       <div className="middle-text">
         <h1
           style={{ color: 'white', marginTop: '6rem' }}
-          className="heading-primary-sub"
+          className="heading-primary-main"
         >
           About RiffTube
         </h1>

@@ -4,24 +4,16 @@ import { NavLink } from 'react-router-dom';
 
 const NavBar = ({ color, loggedIn }) => (
   <nav className="navbar">
-    <span className="heading-primary-nav">RiffTube</span>
     <NavLink
+      activeClassName="navbar-home-link-active"
       exact
-      activeClassName="navbar-link-active"
       style={{ color }}
       to="/"
     >
-      Home
+      <span className="heading-primary-nav">RiffTube</span>
     </NavLink>
     <NavLink activeClassName="navbar-link-active" style={{ color }} to="/riff">
       Riff<em>!</em>
-    </NavLink>
-    <NavLink
-      activeClassName="navbar-link-active"
-      style={{ color }}
-      to="/TheList"
-    >
-      The List
     </NavLink>
     <NavLink activeClassName="navbar-link-active" style={{ color }} to="/about">
       About
