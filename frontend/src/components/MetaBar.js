@@ -1,7 +1,9 @@
-import React, { createRef } from 'react';
+import React, { createRef, useEffect } from 'react';
+import { connect } from 'react-redux';
 
 const MetaBar = ({ riffsMeta, riffs, duration }) => {
-  window.metaPlayHead = createRef();
+  useEffect(()=>window.metaPlayHead = createRef(), []);
+  debugger;
   return (
     <div className="container-riff-meta">
       <div id="meta-play-head" ref={window.metaPlayHead} />
@@ -35,4 +37,13 @@ const MetaBar = ({ riffsMeta, riffs, duration }) => {
   );
 };
 
-export default MetaBar;
+const mapStateToProps = (state) => ({
+  riffsMeta: state.riffsMeta,
+  riffs: state.riffs.all,
+  duration: state.duration,
+});
+
+const mapDispatchToProps = {
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MetaBar);

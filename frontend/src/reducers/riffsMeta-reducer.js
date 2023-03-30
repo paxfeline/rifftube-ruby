@@ -5,6 +5,7 @@ let initialState = [];
 const riffsMetaReducer = (state = initialState, action) => {
   switch (action.type) {
     case RECEIVE_RIFF_META:
+      debugger;
       return action.payload.map((el) => ({
         ...el,
         time: el.start,
