@@ -10,7 +10,6 @@ import {
   getRiffsMeta,
   getRiffs,
   setRecorder,
-  currentUserStatus,
 } from '../../actions';
 import MetaBar from '../MetaBar';
 import NavBar from '../NavBar.js';
@@ -27,9 +26,6 @@ class EditInterface extends React.Component {
         this.props.match.params.videoID
       );
       this.videoIDRef.current.value = this.props.match.params.videoID;
-
-      // check if user is logged in
-      this.props.currentUserStatus();
     }
   };
 
@@ -129,7 +125,7 @@ class EditInterface extends React.Component {
             </a>
           </div>
         </div>
-        {this.props.loggedIn ? <EditControls /> : null}
+        <EditControls />
       </React.Fragment>
     ) : (
       <Redirect to={`/riff/${this.props.videoID}`} />
@@ -153,7 +149,6 @@ const mapDispatchToProps = {
   getRiffsMeta,
   getRiffs,
   setRecorder,
-  currentUserStatus,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditInterface);

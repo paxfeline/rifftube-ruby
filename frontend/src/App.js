@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import EditInterface from './components/RiffControls/EditInterface';
 import ViewInterface from './components/ViewInterface/ViewInterface';
 import LandingPage from './components/LandingPage.js';
@@ -7,8 +8,15 @@ import About from './components/About';
 import Account from './components/Account';
 import Profile from './components/Profile';
 import Signup from './components/Signup';
+import { currentUserStatus, } from './actions';
 
 class App extends React.Component {
+
+  componentDidMount = () => {
+      // check if user is logged in
+      this.props.currentUserStatus();
+    }
+
   render() {
     return (
       <Router>
@@ -29,4 +37,12 @@ class App extends React.Component {
   }
 }
 
-export default App;
+
+const mapStateToProps = (state) => ({
+});
+
+const mapDispatchToProps = {
+  currentUserStatus,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

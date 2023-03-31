@@ -110,68 +110,75 @@ function EditControls(props)
   */
 
   return (
-    <div className="control-panel">
-      {
-        // make this into a component?:
-        props.name ? (
-          <React.Fragment>
-            <div className="riffer-name">
-              Riffer Name:&nbsp;
-              {props.name}
-            </div>
-          </React.Fragment>
-        ) : null
-      }
+        <div className="control-panel">
+          <div></div>
+          {
+            props.loggedIn ?
+              <div>
+                {
+                  // make this into a component?:
+                  props.name ? (
+                    <React.Fragment>
+                      <div className="riffer-name">
+                        Riffer Name:&nbsp;
+                        {props.name}
+                      </div>
+                    </React.Fragment>
+                  ) : null
+                }
 
-      {/* to add back later <Collaboration /> */}
+                {/* to add back later <Collaboration /> */}
 
-      <div>
-        <h2 className="add-riff-title">Add New Riff</h2>
-        {
-          props.recorder !== null ?
-            <RiffButton type="audio" />
-          :
-            <button onClick={() => {
-              var AudioContext =
-                window.AudioContext || window.webkitAudioContext; // Default // Safari and old versions of Chrome
-              var audioContext = new AudioContext();
-              if (navigator.mediaDevices) {
-                navigator.mediaDevices
-                  .getUserMedia({ audio: true, video: false })
-                  .then((stream) => {
-                    // gum (get user media)
-                    var input = audioContext.createMediaStreamSource(stream);
-                
-                    var recorder = new window.WebAudioRecorder(input, {
-                      workerDir: '/lib/',
-                      encoding: 'mp3',
-                      onEncoderLoading: (recorder, encoding) => {
-                        // show "loading encoder..." display
-                        console.log('Loading ' + encoding + ' encoder...');
-                      },
-                      onEncoderLoaded: (recorder, encoding) => {
-                        // hide "loading encoder..." display
-                        console.log(encoding + ' encoder loaded');
-                      },
-                    });
-                    props.setRecorder(recorder);
-                  })
-                  .catch(function (err) {
-                    //enable the record button if getUSerMedia() fails
-                    console.log("oops, can't get stream", err);
-                  });
-              }
-            }}>
-              Click to allow recording
-            </button>
-        }
-        <RiffButton type="text" />
+                <div>
+                  <h2 className="add-riff-title">Add New Riff</h2>
+                  {
+                    props.recorder !== null ?
+                      <RiffButton type="audio" />
+                    :
+                      <button onClick={() => {
+                        var AudioContext =
+                          window.AudioContext || window.webkitAudioContext; // Default // Safari and old versions of Chrome
+                        var audioContext = new AudioContext();
+                        if (navigator.mediaDevices) {
+                          navigator.mediaDevices
+                            .getUserMedia({ audio: true, video: false })
+                            .then((stream) => {
+                              // gum (get user media)
+                              var input = audioContext.createMediaStreamSource(stream);
+                          
+                              var recorder = new window.WebAudioRecorder(input, {
+                                workerDir: '/lib/',
+                                encoding: 'mp3',
+                                onEncoderLoading: (recorder, encoding) => {
+                                  // show "loading encoder..." display
+                                  console.log('Loading ' + encoding + ' encoder...');
+                                },
+                                onEncoderLoaded: (recorder, encoding) => {
+                                  // hide "loading encoder..." display
+                                  console.log(encoding + ' encoder loaded');
+                                },
+                              });
+                              props.setRecorder(recorder);
+                            })
+                            .catch(function (err) {
+                              //enable the record button if getUSerMedia() fails
+                              console.log("oops, can't get stream", err);
+                            });
+                        }
+                      }}>
+                        Click to allow recording
+                      </button>
+                  }
+                  <RiffButton type="text" />
 
-      </div>
-      <h2 className="riff-list-title">Control Panel</h2>
-      <RiffList />
-      <template ref={templateRef}></template>
-    </div>
+                </div>
+                <h2 className="riff-list-title">Control Panel</h2>
+                <RiffList />
+                <template ref={templateRef}></template>
+              </div>
+            : null
+          }
+        </div>
   );
 }
 
@@ -181,6 +188,7 @@ let mapStateToProps = (state) => ({
   videoID: state.videoID,
   duration: state.duration,
   recorder: state.recorder,
+  loggedIn: state.loggedIn,
 });
 
 const mapDispatchToProps = {
