@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import YouTubeVideo from '../YouTubeVideo/YouTubeVideo';
-import Login from '../Login/Login';
 import EditControls from './EditControls';
 import {
   setVideoID,
@@ -90,14 +89,7 @@ class EditInterface extends React.Component {
     return this.props.match.params.videoID ? (
       <React.Fragment>
         <NavBar color="grey" />
-        <div className="youtube-section">
-          <h4 className="get-started-instructions">
-            {this.props.loggedIn ? null : (
-              <React.Fragment>
-                <Login /> <p>to get started</p>
-              </React.Fragment>
-            )}
-          </h4>
+        <div className="youtube-section" style={ {marginTop: "8rem"} }>
           <label>Paste any YouTube URL here &#8594; </label>
           <input
             type="text"

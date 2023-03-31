@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import RiffList from './RiffList.js';
 import RiffButton from './RiffButton.js';
-import { setRifferName } from '../../actions'; // this and below are the same file
+import Login from '../Login/Login';
 
-import { createTempRiff, togglePlayerMode, setRecorder } from '../../actions/index.js';
+import { setRifferName, createTempRiff, togglePlayerMode, setRecorder } from '../../actions/index.js';
 
 import { executeScriptElements } from './util.js';
 
@@ -59,15 +59,18 @@ function EditControls(props)
   
   useEffect(() =>
   {
-    fetch(`/riffs/new?video_id=${props.videoID}`)
-      .then(response => response.text())
-      .then(text =>
-        {
-          let el = templateRef.current;
-          el.innerHTML = text;
-          executeScriptElements(el.content);
-        });
-  }, [props.videoID]);
+    if (props.loggedIn)
+    {
+      fetch(`/riffs/new?video_id=${props.videoID}`)
+        .then(response => response.text())
+        .then(text =>
+          {
+            let el = templateRef.current;
+            el.innerHTML = text;
+            executeScriptElements(el.content);
+          });
+    }
+  }, [props.videoID, props.loggedIn]);
 
 
     /*
@@ -111,7 +114,15 @@ function EditControls(props)
 
   return (
         <div className="control-panel">
-          <div></div>
+          <div>
+            <h4>
+              {props.loggedIn ? null : (
+                <React.Fragment>
+                  <Login /> <p>to get started</p>
+                </React.Fragment>
+              )}
+            </h4>
+          </div>
           {
             props.loggedIn ?
               <div>

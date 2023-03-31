@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import HorrorMovie from '../images/undraw_horror_movie_3988.svg';
 import NavBar from './NavBar.js';
 import MaterialIcon from 'material-icons-react';
@@ -18,7 +17,7 @@ const About = () => (
     </section>
     <section className="middle-part">
       <div className="middle-text">
-        <h3>Riffing for the Riff Raff</h3>
+        <h3>Riffing<br />for the Riff Raff</h3>
       </div>
       <div className="about">
         <div className="about-text">
