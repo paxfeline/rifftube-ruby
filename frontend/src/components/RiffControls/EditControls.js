@@ -184,7 +184,6 @@ function EditControls(props)
                   <RiffButton type="text" />
 
                 </div>
-                <h2 className="riff-list-title">Control Panel</h2>
                 <RiffList />
                 <template ref={templateRef}></template>
               </div>

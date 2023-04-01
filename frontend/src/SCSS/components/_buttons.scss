@@ -7,6 +7,11 @@ button {
   padding: 5px;
 }
 
+button.light {
+  background-color: revert;
+  color: initial;
+}
+
 button:disabled {
   background-color: #868686;
   color: rgb(70, 70, 70);

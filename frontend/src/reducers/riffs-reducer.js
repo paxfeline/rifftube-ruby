@@ -20,8 +20,8 @@ let initialState = {
 
 const riffsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SET_VIDEO_ID:
-      return initialState;
+    //case SET_VIDEO_ID:
+      //return initialState;
     case CREATE_TEMP_AUDIO_RIFF:
     case CREATE_TEMP_TEXT_RIFF:
       return {
