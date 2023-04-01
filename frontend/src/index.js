@@ -20,11 +20,11 @@ import './SCSS/main.scss';
 const store = createStore(defaultReducer, applyMiddleware(thunkMiddleware));
 
 ReactDOM.render(
-  <GoogleOAuthProvider clientId="941154439836-s6iglcrdckcj6od74kssqsom58j96hd8.apps.googleusercontent.com">
-    <Provider store={store}>
+  <Provider store={store}>
+    <GoogleOAuthProvider clientId="941154439836-s6iglcrdckcj6od74kssqsom58j96hd8.apps.googleusercontent.com">
       <App />
-    </Provider>
-  </GoogleOAuthProvider>,
+    </GoogleOAuthProvider>
+  </Provider>,
   document.getElementById('root')
 );
 

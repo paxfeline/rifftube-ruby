@@ -115,14 +115,12 @@ function EditControls(props)
   return (
         <div className="control-panel">
           <div>
-            <h4>
               {props.loggedIn ? null : (
                 <React.Fragment>
                   <h2 className="add-riff-title">Sign In</h2>
                   <Login /> <p>to get started</p>
                 </React.Fragment>
               )}
-            </h4>
           </div>
           {
             props.loggedIn ?

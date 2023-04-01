@@ -195,25 +195,26 @@ export const setVideoID = (videoID) => {
       type: SET_VIDEO_ID,
       payload: videoID,
     });
-    /*
+    
     axios({
       method: 'get',
-      url: `/get-view-riffs/${videoID}`,
+      url: `/riffs?video_id=${videoID}`,
     }).then((res) => {
       dispatch({ type: RECEIVE_RIFF_META, payload: res.data });
     }).catch(error => {
-      dispatch({ type: RECEIVE_RIFF_META, payload: { body: [] } });
+      dispatch({ type: RECEIVE_RIFF_META, payload: [] });
     });
   
     axios({
       method: 'get',
-      url: `/get-riffs/${videoID}`,
+      url: `/riffs?video_id=${videoID}&user_id=self`,
     }).then((res) => {
       dispatch({ type: RECEIVE_RIFF_LIST, payload: res.data });
     }).catch(error => {
       console.error(error);
+      dispatch({ type: RECEIVE_RIFF_LIST, payload: [] });
     });
-    */
+    
   };
 };
 
