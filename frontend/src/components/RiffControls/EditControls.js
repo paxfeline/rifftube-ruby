@@ -112,33 +112,25 @@ function EditControls(props)
   }, [props]);
   */
 
+  console.log("ec props", props);
+
   return (
         <div className="control-panel">
-          <div>
-              {props.loggedIn ? null : (
-                <React.Fragment>
-                  <h2 className="add-riff-title">Sign In</h2>
-                  <Login /> <p>to get started</p>
-                </React.Fragment>
-              )}
-          </div>
           {
             props.loggedIn ?
-              <div>
+            (
+              <React.Fragment>
                 {
-                  // make this into a component?:
-                  props.name ? (
-                    <React.Fragment>
-                      <div className="riffer-name">
-                        Riffer Name:&nbsp;
-                        {props.name}
-                      </div>
-                    </React.Fragment>
+                  props.userInfo?.name ?
+                  (
+                    <div className="riffer-name">
+                      Riffer Name:&nbsp;
+                      {props.userInfo.name}
+                    </div>
                   ) : null
+
+                  /* to add back later <Collaboration /> */
                 }
-
-                {/* to add back later <Collaboration /> */}
-
                 <div>
                   <h2 className="add-riff-title">Add New Riff</h2>
                   {
@@ -184,8 +176,12 @@ function EditControls(props)
                 </div>
                 <RiffList />
                 <template ref={templateRef}></template>
+              </React.Fragment>
+            ) : 
+              <div>
+                <h2 className="add-riff-title">Sign In</h2>
+                <Login /> <p>to get started</p>
               </div>
-            : null
           }
         </div>
   );
@@ -193,7 +189,7 @@ function EditControls(props)
 
 let mapStateToProps = (state) => ({
   mode: state.mode,
-  name: state.name,
+  userInfo: state.userInfo,
   videoID: state.videoID,
   duration: state.duration,
   recorder: state.recorder,
