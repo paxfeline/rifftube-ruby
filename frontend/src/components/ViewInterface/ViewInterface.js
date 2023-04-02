@@ -10,7 +10,7 @@ class ViewInterface extends React.Component {
   componentDidMount = () => {
     this.props.setVideoID(this.props.match.params.videoID);
 
-    this.props.getViewRiffs(this.props.match.params.videoID);
+    //this.props.getViewRiffs(this.props.match.params.videoID);
   };
 
   render = () => {

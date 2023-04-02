@@ -113,7 +113,7 @@ class EditInterface extends React.Component {
               target="_blank"
               rel="noopener noreferrer"
             >
-              View &amp; Share Riffed Video
+              View Riffed Video
             </a>
           </div>
         </div>

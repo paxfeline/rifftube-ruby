@@ -42,6 +42,7 @@ class ViewFilter extends React.Component {
 
     riff = newRiff;
 
+    var curOverlap = new Set();
     do {
       // go through each set of overlapping riffs
       for (const set of this.state.overlappingRiffs) {
@@ -58,6 +59,7 @@ class ViewFilter extends React.Component {
 
       // now the hard part
 
+
       for (const r of selectedRiffs) {
         // find and delete sets of overlap that contain a selected riff
         const toDelete = [];
@@ -70,7 +72,6 @@ class ViewFilter extends React.Component {
           otherOverlaps.delete(set);
           // from the sets in question, remove all their riffs from other overlap sets
           // (because they are no longer valid options)
-          var curOverlap = new Set();
           for (const redu of otherOverlaps) {
             for (const tod of set) {
               newFiltered.delete(tod);
@@ -229,9 +230,10 @@ class ViewFilter extends React.Component {
               style={{ backgroundColor: 'red', height: 'inherit' }}
               ref={window.metaPlayHead}
             />
-            {this.state.tracks.map((trackArray) => (
+            {this.state.tracks.map((trackArray, ind) => (
               <div
                 style={{ width: `${this.props.duration}em`, height: '0.75em' }}
+                key={ind}
               >
                 {trackArray.map((riff) => (
                   <div
