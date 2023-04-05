@@ -5,7 +5,8 @@ import {
   EDIT_RIFF,
   EDIT_MODE,
   CANCEL_EDIT,
-  SAVE_RIFF,
+  SAVE_NEW_RIFF,
+  SAVE_EDIT_RIFF,
   SET_PLAYER_MODE,
   PLAY_MODE,
   PAUSE_MODE,
@@ -26,8 +27,9 @@ const modeReducer = (state = PAUSE_MODE, action) => {
       return PAUSE_MODE;
     case TOGGLE_PLAYER_MODE: // not needed at the moment
       return state === PLAY_MODE ? PAUSE_MODE : PLAY_MODE;
-    case SAVE_RIFF:
-      return PAUSE_MODE; // should be an option
+    case SAVE_NEW_RIFF:
+    case SAVE_EDIT_RIFF:
+      return PAUSE_MODE; // TODO: should be an option
     default:
       return state;
   }

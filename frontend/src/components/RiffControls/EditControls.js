@@ -5,7 +5,8 @@ import RiffList from './RiffList.js';
 import RiffButton from './RiffButton.js';
 import Login from '../Login/Login';
 
-import { setRifferName, createTempRiff, togglePlayerMode, setRecorder } from '../../actions/index.js';
+import { setRifferName, createTempRiff, togglePlayerMode, setRecorder,
+  saveNewRiff, saveEditRiff } from '../../actions/index.js';
 
 import { executeScriptElements } from './util.js';
 
@@ -42,7 +43,19 @@ function EditControls(props)
 
   function saveRiff({ detail })
   {
-    console.log( detail );
+    // detail is FormData
+
+    console.log( "sr", detail );
+    
+    if ( detail.id )
+    {
+      props.saveEditRiff(detail);
+    }
+    else
+    {
+      props.saveNewRiff(detail);
+    }
+
   }
   
   useEffect(() =>
@@ -201,6 +214,8 @@ const mapDispatchToProps = {
   createTempRiff,
   togglePlayerMode,
   setRecorder,
+  saveNewRiff,
+  saveEditRiff,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditControls);

@@ -10,6 +10,8 @@ class ViewInterface extends React.Component {
   componentDidMount = () => {
     this.props.setVideoID(this.props.match.params.videoID);
 
+    // this was redundant, and caused an error?
+    // because setVideoID was updated to also call the same endpoint?
     //this.props.getViewRiffs(this.props.match.params.videoID);
   };
 
@@ -35,7 +37,7 @@ class ViewInterface extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  riffs: state.riffs.all,
+  riffs: state.riffs,
   duration: state.duration,
 });
 

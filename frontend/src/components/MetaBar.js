@@ -10,24 +10,24 @@ const MetaBar = ({ riffsMeta, riffs, duration }) => {
         duration &&
         riffs &&
         riffsMeta
-          .filter((el) => !riffs.find((t) => el.id === t.id))
+          .filter((el) => !Object.values(riffs).find((t) => el.id === t.id))
           .map((riff) => (
             <div
               key={riff.id}
               className="riff-meta"
               style={{
-                left: (riff.time / duration) * 100 + '%',
+                left: (riff.start / duration) * 100 + '%',
                 width: (riff.duration / duration) * 100 + '%',
               }}
             />
           ))}
       {riffs &&
-        riffs.map((riff) => (
+        Object.values(riffs).map((riff) => (
           <div
             key={riff.id}
             className="riff-own-meta"
             style={{
-              left: (riff.time / duration) * 100 + '%',
+              left: (riff.start / duration) * 100 + '%',
               width: (riff.duration / duration) * 100 + '%',
             }}
           ></div>
@@ -38,7 +38,7 @@ const MetaBar = ({ riffsMeta, riffs, duration }) => {
 
 const mapStateToProps = (state) => ({
   riffsMeta: state.riffsMeta,
-  riffs: state.riffs.all,
+  riffs: state.riffs,
   duration: state.duration,
 });
 

@@ -8,7 +8,7 @@ const size = 25; // 2.5em
 function RiffList(props) {
   var totalLength = 0;
   const riffs = props.riffs
-    ? props.riffs.sort((e1, e2) => e1.time - e2.time)
+    ? Object.values(props.riffs).sort((e1, e2) => e1.start - e2.start)
     : [];
 
   var scroll = true;
@@ -16,9 +16,9 @@ function RiffList(props) {
   for (const index in riffs) {
     const riff = riffs[index];
     const posStyles = {};
-    if (riff.time > totalLength) {
-      posStyles.top = `${riff.time / 10}em`;
-      totalLength = riff.time + Math.max(riff.duration, size);
+    if (riff.start > totalLength) {
+      posStyles.top = `${riff.start / 10}em`;
+      totalLength = riff.start + Math.max(riff.duration, size);
     } else {
       posStyles.top = `${totalLength / 10}em`;
       totalLength += Math.max(riff.duration, size);
@@ -45,7 +45,7 @@ function RiffList(props) {
 }
 
 const mapStateToProps = (state) => ({
-  riffs: state.riffs.all,
+  riffs: state.riffs,
   riffsPlaying: state.riffsPlaying,
 });
 

@@ -9,10 +9,15 @@ export const CREATE_TEMP_TEXT_RIFF = 'CREATE_TEMP_TEXT_RIFF';
 export const EDIT_RIFF = 'EDIT_RIFF';
 
 export const CANCEL_EDIT = 'CANCEL_EDIT';
-export const SAVE_RIFF = 'SAVE_RIFF';
+export const SAVE_NEW_RIFF = 'SAVE_NEW_RIFF';
 
-export const SAVE_RIFF_SUCCESS = 'SAVE_RIFF_SUCCESS';
-export const SAVE_RIFF_FAILURE = 'SAVE_RIFF_FAILURE';
+export const SAVE_NEW_RIFF_SUCCESS = 'SAVE_NEW_RIFF_SUCCESS';
+export const SAVE_NEW_RIFF_FAILURE = 'SAVE_NEW_RIFF_FAILURE';
+
+export const SAVE_EDIT_RIFF = 'SAVE_EDIT_RIFF';
+
+export const SAVE_EDIT_RIFF_SUCCESS = 'SAVE_EDIT_RIFF_SUCCESS';
+export const SAVE_EDIT_RIFF_FAILURE = 'SAVE_EDIT_RIFF_FAILURE';
 
 export const UPDATE_RIFF_TIME_SUCCESS = 'UPDATE_RIFF_TIME_SUCCESS';
 
@@ -124,6 +129,44 @@ export const currentUserStatus = () => {
 };
 
 
+/********** Saving, editing  */
+
+
+export const saveEditRiff = (detail) =>
+{
+  let detailObj = Object.fromEntries(detail.entries);
+  return (dispatch) =>
+  {
+    dispatch({ type: SAVE_EDIT_RIFF, payload: detailObj });
+    fetch(`/riffs/${detail.id}`,
+      {
+        method: 'PATCH',
+        body: detail
+      })
+      .then(response => response.json())
+      .then(response => dispatch({ type: SAVE_EDIT_RIFF_SUCCESS, payload: response.data }))
+      .catch(err => dispatch({ type: SAVE_EDIT_RIFF_FAILURE, payload: err }));
+  }
+}
+
+export const saveNewRiff = (detail) =>
+{
+  let detailObj = Object.fromEntries(detail.entries);
+  return (dispatch) =>
+  {
+    dispatch({ type: SAVE_NEW_RIFF, payload: detailObj });
+    fetch(`/riffs`, 
+      {
+        method: 'POST',
+        body: detail
+      })
+      .then(response => response.json())
+      .then(response => dispatch({ type: SAVE_NEW_RIFF_SUCCESS, payload: response.data }))
+      .catch(err => dispatch({ type: SAVE_NEW_RIFF_FAILURE, payload: err }));
+  }
+}
+
+
 /******** WebSockets */
 
 export const setWebSocket = (payload) => ({
@@ -209,6 +252,7 @@ export const setVideoID = (videoID) => {
       method: 'get',
       url: `/riffs?video_id=${videoID}&user_id=self`,
     }).then((res) => {
+      debugger;
       dispatch({ type: RECEIVE_RIFF_LIST, payload: res.data });
     }).catch(error => {
       console.error(error);
@@ -301,7 +345,7 @@ export const togglePlayerMode = (mode) => ({
 });
 
 /*export const saveRiff = payload => ({
-  type: SAVE_RIFF,
+  type: SAVE_NEW_RIFF,
   payload
 });*/
 
@@ -332,64 +376,24 @@ export const updateRiffTime = (token, start, video_id, riff_id, websocket) => {
   return (dispatch) => {
     axios({
       method: 'post',
-      url: `/update-riff-time`,
+      url: `/update-riff-start`,
       data: { token, start, id: riff_id },
     })
       .then((res) => {
         // res.data.data
-        dispatch({ type: UPDATE_RIFF_TIME_SUCCESS, id: riff_id, time: start });
+        dispatch({ type: UPDATE_RIFF_TIME_SUCCESS, id: riff_id, start: start });
         // websocket call
         websocket.send(
           JSON.stringify({ type: 'update', video_id: video_id })
         );
       })
       .catch((err) => {
-        dispatch({ type: SAVE_RIFF_FAILURE, payload: err.response });
+        dispatch({ type: SAVE_NEW_RIFF_FAILURE, payload: err.response });
       });
 
     // dispatch NOTHING
   };
 }
-
-export const saveRiff = (token, payload, riff, websocket) => {
-  return (dispatch) => {
-    let fd = new FormData();
-    fd.append('token', token);
-    fd.append(riff.type === 'text' ? 'text' : 'blob', payload.payload);
-    fd.append('type', riff.type);
-    fd.append(
-      'duration',
-      riff.type === 'text' ? payload.duration : riff.duration // how can this be right? (I should just relax)
-    );
-    fd.append('start', payload.time);
-    fd.append('video_id', riff.video_id);
-    fd.append('tempId', riff.tempId);
-
-    // this may be null, and that's ok
-    fd.append('id', riff.id);
-
-    axios({
-      method: 'post',
-      url: `/save-riff`,
-      data: fd,
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
-      .then((res) => {
-        // res.data.data
-        dispatch({ type: SAVE_RIFF_SUCCESS, payload: res.data });
-        // websocket call
-        websocket.send(
-          JSON.stringify({ type: 'update', video_id: riff.video_id })
-        );
-      })
-      .catch((err) => {
-        dispatch({ type: SAVE_RIFF_FAILURE, payload: err.response });
-      });
-
-    // dispatch local save command (clears temp audio)
-    dispatch({ type: SAVE_RIFF, payload, riff });
-  };
-};
 
 export const createTempRiff = (type, videoID, immediateRecord = false) => ({
   type: type === 'audio' ? CREATE_TEMP_AUDIO_RIFF : CREATE_TEMP_TEXT_RIFF,

@@ -126,7 +126,7 @@ class EditInterface extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  riffs: state.riffs.all,
+  riffs: state.riffs,
   videoID: state.videoID,
   websocket: state.websocket,
   recorder: state.recorder,

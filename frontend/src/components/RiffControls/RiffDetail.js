@@ -38,7 +38,7 @@ function RiffDetail(props) {
     >
       <button
         onClick={() => {
-          window.rifftubePlayer.seekTo(Math.max(props.time - 3, 0), true);
+          window.rifftubePlayer.seekTo(Math.max(props.start - 3, 0), true);
         }}
       >
         ⇥
@@ -54,16 +54,16 @@ function RiffDetail(props) {
       )}
       {/* 
       <li>
-        start time: {props.time ? props.time.toFixed(2) : null}
+        start start: {props.start ? props.start.toFixed(2) : null}
       </li>
       <li>duration: {props.duration.toFixed(2)}secs</li>
       <li>type: {props.type}</li>
       */}
       <input
         type="number"
-        className="edit-time"
+        className="edit-start"
         step="0.5"
-        defaultValue={props.time.toFixed(2)}
+        defaultValue={props.start.toFixed(2)}
         ref={timeRef}
         onChange={() => {
           props.updateRiffTime(
@@ -93,7 +93,7 @@ function RiffDetail(props) {
             props.editRiff(
               props.index,
               props.type === 'audio' ? props.id : null, // weird but ok; yields id or null/false
-              !props.riffsAudio.all[props.id]
+              !props.riffsAudio[props.id]
             )
             */
           }

@@ -1,163 +1,96 @@
 import {
-  SET_VIDEO_ID,
   DELETE_RIFF,
-  SAVE_RIFF,
-  CREATE_TEMP_AUDIO_RIFF,
-  CREATE_TEMP_TEXT_RIFF,
-  SAVE_TEMP_AUDIO,
-  CANCEL_EDIT,
-  EDIT_RIFF,
+  SAVE_NEW_RIFF,
+  SAVE_EDIT_RIFF,
   RECEIVE_RIFF_LIST,
-  SAVE_RIFF_SUCCESS,
+  SAVE_NEW_RIFF_SUCCESS,
+  SAVE_EDIT_RIFF_SUCCESS,
   UPDATE_RIFF_TIME_SUCCESS,
 } from '../actions/index.js';
 
-let initialState = {
-  all: [],
-  temp: null,
-  editIndex: null,
-};
+let initialState = [];
 
 const riffsReducer = (state = initialState, action) => {
   switch (action.type) {
-    //case SET_VIDEO_ID:
-      //return initialState;
-    case CREATE_TEMP_AUDIO_RIFF:
-    case CREATE_TEMP_TEXT_RIFF:
-      return {
-        ...state,
-        temp: {
-          ...state.temp,
-          type: action.type === CREATE_TEMP_AUDIO_RIFF ? 'audio' : 'text',
-          // @ts-ignore
-          // rifftubePlayer isn't normally on the window object so this throws an error but it works.
-          time: window.rifftubePlayer.getCurrentTime(),
-          video_id: action.videoID,
-          tempId: new Date().getUTCMilliseconds(), // used to get perm id from server
-        },
-        editIndex: null,
-      };
-    case EDIT_RIFF:
-      return {
-        ...state,
-        temp: { ...state.all[action.payload] }, // copy specified riff to tempRiff
-        editIndex: action.payload,
-      };
-    case DELETE_RIFF: {
+    case DELETE_RIFF:
+    {
       let ret = { ...state };
-
-      ret.all = ret.all.filter((el) => el.id !== action.id);
-
-      // silly change
-
-      /*let index = ret.all.findIndex(el => el.id === action.id);
-
-
-
-      ret.all.splice(index, 1);*/
-
+      delete ret[action.id]
       return ret;
     }
-    case SAVE_TEMP_AUDIO:
-      return {
-        ...state,
-        temp: {
-          ...state.temp,
-          duration: action.duration,
-          //payload: action.payload
-        },
-      };
-    case CANCEL_EDIT:
-      return {
-        ...state,
-        temp: null,
-        editIndex: null,
-      };
     case RECEIVE_RIFF_LIST:
-      //debugger;
-      return {
-        ...state,
-        timestamp: Date.now(),
-        all: action.payload.map((el) => ({
-          ...el,
-          time: el.start,
-          payload: el.isText ? el.text : null,
-          type: el.isText ? 'text' : 'audio',
-        })),
-      };
-
+      return action.payload.reduce(
+        (acc, cur) =>
+        {
+          cur.payload = cur.isText ? cur.text : null;
+          cur.type = cur.isText ? 'text' : 'audio';
+          acc[cur.id] = cur;
+          return acc;
+        },
+        {}
+      );
     case UPDATE_RIFF_TIME_SUCCESS:
-      let riffs = [...state.all];
+    {
+      let ret = { ...state };
+      ret[action.id].start = Number(action.start);
+      return ret;
+    }
+    case SAVE_NEW_RIFF: // code block for variable grouping
+    {
+      // create object from modified entries
+      const riff = Object.fromEntries(
+        [
+          ...action.payload.entries
+            // convert keys from riff[*] to *
+            .map(
+              el =>
+              (
+                [
+                  el[0].match(/riff\[(\w+)\]/)[1],
+                  el[1]
+                ]
+              )
+            ),
+          ["saved", false],
+          ["tempId", new Date().getUTCMilliseconds()]
+        ]
+      );
+
+        //...action.payload,
+      delete riff.payload;
+
+      // create new riffs list, including new riff
+      return (
+      {
+        ...state,
+        [`temp-${riff.tempId}`]: riff
+      });
+    }
+    case SAVE_EDIT_RIFF:
+    {
+      const riff = { ...action.payload, saved: false };
+      delete riff.payload;
+
+      let riffs = [...state];
+      riffs[riff.id] = riff;
+
+      return riffs;
+    }
+
+    case SAVE_NEW_RIFF_SUCCESS:
+    {
+      let riffs = [...state];
       riffs.forEach((el, ind, arr) => {
-        if (el.id === action.id)
-          arr[ind] = { ...el, id: action.id, time: Number(action.time) };
+        if (el.tempId === action.payload.tempId)
+          arr[ind] = { ...el, id: action.payload.id };
         //el.id = action.payload.id;
       });
-      let ret = { ...state, all: riffs };
-      return ret;
-
-    case SAVE_RIFF_SUCCESS:
-      if (action.payload.type === 'add') {
-        let riffs = [...state.all];
-        riffs.forEach((el, ind, arr) => {
-          if (el.tempId === action.payload.tempId)
-            arr[ind] = { ...el, id: action.payload.id };
-          //el.id = action.payload.id;
-        });
-        let ret = { ...state, all: riffs };
-        return ret;
-      } else return state;
-
-    case SAVE_RIFF: {
-      const { payload, ...actionPayload } = action.payload; // payload (audio data) will be ignored
-      const riff = { ...state.temp, ...actionPayload };
-
-      // the payload should be included if this is a text riff
-      if ( state.temp.type === "text" )
-        riff.payload = payload;
-
-      let riffs;
-
-      // adding a new riff:
-      if (state.editIndex === null) riffs = [...state.all, riff];
-      // EDIT_MODE (existing riff):
-      else {
-        riffs = [...state.all];
-        riffs[state.editIndex] = riff;
-      }
-
-      return {
-        all: riffs,
-        temp: null,
-        editIndex: null,
-      };
+      return riffs;
     }
-
-    /*
-    case LOAD_RIFF:
-      let ret = { ...state }; // will this work?
-      ret.all[action.payload].loading = true;
-      return ret;
-    case RIFF_LOADED: {
-      debugger;
-      const b = new Blob(new Array(action.payload), { type: 'audio/mp3' });
-      let riffs = [...state.all];
-      riffs.forEach(el => {
-        if (el.id === action.id) {
-          el.payload = b;
-          el.loading = false;
-        }
-      });
-      let ret = { ...state, all: riffs };
-
-      // if this is being edited currently, tempRiff needs to be updated as well
-      // editIndex != null simply means that something is being edited
-      if (state.editIndex !== null && state.temp.id === action.id)
-        ret.temp = { ...ret.temp, payload: b };
-
-      return ret;
+    case SAVE_EDIT_RIFF_SUCCESS:
+    {
+      
     }
-    */
 
     default:
       return state;

@@ -44,9 +44,9 @@ class AuthorSelector extends React.Component {
     /*
     if (
       prevState.muted !== this.state.muted ||
-      prevState.all !== this.state.all
+      prevState !== this.state
     ) {
-      if (this.state.all) {
+      if (this.state) {
         this.props.history.push(`/view/${this.props.videoID}`);
       } else {
         // new muted state
@@ -126,7 +126,7 @@ class AuthorSelector extends React.Component {
         />
         <div
           onClick={() => {
-            if (!this.state.all)
+            if (!this.state)
               this.props.history.push(`/view/${this.props.videoID}`);
             else {
               const nm2 = this.state.names.map((el) => el.id);
@@ -139,7 +139,7 @@ class AuthorSelector extends React.Component {
             }
           }}
           style={{
-            backgroundColor: this.state.all ? 'blue' : 'gray',
+            backgroundColor: this.state ? 'blue' : 'gray',
           }}
         >
           All

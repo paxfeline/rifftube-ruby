@@ -24,7 +24,7 @@ class RiffBar extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.riffs !== this.props.riffs) {
-      // multiple tracks are used to display overlapping riffs at the same time
+      // multiple tracks are used to display overlapping riffs at the same start
       const tracks = [[]];
       const trackPos = [0]; // time code where last riff on track ends
 
@@ -35,7 +35,7 @@ class RiffBar extends React.Component {
       let slope = 0;
 
       // sort riffs by starting time
-      this.props.riffs.sort((e1, e2) => e1.time - e2.time);
+      this.props.riffs.sort((e1, e2) => e1.start - e2.start);
 
       // loop through sorted riffs
       for (const riff of this.props.riffs) {
@@ -45,7 +45,7 @@ class RiffBar extends React.Component {
           const toDelete = [];
           for (const toCheck of runningRiffs) {
             // (see above)
-            if (toCheck.time + toCheck.duration <= riff.time) {
+            if (toCheck.start + toCheck.duration <= riff.start) {
               // don't delete in place while looping
               toDelete.push(toCheck);
               slope = -1; // last action was to remove
@@ -60,7 +60,7 @@ class RiffBar extends React.Component {
 
         // keep running list sorted by first ending
         runningRiffs.sort(
-          (e1, e2) => e1.time + e1.duration - (e2.time + e2.duration)
+          (e1, e2) => e1.start + e1.duration - (e2.start + e2.duration)
         );
 
         // last action was to add
@@ -70,9 +70,9 @@ class RiffBar extends React.Component {
         var flag = true;
         for (var i = 0; i < tracks.length; i++) {
           // check whether this track is available
-          if (trackPos[i] <= riff.time) {
+          if (trackPos[i] <= riff.start) {
             tracks[i].push(riff);
-            trackPos[i] = riff.time + riff.duration;
+            trackPos[i] = riff.start + riff.duration;
             flag = false;
             break;
           }
@@ -81,7 +81,7 @@ class RiffBar extends React.Component {
         // if no track was found, add one
         if (flag) {
           tracks.push([riff]);
-          trackPos.push(riff.time + riff.duration);
+          trackPos.push(riff.start + riff.duration);
         }
       }
       this.setState(() => ({
@@ -124,7 +124,7 @@ class RiffBar extends React.Component {
                       fontSize: '0.25em',
                       lineHeight: '3em',
                       verticalAlign: 'middle',
-                      left: `${riff.time * 4}em`,
+                      left: `${riff.start * 4}em`,
                       height: '3em',
                       width: `${riff.duration * 4}em`,
                       backgroundColor: 'red',

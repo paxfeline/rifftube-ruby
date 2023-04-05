@@ -5,10 +5,10 @@ let initialState = [];
 const riffsMetaReducer = (state = initialState, action) => {
   switch (action.type) {
     case RECEIVE_RIFF_META:
-      debugger;
+      //debugger;
       return action.payload.map((el) => ({
         ...el,
-        time: el.start,
+        start: el.start,
         payload: el.isText ? el.text : null,
         type: el.isText ? 'text' : 'audio',
       }));
