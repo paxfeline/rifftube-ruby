@@ -43,8 +43,10 @@ class RiffsController < ApplicationController
 
             recode_audio
             params[:riff][:user_id] = current_user.id
+            params[:riff][:video_id] = Video.find_by(url: params[:riff][:video_id]).id
             
-            # fix up (see Users)
+            print riff_params.inspect
+
             @riff = Riff.new(riff_params)
 
             if @riff.save

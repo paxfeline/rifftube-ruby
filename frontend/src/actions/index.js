@@ -152,8 +152,11 @@ export const saveEditRiff = (detail) =>
 export const saveNewRiff = (detail) =>
 {
   // add tempId
+  debugger;
   detail.set("tempId", new Date().getUTCMilliseconds());
   let detailObj = Object.fromEntries(detail.entries());
+  const numericFields = ["riff[start]", "riff[duration]"];
+  numericFields.forEach(el => detailObj[el] = Number(detailObj[el]));
   return (dispatch) =>
   {
     dispatch({ type: SAVE_NEW_RIFF, payload: detailObj });
@@ -254,7 +257,6 @@ export const setVideoID = (videoID) => {
       method: 'get',
       url: `/riffs?video_id=${videoID}&user_id=self`,
     }).then((res) => {
-      debugger;
       dispatch({ type: RECEIVE_RIFF_LIST, payload: res.data });
     }).catch(error => {
       console.error(error);
