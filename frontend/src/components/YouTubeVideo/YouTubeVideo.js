@@ -73,7 +73,7 @@ class YouTubeVideo extends React.Component {
         //if it's an audio riff
         riff.type === 'audio' &&
         //if it's not loaded already
-        !this.props.riffsAudio[riff.id] && //!riff.payload &&
+        !this.props.riffsAudio.all[riff.id] && //!riff.payload &&
         //if it's not loading
         !this.props.riffsAudio.loading[riff.id] && //!riff.loading &&
         // if the riff is in the future
@@ -170,16 +170,16 @@ class YouTubeVideo extends React.Component {
               if (!this.audLock) this.audLock = 1;
               else this.audLock++;
 
-              if (!this.props.riffsAudio[riff.id]) {
+              if (!this.props.riffsAudio.all[riff.id]) {
                 //(!riff.payload) {
                 return;
               } // DEBUG - SHOULD BE REMOVED
               var audioURL = URL.createObjectURL(
-                this.props.riffsAudio[riff.id]
+                this.props.riffsAudio.all[riff.id]
               ); //(riff.payload);
               //debugger;
 
-              window.lastRiff = this.props.riffsAudio[riff.id]; // riff.payload;
+              window.lastRiff = this.props.riffsAudio.all[riff.id]; // riff.payload;
 
               // FIX THIS:
 

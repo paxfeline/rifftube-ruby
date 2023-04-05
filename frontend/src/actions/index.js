@@ -134,7 +134,7 @@ export const currentUserStatus = () => {
 
 export const saveEditRiff = (detail) =>
 {
-  let detailObj = Object.fromEntries(detail.entries);
+  let detailObj = Object.fromEntries(detail.entries());
   return (dispatch) =>
   {
     dispatch({ type: SAVE_EDIT_RIFF, payload: detailObj });
@@ -151,7 +151,9 @@ export const saveEditRiff = (detail) =>
 
 export const saveNewRiff = (detail) =>
 {
-  let detailObj = Object.fromEntries(detail.entries);
+  // add tempId
+  detail.set("tempId", new Date().getUTCMilliseconds());
+  let detailObj = Object.fromEntries(detail.entries());
   return (dispatch) =>
   {
     dispatch({ type: SAVE_NEW_RIFF, payload: detailObj });
@@ -419,7 +421,7 @@ export const setRiffPlaying = (index, playing) => ({
   payload: index,
 });
 
-export const loadRiff = (id, load) => {
+export const loadRiff = id => {
   return (dispatch) => {
     dispatch({ type: LOAD_RIFF, payload: id });
     rawLoadAxios(dispatch, id);

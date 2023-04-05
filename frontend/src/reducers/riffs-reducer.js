@@ -40,19 +40,19 @@ const riffsReducer = (state = initialState, action) => {
       // create object from modified entries
       const riff = Object.fromEntries(
         [
-          ...action.payload.entries
+          ...(Object.entries(action.payload)
             // convert keys from riff[*] to *
+            // i.e. riff[duration] to duration
             .map(
               el =>
               (
                 [
-                  el[0].match(/riff\[(\w+)\]/)[1],
+                  el[0].match(/riff\[(\w+)\]/)?.[1],
                   el[1]
                 ]
               )
-            ),
-          ["saved", false],
-          ["tempId", new Date().getUTCMilliseconds()]
+            )),
+          ["unsaved", true]
         ]
       );
 

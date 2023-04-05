@@ -1,12 +1,15 @@
 import React, { useState, useEffect, createRef } from 'react';
 import { connect } from 'react-redux';
 import { editRiff, deleteRiff, updateRiffTime } from '../../actions/index.js';
-import Delete from '../../images/delete-24px.svg';
-import Edit from '../../images/edit-24px.svg';
 import Audio from '../../images/settings_voice-24px.svg';
 import Text from '../../images/chat-24px.svg';
 
 import { executeScriptElements } from './util.js';
+
+/*
+import Delete from '../../images/delete-24px.svg';
+import Edit from '../../images/edit-24px.svg';
+*/
 
 /* this component is where a user can edit their riff */
 function RiffDetail(props) {
@@ -26,7 +29,7 @@ function RiffDetail(props) {
 
   const timeRef = createRef();
 
-  //console.log(props);
+  console.log(props);
 
   return (
     <div
@@ -119,8 +122,7 @@ function RiffDetail(props) {
 }
 
 const mapStateToProps = (state) => ({
-  riffsAudio: state.riffsAudio,
-  websocket: state.websocket,
+  riffsAudio: state.riffsAudio.all,
 });
 
 const mapDispatchToProps = {

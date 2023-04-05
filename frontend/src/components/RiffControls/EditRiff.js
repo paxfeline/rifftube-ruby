@@ -153,11 +153,7 @@ class EditRiff extends React.Component {
 
 const mapStateToProps = (state) => ({
   mode: state.mode,
-  tempRiff: state.riffs.temp,
-  tempAudio: state.riffsAudio.temp,
   editIndex: state.riffs.editIndex,
-  googleUser: state.googleUser,
-  websocket: state.websocket,
 });
 
 const mapDispatchToProps = {

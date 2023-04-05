@@ -12,34 +12,23 @@ import {
   LOAD_RIFF,
 } from '../actions/index.js';
 
-let initialState = { saving: {}, loading: {}, temp: null, all: {}, editIndex: null };
+let initialState = { loading: {}, all: {} };
 
 const riffsAudioReducer = (state = initialState, action) => {
   switch (action.type) {
-    case CREATE_TEMP_AUDIO_RIFF:
-    case CREATE_TEMP_TEXT_RIFF:
-      return { ...state, editIndex: null };
-    case SET_VIDEO_ID:
-      return initialState;
     case EDIT_RIFF:
       return {
         ...state,
         temp: state[action.id], // copy specified riff audio to temp
-        editIndex: action.payload
       };
     case SAVE_NEW_RIFF_SUCCESS: {
-      if (action.payload.type === 'add') {
-        const { [action.payload.tempId]: foo, ...saving } = state.saving; // foo is discarded
-        return {
+      return {
+        ...state,
+        all: {
           ...state,
-          saving,
-          all: {
-            ...state,
-            [action.payload.id]: state.temp,
-          },
-          temp: null,
-        };
-      } else return state;
+          [action.payload.id]: state.temp,
+        },
+      };
     }
     case SAVE_NEW_RIFF: {
       // adding a new riff:
@@ -47,7 +36,7 @@ const riffsAudioReducer = (state = initialState, action) => {
         ...state,
         saving: {
           ...state.saving,
-          [action.riff.tempId]: true,
+          [action.payload.tempId]: true,
         },
         editIndex: null,
       };
@@ -77,9 +66,9 @@ const riffsAudioReducer = (state = initialState, action) => {
     }
     case RIFF_LOADED:
     {
-      // unpack state.loading object, selecting (and discarding) the entry for the loaded riff's id (foo)
-      // the new loading var holds the loading object minus the loaded riff
-      const { [action.id]: foo, ...loading } = state.loading;
+      // unpack state.loading object, delete the entry for the loaded riff's id
+      const loading = {...state.loading};
+      delete loading[action.id]
       // create blob for audio and add to state
       //debugger;
       const audio = new Blob(new Array(action.payload), {
@@ -95,11 +84,6 @@ const riffsAudioReducer = (state = initialState, action) => {
         temp: state.editIndex === null ? null : audio,
       };
     }
-    case SAVE_TEMP_AUDIO:
-      return {
-        ...state,
-        temp: action.payload,
-      };
     case CANCEL_EDIT:
       return {
         ...state,
