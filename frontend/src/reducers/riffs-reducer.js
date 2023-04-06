@@ -47,7 +47,9 @@ const riffsReducer = (state = initialState, action) => {
               el =>
               (
                 [
-                  el[0].match(/riff\[(\w+)\]/)?.[1],
+                  // key
+                  el[0].match(/riff\[(\w+)\]/)?.[1] ?? el[0],
+                  // value
                   el[1]
                 ]
               )
@@ -63,7 +65,7 @@ const riffsReducer = (state = initialState, action) => {
       return (
       {
         ...state,
-        [`temp-${riff.tempId}`]: riff
+        [riff.tempId]: riff
       });
     }
     case SAVE_EDIT_RIFF:
@@ -71,7 +73,7 @@ const riffsReducer = (state = initialState, action) => {
       const riff = { ...action.payload, saved: false };
       delete riff.payload;
 
-      let riffs = [...state];
+      let riffs = {...state };
       riffs[riff.id] = riff;
 
       return riffs;
@@ -79,12 +81,13 @@ const riffsReducer = (state = initialState, action) => {
 
     case SAVE_NEW_RIFF_SUCCESS:
     {
-      let riffs = [...state];
-      riffs.forEach((el, ind, arr) => {
-        if (el.tempId === action.payload.tempId)
-          arr[ind] = { ...el, id: action.payload.id };
-        //el.id = action.payload.id;
-      });
+      debugger;
+      let id = action.payload.id;
+      let tempId = action.payload.tempId;
+      let riffs = { ...state };
+      riffs[id] = riffs[tempId];
+      riffs[id].id = id;
+      delete riffs[tempId];
       return riffs;
     }
     case SAVE_EDIT_RIFF_SUCCESS:

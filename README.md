@@ -4,6 +4,23 @@ rake start
 
 
 
+TODO: isText -> no audio
+    add speak column
+
+
+edit riff form:
+
+use audio:          isText  speak
+- recorded          false   ---
+- synthesized       true    true 
+- no                true    false
+
+show text?
+
+duration (under advanced):
+- custom (or dictated by audio)
+- auto (synthesized audio duration)
+
 
 
 

@@ -20,8 +20,23 @@
 <input type="hidden" name="riff[video_id]" value="<%= video_id %>">
 <% end %>
 
-<%# form.hidden_field inserts autocomplete="off" which prevents bfcaching %>
-<%= form.number_field :duration, { style: "display: none;" } %>
+<div>
+<%
+    at_1 = Object.new
+    def at_1.id() 1 end
+    def at_1.name() "Recorded audio" end
+    at_2 = Object.new
+    def at_2.id() 2 end
+    def at_2.name() "Synthesized audio" end
+    at_3 = Object.new
+    def at_3.id() 3 end
+    def at_3.name() "No audio" end
+    type_arr = [at_1, at_2, at_3]
+%>
+<%= form.collection_radio_buttons :audio_type,
+    [[1, "Recorded audio"], [2, "Synthesized audio"], [3, "No audio"]],
+    :first, :last %>
+</div>
 
 <div>
 <%= form.label :text, "Riff Text" %><br>
@@ -35,7 +50,9 @@
 
 <details>
     <summary>Advanced Options</summary>
-    <input type="file" name="riff[audio]" accept="audio/mp4">
+    <input type="file" name="riff[audio]" accept="audio/mp4"><br>
+    <%= form.label :duration %>
+    <%= form.number_field :duration, step: 0.5 %><br>
 </details>
 
 <div style="margin-top: 1em;">
@@ -115,7 +132,7 @@ if (navigator.mediaDevices)
                 // Wrap audio blob as File; use DataTransfer to create a files object; assign to file input.
                 // This keeps the audio in place in case of navigation away and back.
                 // Other code reads it from the input and restores the audio player's src attr.
-                let file = new File([rifftube.temp_audio], `recorded audio ${new Date().toLocaleTimeString()}`, {type: rifftube.recorder.mimeType, lastModified: Date.now()});
+                let file = new File([rifftube.temp_audio], `Recorded audio ${new Date().toLocaleTimeString()}`, {type: rifftube.recorder.mimeType, lastModified: Date.now()});
                 let container = new DataTransfer();
                 container.items.add(file);
                 rifftube.curFile.files = container.files;
@@ -133,6 +150,33 @@ if (navigator.mediaDevices)
             //enable the record button if getUSerMedia() fails
             console.log("oops, can't get stream", err);
         });
+}
+
+rifftube.text_start = function()
+{
+    if (rifftube.recording) return;
+
+    //debugger;
+
+    console.log("start text")
+
+    rifftube.recording = true;
+
+    rifftube.record_start_time = Date.now();
+}
+
+
+rifftube.text_stop = function()
+{
+    if (!rifftube.recording) return;
+
+    console.log("end text")
+
+    rifftube.recording = false;
+
+    rifftube.riff_duration = (Date.now() - rifftube.record_start_time) / 1000;
+
+    rifftube.curDur.value = rifftube.riff_duration;
 }
 
 rifftube.record_start = function()
@@ -222,6 +266,11 @@ rifftube.rec_keydown = function(e)
         rifftube.record_start();
         e.stopPropagation();
     }
+    else if (e.key == 't')
+    {
+        rifftube.text_start();
+        e.stopPropagation();
+    }
 }
 
 rifftube.rec_keyup = function(e)
@@ -234,7 +283,10 @@ rifftube.rec_keyup = function(e)
     if (e.key == 'r')
     {
         rifftube.record_stop();
-        e.stopPropagation();
+    }
+    else if (e.key == 't')
+    {
+        rifftube.text_stop();
     }
 }
 
@@ -242,6 +294,10 @@ rifftube.curDial.addEventListener('keydown', rifftube.rec_keydown, false);
 rifftube.curDial.addEventListener('keyup', rifftube.rec_keyup, false);
 
 rifftube.curDial.addEventListener("cancel", () => { rifftube.close_modal(); });
+
+// no immediate record -> text only-riff
+if (!rifftube.curDial.hasAttribute("data-immediate-record"))
+    rifftube.text_start();
 
 rifftube.curDial.showModal();
 

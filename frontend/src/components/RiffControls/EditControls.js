@@ -34,10 +34,10 @@ function EditControls(props)
             e.getModifierState("Meta") > 0 )
         return;
 
-    if (e.key == 'r')
+    if (e.key == 'r' || e.key == 't')
     {
-      startNewRiff(true);
-      //e.stopPropagation();
+      // immediate record if pressing r but not t
+      startNewRiff(e.key == 'r');
     }
   }
 

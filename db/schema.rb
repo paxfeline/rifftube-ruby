@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_16_060809) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_06_082014) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -67,6 +67,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_16_060809) do
     t.boolean "isText", default: false, null: false
     t.integer "user_id", null: false
     t.integer "video_id", null: false
+    t.boolean "speak", default: false
   end
 
   create_table "user_blocks", force: :cascade do |t|

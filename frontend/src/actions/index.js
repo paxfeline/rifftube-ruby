@@ -134,6 +134,7 @@ export const currentUserStatus = () => {
 
 export const saveEditRiff = (detail) =>
 {
+  debugger;
   let detailObj = Object.fromEntries(detail.entries());
   return (dispatch) =>
   {
@@ -144,7 +145,7 @@ export const saveEditRiff = (detail) =>
         body: detail
       })
       .then(response => response.json())
-      .then(response => dispatch({ type: SAVE_EDIT_RIFF_SUCCESS, payload: response.data }))
+      .then(response => dispatch({ type: SAVE_EDIT_RIFF_SUCCESS, payload: response }))
       .catch(err => dispatch({ type: SAVE_EDIT_RIFF_FAILURE, payload: err }));
   }
 }
@@ -153,7 +154,8 @@ export const saveNewRiff = (detail) =>
 {
   // add tempId
   debugger;
-  detail.set("tempId", new Date().getUTCMilliseconds());
+  let tempId = `temp-${new Date().getUTCMilliseconds()}`;
+  detail.set("tempId", tempId);
   let detailObj = Object.fromEntries(detail.entries());
   const numericFields = ["riff[start]", "riff[duration]"];
   numericFields.forEach(el => detailObj[el] = Number(detailObj[el]));
@@ -166,7 +168,8 @@ export const saveNewRiff = (detail) =>
         body: detail
       })
       .then(response => response.json())
-      .then(response => dispatch({ type: SAVE_NEW_RIFF_SUCCESS, payload: response.data }))
+      // add tempId to response instead of passing back and forth
+      .then(response => dispatch({ type: SAVE_NEW_RIFF_SUCCESS, payload: {...response, tempId} }))
       .catch(err => dispatch({ type: SAVE_NEW_RIFF_FAILURE, payload: err }));
   }
 }
