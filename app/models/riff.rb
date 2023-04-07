@@ -10,7 +10,7 @@ class Riff < ApplicationRecord
     def audio_type=(value)
         if value == 1
             write_attribute(:isText, false)
-            write_attribute(:speak, null)
+            write_attribute(:speak, false)
         elsif value == 2
             write_attribute(:isText, true)
             write_attribute(:speak, true)

@@ -32,6 +32,7 @@ class RiffsController < ApplicationController
     #   GET	/photos/new	photos#new	return an HTML form for creating a new photo
     def new
         @video_id = params[:video_id]
+        @riff = Riff.new
         render layout: false
     end
 
@@ -124,7 +125,7 @@ end
 private
 def riff_params
   #params[:user][:email].downcase!
-  params.require(:riff).permit(:audio, :text, :start, :duration, :user_id, :video_id)
+  params.require(:riff).permit(:audio, :text, :start, :duration, :user_id, :video_id, :audio_type)
 end
 
 def recode_audio

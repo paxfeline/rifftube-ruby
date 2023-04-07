@@ -4,23 +4,29 @@ rake start
 
 
 
-TODO: isText -> no audio
-    add speak column
+isText means "is text only"
 
 
 edit riff form:
 
 use audio:          isText  speak
-- recorded          false   ---
+- recorded          false   false
 - synthesized       true    true 
 - no                true    false
 
-show text?
+show text?          show = t/f
 
-duration (under advanced):
-- custom (or dictated by audio)
+duration (under advanced):  auto-duration = t/f
+- custom
 - auto (synthesized audio duration)
 
+"use recorded [or synthesized] audio" (isText = false [or speak = true]) will set auto-duration = true
+
+if "use no audio" is chosen (i.e. radio button clicked, or 't' is pressed instead of 'r'), then "show text" (showText) will be set to true (though it can be de-selected)
+
+isText = false -> auto-duration = true, speak = false (show = t/f)
+isText = true, speak = false -> show = true (auto-duration = t/f)
+isText = true, speak = true -> auto-duration = true (show = t/f)
 
 
 
