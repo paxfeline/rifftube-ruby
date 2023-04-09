@@ -30,3 +30,8 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 .DS_Store
+
+# node_modules
+
+/frontend/node_modules
+/node_modules
