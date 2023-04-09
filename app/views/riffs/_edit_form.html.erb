@@ -106,30 +106,6 @@ isText = true, speak = false -> show = true (auto-duration = t/f)
 isText = true, speak = true -> auto-duration = true (show = t/f)
 */
 
-rifftube.curTypeRad.forEach( el => el.addEventListener("change",
-    e =>
-    {
-        if ( e.target == rifftube.curTypeRad[0] )
-        {
-            rifftube.curAutoChk.checked = true;
-            rifftube.curAutoChk.disabled = true;
-            rifftube.curShowChk.disabled = false;
-        }
-        else if ( e.target == rifftube.curTypeRad[1] )
-        {
-            rifftube.curAutoChk.checked = true;
-            rifftube.curAutoChk.disabled = true;
-            rifftube.curShowChk.disabled = false;
-        }
-        else if ( e.target == rifftube.curTypeRad[2] )
-        {
-            rifftube.curShowChk.checked = true;
-            rifftube.curShowChk.disabled = true;
-            rifftube.curAutoChk.disabled = false;
-
-        }
-    }) );
-
 if (rifftube.curFile.files.length == 1)
 {
     let audio_URL = URL.createObjectURL(duplicate_blob(rifftube.curFile.files[0]));
@@ -328,6 +304,34 @@ rifftube.rec_keyup = function(e)
     }
 }
 
+rifftube.audioTypeUICallback = function(e)
+{
+    if ( e.target == rifftube.curTypeRad[0] )
+    {
+        rifftube.curAutoChk.checked = true;
+        rifftube.curAutoChk.disabled = true;
+        rifftube.curDur.disabled = true;
+        rifftube.curShowChk.disabled = false;
+    }
+    else if ( e.target == rifftube.curTypeRad[1] )
+    {
+        rifftube.curAutoChk.checked = true;
+        rifftube.curAutoChk.disabled = true;
+        rifftube.curDur.disabled = true;
+        rifftube.curShowChk.disabled = false;
+    }
+    else if ( e.target == rifftube.curTypeRad[2] )
+    {
+        rifftube.curShowChk.checked = true;
+        rifftube.curShowChk.disabled = true;
+        rifftube.curAutoChk.disabled = false;
+        rifftube.curDur.disabled = false;
+
+    }
+};
+
+rifftube.curTypeRad.forEach( el => el.addEventListener("change", rifftube.audioTypeUICallback) );
+
 rifftube.curDial.addEventListener('keydown', rifftube.rec_keydown, false);
 rifftube.curDial.addEventListener('keyup', rifftube.rec_keyup, false);
 
@@ -336,6 +340,10 @@ rifftube.curDial.addEventListener("cancel", () => { rifftube.close_modal(); });
 // no immediate record -> text only-riff
 if (!rifftube.curDial.hasAttribute("data-immediate-record"))
     rifftube.text_start();
+
+debugger;
+rifftube.curTypeSel = rifftube.curForm.querySelector("[type='radio'][name='riff[audio_type]'][checked]");
+rifftube.audioTypeUICallback({ target: rifftube.curTypeSel })
 
 rifftube.curDial.showModal();
 

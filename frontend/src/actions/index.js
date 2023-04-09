@@ -402,12 +402,6 @@ export const updateRiffTime = (token, start, video_id, riff_id, websocket) => {
   };
 }
 
-export const createTempRiff = (type, videoID, immediateRecord = false) => ({
-  type: type === 'audio' ? CREATE_TEMP_AUDIO_RIFF : CREATE_TEMP_TEXT_RIFF,
-  videoID,
-  immediateRecord,
-});
-
 export const setImmediateOn = () => ({
   type: SET_IMMEDIATE_ON,
 });
