@@ -157,7 +157,7 @@ class YouTubeVideo extends React.Component {
         });
 
         // next start any that should be playing
-        this.props.riffs.forEach((riff, index) => {
+        Object.values(this.props.riffs).forEach((riff, index) => {
           // the riff will start playing within half a second, or will be skipped
           if (!this.curRiff[index] && t > riff.start && t < riff.start + 0.5) {
             this.props.setRiffPlaying(index, true);

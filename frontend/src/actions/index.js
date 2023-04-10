@@ -469,7 +469,7 @@ export const setRiffPlaying = (index, playing) => ({
 });
 
 export const loadRiff = payload => {
-  debugger;
+  //debugger;
   return (dispatch) => {
     dispatch({ type: LOAD_RIFF, payload });
     rawLoadAxios(dispatch, payload);

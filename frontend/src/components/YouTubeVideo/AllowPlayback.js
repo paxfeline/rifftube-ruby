@@ -1,6 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { setPlayerMode, setAudioPlayers, setAudioPlayerInUse, setAudioPlayerNotInUse, PLAY_MODE } from '../../actions/index.js';
+import {
+  setPlayerMode,
+  setAudioPlayers,
+  setAudioPlayerInUse,
+  setAudioPlayerNotInUse,
+  PLAY_MODE
+} from '../../actions/index.js';
 
 class AllowPlayback extends React.Component {
   constructor(props) {
@@ -43,7 +49,7 @@ class AllowPlayback extends React.Component {
       */
     }
 
-    setAudioPlayers(audioPlayers);
+    this.props.setAudioPlayers(audioPlayers);
   };
 
   render = () => {
@@ -53,6 +59,7 @@ class AllowPlayback extends React.Component {
       <div
         className="audio-capture"
         onClick={() => {
+          console.log("allow playback");
           this.setupAudioPlayers();
           this.props.setPlayerMode(PLAY_MODE);
         }}
@@ -67,6 +74,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   setPlayerMode,
+  setAudioPlayers,
   setAudioPlayerInUse,
   setAudioPlayerNotInUse,
 };
