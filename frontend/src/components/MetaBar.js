@@ -4,8 +4,8 @@ import { setMetaBarPlayhead } from '../actions';
 
 const MetaBar = ({ riffsMeta, riffs, duration, metaBarPlayhead, setMetaBarPlayhead }) =>
 {
-  useEffect( () => setMetaBarPlayhead(createRef()), []);
-  
+  useEffect( () => {setMetaBarPlayhead(createRef())}, []);
+
   return (
     <div className="container-riff-meta">
       <div id="meta-play-head" ref={metaBarPlayhead} />

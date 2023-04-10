@@ -17,6 +17,12 @@ class EditInterface extends React.Component {
   constructor(props) {
     super(props);
     this.videoIDRef = React.createRef();
+
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then((stream) => {
+        let mediaRecorder = new MediaRecorder(stream);
+      });
   }
 
   componentDidMount = () => {
