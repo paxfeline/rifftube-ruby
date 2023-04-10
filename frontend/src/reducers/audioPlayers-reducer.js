@@ -12,7 +12,7 @@ const audioPlayersReducer = (state = {players: [], inUse: {}, free: null, freeId
       return {...state, inUse: {}, players: action.payload, free: action.payload[0], freeId: 0};
     case SET_AUDIO_PLAYER_IN_USE:
     {
-        let inUse = {...state.inUse, [action.playload.id]: true };
+        let inUse = {...state.inUse, [action.playload]: true };
         let free, freeId;
         for ( let i = 0; i < 5; i++ )
         {
@@ -42,11 +42,12 @@ const audioPlayersReducer = (state = {players: [], inUse: {}, free: null, freeId
     }
     case SET_AUDIO_PLAYER_NOT_IN_USE:
     {
-        let inUse = {...state.inUse, [action.playload.id]: false };
+        console.log(action.payload, "off")
+        let inUse = {...state.inUse, [action.payload]: false };
         let free, freeId;
         for ( let i = 0; i < 5; i++ )
         {
-          if (!state.inUse[i])
+          if (!inUse[i])
           {
             free = state.players[i];
             freeId = i;

@@ -36,7 +36,7 @@ class AllowPlayback extends React.Component {
 
       audioPlayers[i] = new Audio(); // should be identical behavior to: document.createElement('audio');
       audioPlayers[i].controls = false;
-      audioPlayers[i].addEventListener('ended', function ()
+      audioPlayers[i].addEventListener('ended', () =>
       {
         console.log('audio playback end', i);
         this.props.setAudioPlayerNotInUse(i);

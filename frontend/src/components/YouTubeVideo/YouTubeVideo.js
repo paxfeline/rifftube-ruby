@@ -111,8 +111,9 @@ class YouTubeVideo extends React.Component {
 
       /*******************************************************/
       // this timer is responsible for showing and hiding riffs
-      this.riffInterval = setInterval(() => {
-        console.log("interval", this.props.rifftubePlayer);
+      this.riffInterval = setInterval(() =>
+      {
+        //console.log("interval", this.props.rifftubePlayer);
         if (
           !(
             this.props.rifftubePlayer &&
@@ -127,8 +128,8 @@ class YouTubeVideo extends React.Component {
         if (this.props.metaBarPlayHead && this.props.metaBarPlayHead.current)
         {
           this.props.metaBarPlayHead.current.style.left = `${(t / this.props.duration) * 100}%`;
-          if (this.props.metaBarUpdate)
-            this.props.metaBarUpdate();
+          if (this.props.metaBarCallback)
+            this.props.metaBarCallback();
         }
 
         //
@@ -325,7 +326,7 @@ const mapStateToProps = (state) => ({
   riffsPlaying: state.riffsPlaying,
   duration: state.duration,
   riffsAudio: state.riffsAudio,
-  metaBarUpdate: state.metaBarUpdate,
+  metaBarCallback: state.metaBarCallback,
   metaBarPlayhead: state.metaBarPlayhead,
   audioPlayers: state.audioPlayers,
   rifftubePlayer: state.rifftubePlayer,
