@@ -28,7 +28,7 @@ class ViewInterface extends React.Component {
             history={this.props.history}
             videoID={this.props.match.params.videoID}
             riffers={parsed.solo}
-            riffs={this.props.riffs}
+            riffs={Object.values(this.props.riffs ?? {})}
           />
         </div>
       </React.Fragment>

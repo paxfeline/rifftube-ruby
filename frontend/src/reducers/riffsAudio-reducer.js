@@ -16,11 +16,6 @@ let initialState = { loading: {}, all: {} };
 
 const riffsAudioReducer = (state = initialState, action) => {
   switch (action.type) {
-    case EDIT_RIFF:
-      return {
-        ...state,
-        temp: state[action.id], // copy specified riff audio to temp
-      };
     case SAVE_NEW_RIFF_SUCCESS: {
       return {
         ...state,
@@ -34,11 +29,10 @@ const riffsAudioReducer = (state = initialState, action) => {
       // adding a new riff:
       return {
         ...state,
-        saving: {
+        all: {
           ...state.saving,
           [action.payload.tempId]: true,
         },
-        editIndex: null,
       };
     }
     case SAVE_EDIT_RIFF: {
@@ -49,8 +43,6 @@ const riffsAudioReducer = (state = initialState, action) => {
           ...state,
           [action.riff.id]: action.payload.payload,
         },
-        editIndex: null,
-        temp: null,
       };
     }
     case LOAD_RIFF: 
@@ -78,18 +70,11 @@ const riffsAudioReducer = (state = initialState, action) => {
         ...state,
         loading,
         all: {
-          ...state,
+          ...state.all,
           [action.id]: audio
         },
-        temp: state.editIndex === null ? null : audio,
       };
     }
-    case CANCEL_EDIT:
-      return {
-        ...state,
-        temp: null,
-        editIndex: null,
-      };
     default:
       return state;
   }
