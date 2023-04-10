@@ -6,6 +6,8 @@ import {
   loadRiff,
   togglePlayerMode,
   setVideoDuration,
+  setRifftubePlayer,
+  setFreeAudioPlayerInUse,
   EDIT_MODE,
   EDIT_NEW_MODE,
   PLAY_MODE,
@@ -41,7 +43,7 @@ class YouTubeVideo extends React.Component {
 
     const { id } = this.props;
 
-    if (window.rifftubePlayer) window.rifftubePlayer.destroy();
+    if (this.props.rifftubePlayer) this.props.rifftubePlayer.destroy();
 
     this.player = new window.YT.Player('rifftube-player', {
       videoId: id,
@@ -56,7 +58,7 @@ class YouTubeVideo extends React.Component {
       },
     });
 
-    window.rifftubePlayer = this.player; // store global reference (used to get current playback time when needed)
+    setRifftubePlayer(this.player);
   };
 
   onPlayerReady = (event) => {
@@ -112,20 +114,20 @@ class YouTubeVideo extends React.Component {
       this.riffInterval = setInterval(() => {
         if (
           !(
-            window.rifftubePlayer &&
-            typeof window.rifftubePlayer.getCurrentTime == 'function'
+            this.props.rifftubePlayer &&
+            typeof this.props.rifftubePlayer.getCurrentTime == 'function'
           )
         )
           return;
 
-        let t = window.rifftubePlayer.getCurrentTime();
+        let t = this.props.rifftubePlayer.getCurrentTime();
 
         // if the MetaBar component exists, update its playhead
-        if (window.metaPlayHead && window.metaPlayHead.current) {
-          window.metaPlayHead.current.style.left = `${
-            (t / this.props.duration) * 100
-          }%`;
-          if (window.metaUpdate) window.metaUpdate(window.metaPlayHead.current);
+        if (this.props.metaBarPlayHead && this.props.metaBarPlayHead.current)
+        {
+          this.props.metaBarPlayHead.current.style.left = `${(t / this.props.duration) * 100}%`;
+          if (this.props.metaBarUpdate)
+            this.props.metaBarUpdate();
         }
 
         //
@@ -147,7 +149,7 @@ class YouTubeVideo extends React.Component {
               // make sure all audio clips have stopped
               this.audLock--;
             if (!this.audLock) {
-              window.rifftubePlayer.setVolume(this.vol ? this.vol : 100); // hopefully unnecessary volume failsafe
+              this.props.rifftubePlayer.setVolume(this.vol ? this.vol : 100); // hopefully unnecessary volume failsafe
               delete this.vol;
             }
           }
@@ -162,8 +164,8 @@ class YouTubeVideo extends React.Component {
 
             if (riff.type === 'audio') {
               if (!this.vol) {
-                this.vol = window.rifftubePlayer.getVolume();
-                window.rifftubePlayer.setVolume(this.vol * 0.25);
+                this.vol = this.props.rifftubePlayer.getVolume();
+                this.props.rifftubePlayer.setVolume(this.vol * 0.25);
               }
 
               // keeps track of how many audio tracks need to end before volume should be restored
@@ -179,11 +181,20 @@ class YouTubeVideo extends React.Component {
               ); //(riff.payload);
               //debugger;
 
-              window.lastRiff = this.props.riffsAudio.all[riff.id]; // riff.payload;
+              // not sure why this was here
+              //window.lastRiff = this.props.riffsAudio.all[riff.id]; // riff.payload;
 
               // FIX THIS:
 
-              for (let i = 0; i < window.audioPlayersCount; i++) {
+              let audio = this.props.audioPlayers.free;
+              this.props.setFreeAudioPlayerInUse();
+              audio.src = audioURL;
+              audio.load();
+              audio.play();
+
+              this.curRiff[index] = audio;
+
+              /*for (let i = 0; i < window.audioPlayersCount; i++) {
                 /*
                 if ( window.audioContexts[i].inUse ) continue;
                 let audioContext = window.audioContexts[i];
@@ -198,14 +209,15 @@ class YouTubeVideo extends React.Component {
                     source.start()
                   })
                 });
-                */
+                ?/
 
                 let audio = window.audioPlayers[i];
                 if (audio.inUse) continue;
                 audio.inUse = true;
 
                 // TEST:
-                audio.srcEl.src = audioURL;
+                //audio.srcEl.src = audioURL;
+                audio.src = audioURL;
                 audio.load();
                 audio.play();
 
@@ -222,11 +234,12 @@ class YouTubeVideo extends React.Component {
                 /*
                 audio.src = audioURL;
                 audio.play();
-                */
+                ?/
 
                 this.curRiff[index] = audio; // audioContext;
                 break;
               }
+              */
             }
           }
         });
@@ -311,6 +324,9 @@ const mapStateToProps = (state) => ({
   riffsPlaying: state.riffsPlaying,
   duration: state.duration,
   riffsAudio: state.riffsAudio,
+  metaBarUpdate: state.metaBarUpdate,
+  metaBarPlayhead: state.metaBarPlayhead,
+  audioPlayers: state.audioPlayers,
 });
 
 const mapDispatchToProps = {
@@ -319,6 +335,8 @@ const mapDispatchToProps = {
   togglePlayerMode,
   loadRiff,
   setVideoDuration,
+  setRifftubePlayer,
+  setFreeAudioPlayerInUse,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(YouTubeVideo);

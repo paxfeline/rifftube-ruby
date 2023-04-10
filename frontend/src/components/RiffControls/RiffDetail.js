@@ -41,7 +41,7 @@ function RiffDetail(props) {
     >
       <button
         onClick={() => {
-          window.rifftubePlayer.seekTo(Math.max(props.start - 3, 0), true);
+          props.rifftubePlayer?.seekTo(Math.max(props.start - 3, 0), true);
         }}
       >
         ⇥
@@ -123,6 +123,7 @@ function RiffDetail(props) {
 
 const mapStateToProps = (state) => ({
   riffsAudio: state.riffsAudio.all,
+  rifftubePlayer: state.rifftubePlayer,
 });
 
 const mapDispatchToProps = {

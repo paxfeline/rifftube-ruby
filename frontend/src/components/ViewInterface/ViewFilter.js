@@ -1,18 +1,21 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import YouTubeVideo from '../YouTubeVideo/YouTubeVideo';
+import { setMetaBarPlayhead, setMetaBarCallback } from '../../actions';
 
 class ViewFilter extends React.Component {
   constructor(props) {
     super(props);
-    // window.metaPlayhead gets updated by the youtube component
-    window.metaPlayHead = React.createRef();
+    // window.metaPlayhead gets updated by the youtube component (???)
+    props.setMetaBarPlayhead(React.createRef());
     this.selectDiv = React.createRef();
-    window.metaUpdate = (el) => {
-      if (this.selectDiv.current)
+    let mbc = () => {
+      if (this.selectDiv.current && this.props.metaBarPlayhead.current)
         // seems like it shouldn't be needed, but here we are
         this.selectDiv.current.scrollLeft =
-          el.offsetLeft - this.selectDiv.current.offsetWidth / 2;
+          this.props.metaBarPlayhead.current.offsetLeft - this.selectDiv.current.offsetWidth / 2;
     };
+    props.setMetaBarCallback(mbc);
 
     this.state = {
       filteredRiffs: [],
@@ -228,7 +231,7 @@ class ViewFilter extends React.Component {
             <div
               id="meta-play-head"
               style={{ backgroundColor: 'red', height: 'inherit' }}
-              ref={window.metaPlayHead}
+              ref={this.props.metaBarPlayhead}
             />
             {this.state.tracks.map((trackArray, ind) => (
               <div
@@ -266,4 +269,14 @@ class ViewFilter extends React.Component {
   }
 }
 
-export default ViewFilter;
+const mapStateToProps = (state) => ({
+  metaBarPlayhead: state.metaBarPlayhead,
+  metaBarCallback: state.metaBarCallback,
+});
+
+const mapDispatchToProps = {
+  setMetaBarPlayhead,
+  setMetaBarCallback,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ViewFilter);

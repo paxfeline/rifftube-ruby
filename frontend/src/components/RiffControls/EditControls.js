@@ -2,10 +2,9 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import RiffList from './RiffList.js';
-import RiffButton from './RiffButton.js';
 import Login from '../Login/Login';
 
-import { setRifferName, createTempRiff, togglePlayerMode, setRecorder,
+import { setRifferName, togglePlayerMode, setRecorder,
   saveNewRiff, saveEditRiff } from '../../actions/index.js';
 
 import { executeScriptElements } from './util.js';
@@ -144,49 +143,6 @@ function EditControls(props)
 
                   /* to add back later <Collaboration /> */
                 }
-                <div>
-                  <h2 className="add-riff-title">Add New Riff</h2>
-                  {
-                    props.recorder !== null ?
-                      <RiffButton type="audio" />
-                    :
-                      <button onClick={() => {
-                        var AudioContext =
-                          window.AudioContext || window.webkitAudioContext; // Default // Safari and old versions of Chrome
-                        var audioContext = new AudioContext();
-                        if (navigator.mediaDevices) {
-                          navigator.mediaDevices
-                            .getUserMedia({ audio: true, video: false })
-                            .then((stream) => {
-                              // gum (get user media)
-                              var input = audioContext.createMediaStreamSource(stream);
-                          
-                              var recorder = new window.WebAudioRecorder(input, {
-                                workerDir: '/lib/',
-                                encoding: 'mp3',
-                                onEncoderLoading: (recorder, encoding) => {
-                                  // show "loading encoder..." display
-                                  console.log('Loading ' + encoding + ' encoder...');
-                                },
-                                onEncoderLoaded: (recorder, encoding) => {
-                                  // hide "loading encoder..." display
-                                  console.log(encoding + ' encoder loaded');
-                                },
-                              });
-                              props.setRecorder(recorder);
-                            })
-                            .catch(function (err) {
-                              //enable the record button if getUSerMedia() fails
-                              console.log("oops, can't get stream", err);
-                            });
-                        }
-                      }}>
-                        Click to allow recording
-                      </button>
-                  }
-                  <RiffButton type="text" />
-
-                </div>
                 <RiffList />
                 <template ref={templateRef}></template>
               </React.Fragment>
@@ -211,7 +167,6 @@ let mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   setRifferName,
-  createTempRiff,
   togglePlayerMode,
   setRecorder,
   saveNewRiff,

@@ -71,6 +71,16 @@ export const SAVE_PIC_FAILURE = 'SAVE_PIC_FAILURE';
 export const SET_ERROR = 'SET_ERROR';
 export const CLEAR_ERROR = 'CLEAR_ERROR';
 
+export const SET_METABAR_PLAYHEAD = 'SET_METABAR_PLAYHEAD';
+export const SET_METABAR_CALLBACK = 'SET_METABAR_CALLBACK';
+
+export const SET_RIFFTUBE_PLAYER = 'SET_RIFFTUBE_PLAYER';
+
+export const SET_AUDIO_PLAYERS = 'SET_AUDIO_PLAYERS';
+export const SET_FREE_AUDIO_PLAYER_IN_USE = 'SET_FREE_AUDIO_PLAYER_IN_USE';
+export const SET_AUDIO_PLAYER_IN_USE = 'SET_AUDIO_PLAYER_IN_USE';
+export const SET_AUDIO_PLAYER_NOT_IN_USE = 'SET_AUDIO_PLAYER_NOT_IN_USE';
+
 /******** Login and logout */
 
 export const login = (email, password) => {
@@ -174,6 +184,44 @@ export const saveNewRiff = (detail) =>
   }
 }
 
+
+/******** MetaBar */
+
+export const setMetaBarPlayhead = (payload) => ({
+  type: SET_METABAR_PLAYHEAD,
+  payload,
+});
+
+export const setMetaBarCallback = (payload) => ({
+  type: SET_METABAR_CALLBACK,
+  payload,
+});
+
+/******** Rifftube player */
+
+export const setRifftubePlayer = (payload) => ({
+  type: SET_RIFFTUBE_PLAYER,
+  payload,
+});
+
+export const setAudioPlayers = (payload) => ({
+  type: SET_AUDIO_PLAYERS,
+  payload,
+});
+
+export const setFreeAudioPlayerInUse = () => ({
+  type: SET_FREE_AUDIO_PLAYER_IN_USE,
+});
+
+export const setAudioPlayerInUse = (payload) => ({
+  type: SET_AUDIO_PLAYER_IN_USE,
+  payload,
+});
+
+export const setAudioPlayerNotInUse = (payload) => ({
+  type: SET_AUDIO_PLAYER_NOT_IN_USE,
+  payload,
+});
 
 /******** WebSockets */
 

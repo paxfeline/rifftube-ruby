@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { setPlayerMode, PLAY_MODE } from '../../actions/index.js';
+import { setPlayerMode, setAudioPlayers, setAudioPlayerInUse, setAudioPlayerNotInUse, PLAY_MODE } from '../../actions/index.js';
 
 class AllowPlayback extends React.Component {
   constructor(props) {
@@ -24,24 +24,26 @@ class AllowPlayback extends React.Component {
 
   setupAudioPlayers = () => {
     this.setState({ allowed: true });
-    window.audioContexts = [];
-    window.audioPlayers = [];
-    window.audioPlayerUse = [];
-    window.audioPlayersCount = 5;
-    for (let i = 0; i < 5; i++) {
-      window.audioContexts[i] = new (window.AudioContext ||
-        window.webkitAudioContext)();
+    let audioPlayers = [];
+    let audioPlayersCount = 5;
+    for (let i = 0; i < audioPlayersCount; i++) {
 
-      window.audioPlayers[i] = new Audio(); // should be identical behavior to: document.createElement('audio');
-      window.audioPlayers[i].controls = false;
-      window.audioPlayers[i].addEventListener('ended', function () {
-        this.inUse = false;
+      audioPlayers[i] = new Audio(); // should be identical behavior to: document.createElement('audio');
+      audioPlayers[i].controls = false;
+      audioPlayers[i].addEventListener('ended', function ()
+      {
+        console.log('audio playback end', i);
+        this.props.setAudioPlayerNotInUse(i);
       });
 
+      /* unsure... maybe not needed
       let se = document.createElement('source');
       window.audioPlayers[i].appendChild(se);
       window.audioPlayers[i].srcEl = se;
+      */
     }
+
+    setAudioPlayers(audioPlayers);
   };
 
   render = () => {
@@ -59,10 +61,14 @@ class AllowPlayback extends React.Component {
   };
 }
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+  audioPlayerInUse: state.audioPlayerInUse,
+});
 
 const mapDispatchToProps = {
   setPlayerMode,
+  setAudioPlayerInUse,
+  setAudioPlayerNotInUse,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AllowPlayback);

@@ -20,6 +20,12 @@ import acctImgKeyReducer from './acctImgKey-reducer';
 import userInfoReducer from './user-info-reducer';
 import loggedInReducer from './logged-in-reducer';
 
+import metaBarPlayheadReducer from './metaBarPlayhead-reducer';
+import metaBarCallbackReducer from './metaBarCallback-reducer';
+
+import rifftubePlayerReducer from './rifftubePlayer-reducer';
+import audioPlayersReducer from './audioPlayers-reducer';
+
 // TODO: move appropriate state variables to respective components?
 
 export default combineReducers({
@@ -42,4 +48,12 @@ export default combineReducers({
 
   userInfo: userInfoReducer,
   loggedIn: loggedInReducer,
+
+  metaBarPlayhead: metaBarPlayheadReducer,
+  metaBarCallback: metaBarCallbackReducer,
+
+  rifftubePlayer: rifftubePlayerReducer,
+  audioPlayers: audioPlayersReducer,
+
+
 });
