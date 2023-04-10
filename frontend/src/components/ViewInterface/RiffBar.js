@@ -8,13 +8,13 @@ class RiffBar extends React.Component {
     // window.metaPlayhead gets updated by the youtube component (???)
     props.setMetaBarPlayhead(React.createRef());
     this.selectDiv = React.createRef();
-    let mbc = React.useCallback(() => {
+    props.setMetaBarCallback( () => {
+      console.log("mbc", this.selectDiv.current, this.props.metaBarPlayhead.current)
       if (this.selectDiv.current && this.props.metaBarPlayhead.current)
         // seems like it shouldn't be needed, but here we are
         this.selectDiv.current.scrollLeft =
           this.props.metaBarPlayhead.current.offsetLeft - this.selectDiv.current.offsetWidth / 2;
-    }, []);
-    props.setMetaBarCallback(mbc);
+    } );
 
     this.state = {
       overlappingRiffs: [],

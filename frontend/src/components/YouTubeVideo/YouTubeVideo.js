@@ -124,10 +124,12 @@ class YouTubeVideo extends React.Component {
 
         let t = this.props.rifftubePlayer.getCurrentTime();
 
+        console.log('mbc', this.props.metaBarPlayhead, this.props.metaBarCallback);
+
         // if the MetaBar component exists, update its playhead
-        if (this.props.metaBarPlayHead && this.props.metaBarPlayHead.current)
+        if (this.props.metaBarPlayhead && this.props.metaBarPlayhead.current)
         {
-          this.props.metaBarPlayHead.current.style.left = `${(t / this.props.duration) * 100}%`;
+          this.props.metaBarPlayhead.current.style.left = `${(t / this.props.duration) * 100}%`;
           if (this.props.metaBarCallback)
             this.props.metaBarCallback();
         }
