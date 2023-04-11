@@ -11,6 +11,12 @@
     onMouseUp="rifftube.record_stop()">
     record
 </button>
+<button
+    class="rifftube-timing-btn"
+    onMouseDown="rifftube.timing_start()"
+    onMouseUp="rifftube.timing_stop()">
+    time
+</button>
 (press and hold)
 </div>
 
@@ -79,20 +85,22 @@ function duplicate_blob(blob)
     return blob.slice(0, blob.size, blob.type);
 }
 
-var rifftube = rifftube || {};
 
 // rifftube-riff-edit-dialog class
 // data-riff-id or data-new-riff attribute for edit / new
 var dialSel = ".rifftube-riff-edit-dialog[data-<%= id.present? ? "riff-id='#{id}'".html_safe : "new-riff" %>]";
-rifftube.curDial = document.querySelector(dialSel);
+var curDial = document.querySelector(dialSel);
+var rifftube = curDial.rifftube || {};
+
+rifftube.curDial = curDial;
 rifftube.curRecBtn = rifftube.curDial.querySelector(".rifftube-record-btn");
-//console.log("btn", rifftube.curRecBtn);
-//debugger;
+rifftube.TimBtn = rifftube.curDial.querySelector(".rifftube-timing-btn");
 rifftube.curPlayer = rifftube.curDial.querySelector("audio");
 rifftube.curForm = rifftube.curDial.querySelector("form");
 rifftube.curFile = rifftube.curDial.querySelector("input[type='file']");
 rifftube.curDur = rifftube.curForm.querySelector("[name='riff[duration]']");
 rifftube.curShowChk = rifftube.curForm.querySelector("[type='checkbox'][name='riff[showText]']");
+rifftube.curTextArea = rifftube.curForm.querySelector("textarea");
 rifftube.curAutoChk = rifftube.curForm.querySelector("[type='checkbox'][name='riff[autoDuration]']");
 rifftube.curTypeRad = rifftube.curForm.querySelectorAll("[type='radio'][name='riff[audio_type]']");
 
@@ -114,6 +122,7 @@ if (rifftube.curFile.files.length == 1)
     console.log("did it", rifftube.curFile.files[0]);
 }
 
+/*
 //debugger;
 if (navigator.mediaDevices)
 {
@@ -123,50 +132,16 @@ if (navigator.mediaDevices)
         {
             rifftube.stream = stream;
             
-            rifftube.recorder = new MediaRecorder(stream);
-        
-            rifftube.chunks = [];
-            rifftube.recorder.ondataavailable = function(e)
-            {
-                rifftube.chunks.push(e.data);
-            }
-        
-            rifftube.recorder.onstop = function(e)
-            {
-                console.log("recorder stopped, saving ", rifftube.recorder);
-
-                rifftube.temp_audio = new Blob(rifftube.chunks, { 'type' : rifftube.recorder.mimeType });
-                
-                rifftube.chunks = [];
-                
-                rifftube.audio_URL = URL.createObjectURL(duplicate_blob(rifftube.temp_audio));
-
-                rifftube.curPlayer.src = rifftube.audio_URL;
-
-                // Wrap audio blob as File; use DataTransfer to create a files object; assign to file input.
-                // This keeps the audio in place in case of navigation away and back.
-                // Other code reads it from the input and restores the audio player's src attr.
-                let file = new File([rifftube.temp_audio], `Recorded audio ${new Date().toLocaleTimeString()}`, {type: rifftube.recorder.mimeType, lastModified: Date.now()});
-                let container = new DataTransfer();
-                container.items.add(file);
-                rifftube.curFile.files = container.files;
-            }
-
-            console.log("checking for immediate record")
-
-            //debugger;
-
-            // immediate start
-            if (rifftube.curDial.hasAttribute("data-immediate-record"))
-                rifftube.record_start();
+            
         })
         .catch( (err) => {
             //enable the record button if getUSerMedia() fails
             console.log("oops, can't get stream", err);
         });
 }
+*/
 
-rifftube.text_start = function()
+rifftube.timing_start = function()
 {
     if (rifftube.recording) return;
 
@@ -176,17 +151,21 @@ rifftube.text_start = function()
 
     rifftube.recording = true;
 
+    rifftube.TimBtn.innerHTML = "timing...";
+
     rifftube.record_start_time = Date.now();
 }
 
 
-rifftube.text_stop = function()
+rifftube.timing_stop = function()
 {
     if (!rifftube.recording) return;
 
     console.log("end text")
 
     rifftube.recording = false;
+
+    rifftube.TimBtn.innerHTML = "time";
 
     rifftube.riff_duration = (Date.now() - rifftube.record_start_time) / 1000;
 
@@ -195,6 +174,10 @@ rifftube.text_stop = function()
 
 rifftube.record_start = function()
 {
+    // make sure the recorder has been set up
+    if (!rifftube.recorderLoaded) return;
+
+    // ignore keypress (likely key repeat) if recording
     if (rifftube.recording) return;
 
     //debugger;
@@ -278,13 +261,13 @@ rifftube.rec_keydown = function(e)
     if (e.key == 'r')
     {
         rifftube.record_start();
-        e.stopPropagation();
     }
-    else if (e.key == 't')
+    else if (e.key == 't' && rifftube.curTypeRad[2].checked)
     {
-        rifftube.text_start();
-        e.stopPropagation();
+        rifftube.timing_start();
     }
+
+    e.stopPropagation();
 }
 
 rifftube.rec_keyup = function(e)
@@ -298,9 +281,9 @@ rifftube.rec_keyup = function(e)
     {
         rifftube.record_stop();
     }
-    else if (e.key == 't')
+    else if (e.key == 't' && rifftube.curTypeRad[2].checked)
     {
-        rifftube.text_stop();
+        rifftube.timing_stop();
     }
 }
 
@@ -311,6 +294,7 @@ rifftube.audioTypeUICallback = function(e)
         rifftube.curAutoChk.checked = true;
         rifftube.curAutoChk.disabled = true;
         rifftube.curDur.disabled = true;
+        rifftube.TimBtn.disabled = true;
         rifftube.curShowChk.disabled = false;
     }
     else if ( e.target == rifftube.curTypeRad[1] )
@@ -318,6 +302,7 @@ rifftube.audioTypeUICallback = function(e)
         rifftube.curAutoChk.checked = true;
         rifftube.curAutoChk.disabled = true;
         rifftube.curDur.disabled = true;
+        rifftube.TimBtn.disabled = true;
         rifftube.curShowChk.disabled = false;
     }
     else if ( e.target == rifftube.curTypeRad[2] )
@@ -326,24 +311,97 @@ rifftube.audioTypeUICallback = function(e)
         rifftube.curShowChk.disabled = true;
         rifftube.curAutoChk.disabled = false;
         rifftube.curDur.disabled = false;
+        rifftube.TimBtn.disabled = false;
 
     }
 };
 
+rifftube.audioAutoDurUICallback = function(e)
+{
+    rifftube.curDur.disabled = e.target.checked;
+    if (e.target.checked)
+    {
+        rifftube.cachedDur = rifftube.curDur.value;
+        rifftube.curDur.value = "";
+    }
+    else
+        rifftube.curDur.value = rifftube.cachedDur;
+};
+
+rifftube.setupCallback = function(e)
+{
+    console.log(e);
+    debugger;
+
+    rifftube.recorder = e.detail.recorder; // new MediaRecorder(stream);
+
+    rifftube.chunks = [];
+    rifftube.recorder.ondataavailable = function(e)
+    {
+        rifftube.chunks.push(e.data);
+    }
+
+    rifftube.recorder.onstop = function(e)
+    {
+        console.log("recorder stopped, saving ", rifftube.recorder);
+
+        rifftube.temp_audio = new Blob(rifftube.chunks, { 'type' : rifftube.recorder.mimeType });
+        
+        rifftube.chunks = [];
+        
+        rifftube.audio_URL = URL.createObjectURL(duplicate_blob(rifftube.temp_audio));
+
+        rifftube.curPlayer.src = rifftube.audio_URL;
+
+        // Wrap audio blob as File; use DataTransfer to create a files object; assign to file input.
+        // This keeps the audio in place in case of navigation away and back.
+        // Other code reads it from the input and restores the audio player's src attr.
+        let file = new File([rifftube.temp_audio], `Recorded audio ${new Date().toLocaleTimeString()}`, {type: rifftube.recorder.mimeType, lastModified: Date.now()});
+        let container = new DataTransfer();
+        container.items.add(file);
+        rifftube.curFile.files = container.files;
+    }
+
+    console.log("checking for immediate record")
+
+    //debugger;
+
+    // immediate start
+    rifftube.recorderLoaded = true;
+    if (rifftube.curDial.hasAttribute("data-immediate-record"))
+        rifftube.record_start();
+}
+
 rifftube.curTypeRad.forEach( el => el.addEventListener("change", rifftube.audioTypeUICallback) );
+rifftube.curAutoChk.addEventListener("change", rifftube.audioAutoDurUICallback);
 
 rifftube.curDial.addEventListener('keydown', rifftube.rec_keydown, false);
 rifftube.curDial.addEventListener('keyup', rifftube.rec_keyup, false);
 
-rifftube.curDial.addEventListener("cancel", () => { rifftube.close_modal(); });
+rifftube.curTextArea.addEventListener('keydown', e => e.stopPropagation(), false);
+
+rifftube.curDial.addEventListener("cancel", () => { rifftube.close_modal(); }, false);
+
+console.log("adding listener", rifftube.curDial);
+rifftube.curDial.addEventListener("rifftube:riff:edit:setup", rifftube.setupCallback, false);
 
 // no immediate record -> text only-riff
-if (!rifftube.curDial.hasAttribute("data-immediate-record"))
-    rifftube.text_start();
-
-debugger;
-rifftube.curTypeSel = rifftube.curForm.querySelector("[type='radio'][name='riff[audio_type]'][checked]");
-rifftube.audioTypeUICallback({ target: rifftube.curTypeSel })
+if (rifftube.curDial.hasAttribute("data-immediate-record"))
+{
+    rifftube.curTypeRad[0].checked = true;
+    rifftube.audioTypeUICallback({ target: rifftube.curTypeRad[0] });
+}
+else if (rifftube.curDial.hasAttribute("data-immediate-text"))
+{
+    rifftube.curTypeRad[2].checked = true;
+    rifftube.audioTypeUICallback({ target: rifftube.curTypeRad[2] });
+    rifftube.timing_start();
+}
+else
+{
+    rifftube.curTypeSel = rifftube.curForm.querySelector("[type='radio'][name='riff[audio_type]'][checked]");
+    rifftube.audioTypeUICallback({ target: rifftube.curTypeSel });
+}
 
 rifftube.curDial.showModal();
 

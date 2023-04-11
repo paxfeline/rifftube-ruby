@@ -14,16 +14,34 @@ function EditControls(props)
 {
   let templateRef = React.useRef(null);
 
+  useEffect( () =>
+  {
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then((stream) => {
+        let mediaRecorder = new MediaRecorder(stream);
+        props.setRecorder(mediaRecorder);
+      });
+  }, []);
+
   function startNewRiff(immediateRecord)
   {
     let td = templateRef.current.content.firstChild.cloneNode(true);
-    if (immediateRecord)
+    if (immediateRecord == 'r')
       td.setAttribute("data-immediate-record", "true");
+    if (immediateRecord == 't')
+      td.setAttribute("data-immediate-text", "true");
     document.body.append(td);
+
+    let cust_event = new CustomEvent("rifftube:riff:edit:setup", { detail: { recorder: props.recorder } });
+    td.dispatchEvent(cust_event);
+    console.log('dispatched', cust_event);
   }
 
   function keydown(e)
   {
+    if (document.querySelector('.rifftube-riff-edit-dialog')) return;
+    
     console.log('kd meta count', e.getModifierState("Control") +
       e.getModifierState("Alt") +
       e.getModifierState("Meta"));
@@ -36,7 +54,7 @@ function EditControls(props)
     if (e.key == 'r' || e.key == 't')
     {
       // immediate record if pressing r but not t
-      startNewRiff(e.key == 'r');
+      startNewRiff(e.key);
     }
   }
 
@@ -54,7 +72,6 @@ function EditControls(props)
     {
       props.saveNewRiff(detail);
     }
-
   }
   
   useEffect(() =>
