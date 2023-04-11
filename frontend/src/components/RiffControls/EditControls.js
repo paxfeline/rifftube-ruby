@@ -35,7 +35,14 @@ function EditControls(props)
           td.setAttribute("data-immediate-text", "true");
         document.body.append(td);
 
-        let cust_event = new CustomEvent("rifftube:riff:edit:setup", { detail: { recorder: props.recorder } });
+        let cust_event = new CustomEvent("rifftube:riff:edit:setup",
+        {
+          detail:
+            {
+              recorder: props.recorder,
+              start: props.rifftubePlayer?.getCurrentTime(),
+            }
+        });
         td.dispatchEvent(cust_event);
         console.log('dispatched', cust_event);
       }
@@ -57,7 +64,7 @@ function EditControls(props)
         startNewRiff(e.key);
       }
     },
-    [props.recorder] );
+    [props.recorder, props.rifftubePlayer] );
 
   function saveRiff({ detail })
   {
@@ -189,6 +196,7 @@ let mapStateToProps = (state) => ({
   duration: state.duration,
   recorder: state.recorder,
   loggedIn: state.loggedIn,
+  rifftubePlayer: state.rifftubePlayer,
 });
 
 const mapDispatchToProps = {

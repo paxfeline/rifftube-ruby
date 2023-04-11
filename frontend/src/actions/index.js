@@ -322,7 +322,7 @@ export const deleteRiff = (riffID, video_id, websocket) => {
   return (dispatch) => {
     axios({
       method: 'delete',
-      url: `/riff-remove/${riffID}`
+      url: `/riffs/${riffID}`
     }).then((res) => {
       dispatch({ type: DELETE_RIFF, id: riffID });
 

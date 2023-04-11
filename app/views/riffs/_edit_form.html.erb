@@ -103,6 +103,7 @@ rifftube.curShowChk = rifftube.curForm.querySelector("[type='checkbox'][name='ri
 rifftube.curTextArea = rifftube.curForm.querySelector("textarea");
 rifftube.curAutoChk = rifftube.curForm.querySelector("[type='checkbox'][name='riff[autoDuration]']");
 rifftube.curTypeRad = rifftube.curForm.querySelectorAll("[type='radio'][name='riff[audio_type]']");
+rifftube.curStart = rifftube.curForm.querySelector("[name='riff[start]']");
 
 /*
 use audio:          isText  speak
@@ -244,7 +245,7 @@ rifftube.save_riff = function(event)
     document.dispatchEvent(cust_event);
     console.log(cust_event);
 
-    //rifftube.close_modal();
+    rifftube.close_modal();
 }
 
 console.log("injected script running");
@@ -331,6 +332,8 @@ rifftube.audioAutoDurUICallback = function(e)
 rifftube.setupCallback = function(e)
 {
     console.log(e);
+
+    rifftube.curStart.value = e.detail.start.toFixed(2);
 
     rifftube.recorder = e.detail.recorder; // new MediaRecorder(stream);
 
