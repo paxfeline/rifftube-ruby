@@ -6,6 +6,7 @@ const size = 25; // 2.5em
 
 /* this component maps over all of the user's riffs for this video */
 function RiffList(props) {
+  console.log(props);
   var totalLength = 0;
   const riffs = props.riffs
     ? Object.values(props.riffs).sort((e1, e2) => e1.start - e2.start)
@@ -45,7 +46,7 @@ function RiffList(props) {
 }
 
 const mapStateToProps = (state) => ({
-  riffs: state.riffs.all,
+  riffs: state.riffs,
   riffsPlaying: state.riffsPlaying,
 });
 

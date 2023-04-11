@@ -13,6 +13,7 @@ import Edit from '../../images/edit-24px.svg';
 
 /* this component is where a user can edit their riff */
 function RiffDetail(props) {
+
   const [visible, setVisible] = useState(false);
 
   //useEffect(() => { setTimeout(() => {setVisible(true);}, 20000); }, []);
@@ -46,13 +47,13 @@ function RiffDetail(props) {
       >
         ⇥
       </button>
-      {props.type === 'audio' ? (
-        <div className="audio-icon riff-type-icon">
-          <img alt="audio" src={Audio} />
-        </div>
-      ) : (
+      {props.isText ? (
         <div className="text-icon riff-type-icon">
           <img alt="text" src={Text} />
+        </div>
+      ) : (
+        <div className="audio-icon riff-type-icon">
+          <img alt="audio" src={Audio} />
         </div>
       )}
       {/* 

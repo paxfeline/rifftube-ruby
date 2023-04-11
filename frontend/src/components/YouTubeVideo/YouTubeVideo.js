@@ -73,7 +73,7 @@ class YouTubeVideo extends React.Component {
     Object.values(this.props.riffs).forEach((riff) => {
       if (
         //if it's an audio riff
-        riff.type === 'audio' &&
+        !riff.isText &&
         //if it's not loaded already
         !this.props.riffsAudio.all[riff.id] && //!riff.payload &&
         //if it's not loading
@@ -149,7 +149,7 @@ class YouTubeVideo extends React.Component {
             this.props.setRiffPlaying(index, false);
             this.curRiff[index] = null;
 
-            if (riff.type === 'audio')
+            if (!riff.isText)
               // make sure all audio clips have stopped
               this.audLock--;
             if (!this.audLock) {
@@ -166,7 +166,7 @@ class YouTubeVideo extends React.Component {
             this.props.setRiffPlaying(index, true);
             this.curRiff[index] = true; // used for text only; overwritten for audio
 
-            if (riff.type === 'audio') {
+            if (!riff.isText) {
               if (!this.vol) {
                 this.vol = this.props.rifftubePlayer.getVolume();
                 this.props.rifftubePlayer.setVolume(this.vol * 0.25);
@@ -303,7 +303,7 @@ class YouTubeVideo extends React.Component {
                   (i) =>
                     this.props.riffsPlaying[i] &&
                     this.props.riffs[i] &&
-                    this.props.riffs[i].type === 'text'
+                    this.props.riffs[i].text !== ''
                 )
                 .map((key) => (
                   <div
