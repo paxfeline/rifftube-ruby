@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 
 import RiffList from './RiffList.js';
@@ -24,39 +24,40 @@ function EditControls(props)
       });
   }, []);
 
-  function startNewRiff(immediateRecord)
-  {
-    let td = templateRef.current.content.firstChild.cloneNode(true);
-    if (immediateRecord == 'r')
-      td.setAttribute("data-immediate-record", "true");
-    if (immediateRecord == 't')
-      td.setAttribute("data-immediate-text", "true");
-    document.body.append(td);
-
-    let cust_event = new CustomEvent("rifftube:riff:edit:setup", { detail: { recorder: props.recorder } });
-    td.dispatchEvent(cust_event);
-    console.log('dispatched', cust_event);
-  }
-
-  function keydown(e)
-  {
-    if (document.querySelector('.rifftube-riff-edit-dialog')) return;
-    
-    console.log('kd meta count', e.getModifierState("Control") +
-      e.getModifierState("Alt") +
-      e.getModifierState("Meta"));
-
-    if ( e.getModifierState("Control") +
-            e.getModifierState("Alt") +
-            e.getModifierState("Meta") > 0 )
-        return;
-
-    if (e.key == 'r' || e.key == 't')
+  let keydown = useCallback( (e) =>
     {
-      // immediate record if pressing r but not t
-      startNewRiff(e.key);
-    }
-  }
+      let startNewRiff = (immediateRecord) =>
+      {
+        let td = templateRef.current.content.firstChild.cloneNode(true);
+        if (immediateRecord == 'r')
+          td.setAttribute("data-immediate-record", "true");
+        if (immediateRecord == 't')
+          td.setAttribute("data-immediate-text", "true");
+        document.body.append(td);
+
+        let cust_event = new CustomEvent("rifftube:riff:edit:setup", { detail: { recorder: props.recorder } });
+        td.dispatchEvent(cust_event);
+        console.log('dispatched', cust_event);
+      }
+
+      if (document.querySelector('.rifftube-riff-edit-dialog')) return;
+      
+      console.log('kd meta count', e.getModifierState("Control") +
+        e.getModifierState("Alt") +
+        e.getModifierState("Meta"));
+
+      if ( e.getModifierState("Control") +
+              e.getModifierState("Alt") +
+              e.getModifierState("Meta") > 0 )
+          return;
+
+      if (e.key == 'r' || e.key == 't')
+      {
+        // immediate record if pressing r but not t
+        startNewRiff(e.key);
+      }
+    },
+    [props.recorder] );
 
   function saveRiff({ detail })
   {
@@ -76,15 +77,23 @@ function EditControls(props)
   
   useEffect(() =>
   {
-        document.addEventListener('rifftube:riff:save', saveRiff, false);
-        document.addEventListener('keydown', keydown, false);
+    document.addEventListener('rifftube:riff:save', saveRiff, false);
 
-        return () =>
-        {
-          document.removeEventListener('rifftube:riff:save', saveRiff, false);
-          document.removeEventListener('keydown', keydown, false);
-        }
+    return () =>
+    {
+      document.removeEventListener('rifftube:riff:save', saveRiff, false);
+    }
   }, []);
+
+  useEffect(() =>
+  {
+    document.addEventListener('keydown', keydown, false);
+
+    return () =>
+    {
+      document.removeEventListener('keydown', keydown, false);
+    }
+  }, [keydown]);
   
   useEffect(() =>
   {

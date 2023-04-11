@@ -331,7 +331,6 @@ rifftube.audioAutoDurUICallback = function(e)
 rifftube.setupCallback = function(e)
 {
     console.log(e);
-    debugger;
 
     rifftube.recorder = e.detail.recorder; // new MediaRecorder(stream);
 
@@ -382,7 +381,7 @@ rifftube.curTextArea.addEventListener('keydown', e => e.stopPropagation(), false
 
 rifftube.curDial.addEventListener("cancel", () => { rifftube.close_modal(); }, false);
 
-console.log("adding listener", rifftube.curDial);
+//console.log("adding listener", rifftube.curDial);
 rifftube.curDial.addEventListener("rifftube:riff:edit:setup", rifftube.setupCallback, false);
 
 // no immediate record -> text only-riff
