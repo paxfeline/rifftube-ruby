@@ -26,6 +26,8 @@
 <input type="hidden" name="riff[video_id]" value="<%= video_id %>">
 <% end %>
 
+<%= form.hidden_field :id %>
+
 <div>
 <%= form.collection_radio_buttons :audio_type,
     [[1, "Recorded audio"], [2, "Synthesized audio"], [3, "No audio"]],

@@ -1,14 +1,8 @@
 import {
-  SET_VIDEO_ID,
-  EDIT_RIFF,
   SAVE_NEW_RIFF_SUCCESS,
   SAVE_NEW_RIFF,
   SAVE_EDIT_RIFF,
-  CREATE_TEMP_AUDIO_RIFF,
-  CREATE_TEMP_TEXT_RIFF,
   RIFF_LOADED,
-  SAVE_TEMP_AUDIO,
-  CANCEL_EDIT,
   LOAD_RIFF,
 } from '../actions/index.js';
 
@@ -30,7 +24,7 @@ const riffsAudioReducer = (state = initialState, action) => {
       return {
         ...state,
         all: {
-          ...state.saving,
+          ...state.all,
           [action.payload.tempId]: true,
         },
       };
@@ -40,10 +34,19 @@ const riffsAudioReducer = (state = initialState, action) => {
       return {
         ...state,
         all: {
-          ...state,
-          [action.riff.id]: action.payload.payload,
+          ...state.all,
+          [action.payload.id]: action.payload.audio,
         },
       };
+    }
+    case SAVE_NEW_RIFF_SUCCESS:
+    {
+      let id = action.payload.id;
+      let tempId = action.payload.tempId;
+      let all = { ...state.all };
+      all[id] = all[tempId];
+      delete all[tempId];
+      return { ...state, all };
     }
     case LOAD_RIFF: 
     {

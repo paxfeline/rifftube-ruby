@@ -37,43 +37,22 @@ const riffsReducer = (state = initialState, action) => {
     }
     case SAVE_NEW_RIFF: // code block for variable grouping
     {
-      // create object from modified entries
-      const riff = Object.fromEntries(
-        [
-          ...(Object.entries(action.payload)
-            // convert keys from riff[*] to *
-            // i.e. riff[duration] to duration
-            .map(
-              el =>
-              (
-                [
-                  // key
-                  el[0].match(/riff\[(\w+)\]/)?.[1] ?? el[0],
-                  // value
-                  el[1]
-                ]
-              )
-            )),
-          ["unsaved", true]
-        ]
-      );
-
-        //...action.payload,
+      const riff = action.payload;
       delete riff.payload;
 
       // create new riffs list, including new riff
       return (
-      {
-        ...state,
-        [riff.tempId]: riff
-      });
+        {
+          ...state,
+          [riff.tempId]: riff
+        });
     }
     case SAVE_EDIT_RIFF:
     {
-      const riff = { ...action.payload, saved: false };
+      const riff = action.payload;
       delete riff.payload;
 
-      let riffs = {...state };
+      let riffs = { ...state };
       riffs[riff.id] = riff;
 
       return riffs;
@@ -81,18 +60,21 @@ const riffsReducer = (state = initialState, action) => {
 
     case SAVE_NEW_RIFF_SUCCESS:
     {
-      debugger;
       let id = action.payload.id;
       let tempId = action.payload.tempId;
       let riffs = { ...state };
-      riffs[id] = riffs[tempId];
-      riffs[id].id = id;
+      riffs[id] = { ...riffs[tempId], id };
+      delete riffs[id].unsaved;
       delete riffs[tempId];
       return riffs;
     }
     case SAVE_EDIT_RIFF_SUCCESS:
     {
-      
+      let id = action.payload;
+      let riffs = { ...state };
+      riffs[id] = { ...riffs[id] };
+      delete riffs[id].unsaved;
+      return riffs;
     }
 
     default:

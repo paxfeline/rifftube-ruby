@@ -129,6 +129,9 @@ def riff_params
 end
 
 def recode_audio
+    # skip if there is no audio to recode
+    return if not params[:riff][:audio]
+
     movie = FFMPEG::Movie.new(params[:riff][:audio].tempfile.path)
     riff_path = "#{Rails.root}/tmp/riff-#{current_user.id}-#{Time.now.to_i}.mp4"
     movie.transcode(riff_path) 

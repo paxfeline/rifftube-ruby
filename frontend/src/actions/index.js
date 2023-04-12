@@ -142,44 +142,42 @@ export const currentUserStatus = () => {
 /********** Saving, editing  */
 
 
-export const saveEditRiff = (detail) =>
+export const saveEditRiff = (body, riff) =>
 {
   debugger;
-  let detailObj = Object.fromEntries(detail.entries());
   return (dispatch) =>
   {
-    dispatch({ type: SAVE_EDIT_RIFF, payload: detailObj });
-    fetch(`/riffs/${detail.id}`,
+    dispatch({ type: SAVE_EDIT_RIFF, payload: riff });
+    fetch(`/riffs/${riff.id}`,
       {
         method: 'PATCH',
-        body: detail
+        body
       })
       .then(response => response.json())
-      .then(response => dispatch({ type: SAVE_EDIT_RIFF_SUCCESS, payload: response }))
+      // update riff saved status
+      .then(response => dispatch({ type: SAVE_EDIT_RIFF_SUCCESS, payload: riff.id }))
       .catch(err => dispatch({ type: SAVE_EDIT_RIFF_FAILURE, payload: err }));
   }
 }
 
-export const saveNewRiff = (detail) =>
+export const saveNewRiff = (body, riff) =>
 {
   // add tempId
   debugger;
   let tempId = `temp-${new Date().getUTCMilliseconds()}`;
-  detail.set("tempId", tempId);
-  let detailObj = Object.fromEntries(detail.entries());
-  const numericFields = ["riff[start]", "riff[duration]"];
-  numericFields.forEach(el => detailObj[el] = Number(detailObj[el]));
+  body.set("tempId", tempId);
+  riff.tempId = tempId;
   return (dispatch) =>
   {
-    dispatch({ type: SAVE_NEW_RIFF, payload: detailObj });
+    dispatch({ type: SAVE_NEW_RIFF, payload: riff });
     fetch(`/riffs`, 
       {
         method: 'POST',
-        body: detail
+        body
       })
       .then(response => response.json())
-      // add tempId to response instead of passing back and forth
-      .then(response => dispatch({ type: SAVE_NEW_RIFF_SUCCESS, payload: {...response, tempId} }))
+      // update riff id and saved status
+      .then(response => dispatch({ type: SAVE_NEW_RIFF_SUCCESS, payload: {id: response.id, tempId} }))
       .catch(err => dispatch({ type: SAVE_NEW_RIFF_FAILURE, payload: err }));
   }
 }

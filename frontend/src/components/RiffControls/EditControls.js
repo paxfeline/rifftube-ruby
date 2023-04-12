@@ -14,6 +14,7 @@ function EditControls(props)
 {
   let templateRef = React.useRef(null);
 
+  // get user permission to record and save mediaRecorder object
   useEffect( () =>
   {
     navigator.mediaDevices
@@ -24,6 +25,7 @@ function EditControls(props)
       });
   }, []);
 
+  // useCallback because the values of recorder and rifftubePlayer can change
   let keydown = useCallback( (e) =>
     {
       let startNewRiff = (immediateRecord) =>
@@ -69,16 +71,43 @@ function EditControls(props)
   function saveRiff({ detail })
   {
     // detail is FormData
-
     console.log( "sr", detail );
+
+    debugger;
+
+    // get FormData entries
+    const ents = Array.from(detail.entries())
+      .map(
+        ([key, val]) =>
+        (
+          [
+            // convert keys from e.g. 'riff[start]' to 'start'
+            // leave other keys unchanged
+            key.match(/riff\[(\w+)\]/)?.[1] ?? key,
+            val
+          ]
+        )
+      );
+
+    // create object from entries
+    // mark as unsaved
+    const riff = Object.fromEntries(ents);
+    riff.unsaved = true;
+
+    // properly cast numeric fields
+    const numericFields = ["start", "duration"];
+    numericFields.forEach(el => riff[el] = Number(riff[el]));
+
+      //...action.payload,
+    //delete riff.payload;
     
-    if ( detail.id )
+    if ( detail.get('riff[id]') )
     {
-      props.saveEditRiff(detail);
+      props.saveEditRiff(detail, riff);
     }
     else
     {
-      props.saveNewRiff(detail);
+      props.saveNewRiff(detail, riff);
     }
   }
   
