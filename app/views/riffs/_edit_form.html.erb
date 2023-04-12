@@ -22,11 +22,11 @@
 
 <%= form_with model: @riff, multipart: true do |form| %>
 
+<%= form.hidden_field :id %>
+
 <% if video_id.present? %>
 <input type="hidden" name="riff[video_id]" value="<%= video_id %>">
 <% end %>
-
-<%= form.hidden_field :id %>
 
 <div>
 <%= form.collection_radio_buttons :audio_type,

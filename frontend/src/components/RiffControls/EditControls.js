@@ -101,7 +101,7 @@ function EditControls(props)
       //...action.payload,
     //delete riff.payload;
     
-    if ( detail.get('riff[id]') )
+    if ( riff.id )
     {
       props.saveEditRiff(detail, riff);
     }

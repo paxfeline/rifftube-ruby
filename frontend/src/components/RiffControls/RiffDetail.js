@@ -67,14 +67,12 @@ function RiffDetail(props) {
         type="number"
         className="edit-start"
         step="0.5"
-        defaultValue={props.start.toFixed(2)}
+        defaultValue={props.start?.toFixed(2)} // start SHOULDN'T be nil, but...
         ref={timeRef}
         onChange={() => {
           props.updateRiffTime(
-            timeRef.current.value,
-            props.video_id,
             props.id,
-            props.websocket
+            timeRef.current.value,
           );
         }}
       ></input>

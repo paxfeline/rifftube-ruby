@@ -86,11 +86,12 @@ class RiffsController < ApplicationController
             return render plain: "Unauthorized", status: :unauthorized if current_user.id != riff.user_id
 
             if params[:fields].present?
+                # audio field not allowed currently
                 puts params.inspect
                 fields = params[:fields].split(",")
                 fields.each { |field|
-                    puts field
-                    riff[field.to_sym] = riff_params[field.to_sym]
+                    puts "field: #{field} = #{params[field.to_sym]}"
+                    riff[field.to_sym] = params[field.to_sym]
                 }
                 if riff.save
                     render json: riff, except: :audio
@@ -112,11 +113,10 @@ class RiffsController < ApplicationController
 
     # DELETE	/photos/:id	photos#destroy	delete a specific photo
     def destroy
-    end
-
-    def modify_start
-        @id = params[:id]
-        @riff = Riff.find(@id)
+        if logged_in?
+            riff = Riff.find(params[:id])
+            riff.destroy
+        end
     end
 
 end
@@ -125,7 +125,7 @@ end
 private
 def riff_params
   #params[:user][:email].downcase!
-  params.require(:riff).permit(:audio, :text, :start, :duration, :user_id, :video_id, :audio_type)
+  params.require(:riff).permit(:audio, :text, :start, :duration, :user_id, :video_id, :audio_type,  :showText, :autoDuration)
 end
 
 def recode_audio

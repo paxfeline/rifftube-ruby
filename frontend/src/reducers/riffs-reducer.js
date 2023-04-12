@@ -32,7 +32,7 @@ const riffsReducer = (state = initialState, action) => {
     case UPDATE_RIFF_TIME_SUCCESS:
     {
       let ret = { ...state };
-      ret[action.id].start = Number(action.start);
+      ret[action.id] = { ...ret[action.id], start: Number(action.start) };
       return ret;
     }
     case SAVE_NEW_RIFF: // code block for variable grouping

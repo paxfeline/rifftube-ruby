@@ -323,9 +323,6 @@ export const deleteRiff = (riffID, video_id, websocket) => {
       url: `/riffs/${riffID}`
     }).then((res) => {
       dispatch({ type: DELETE_RIFF, id: riffID });
-
-      // websocket call
-      websocket.send(JSON.stringify({ type: 'update', video_id }));
     }).catch(err => console.log("error", err));
   };
 };
@@ -425,20 +422,20 @@ export const cancelEdit = () => ({
   type: CANCEL_EDIT,
 });
 
-export const updateRiffTime = (token, start, video_id, riff_id, websocket) => {
-  return (dispatch) => {
-    axios({
-      method: 'post',
-      url: `/update-riff-start`,
-      data: { token, start, id: riff_id },
-    })
+export const updateRiffTime = (riff_id, start) => {
+  return (dispatch) =>
+    {
+      debugger;
+      let body = new FormData();
+      body.set('start', start);
+      fetch(`/riffs/${riff_id}?fields=start`,
+      {
+        method: 'PATCH',
+        body,
+      })
       .then((res) => {
         // res.data.data
         dispatch({ type: UPDATE_RIFF_TIME_SUCCESS, id: riff_id, start: start });
-        // websocket call
-        websocket.send(
-          JSON.stringify({ type: 'update', video_id: video_id })
-        );
       })
       .catch((err) => {
         dispatch({ type: SAVE_NEW_RIFF_FAILURE, payload: err.response });
