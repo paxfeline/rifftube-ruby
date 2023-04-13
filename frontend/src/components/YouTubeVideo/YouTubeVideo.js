@@ -72,6 +72,8 @@ class YouTubeVideo extends React.Component {
 
     Object.values(this.props.riffs).forEach((riff) => {
       if (
+        // if no id, it is being saved
+        riff.id &&
         //if it's an audio riff
         !riff.isText &&
         //if it's not loaded already
@@ -124,8 +126,6 @@ class YouTubeVideo extends React.Component {
 
         let t = this.props.rifftubePlayer.getCurrentTime();
 
-        console.log('mbc', this.props.metaBarPlayhead, this.props.metaBarCallback);
-
         // if the MetaBar component exists, update its playhead
         if (this.props.metaBarPlayhead && this.props.metaBarPlayhead.current)
         {
@@ -138,12 +138,16 @@ class YouTubeVideo extends React.Component {
         this.checkForRiffsToLoad(t);
 
         // first stop any zombie riffs
-        Object.values(this.props.riffs).forEach((riff, index) => {
+        Object.values(this.props.riffs).forEach((riff) =>
+        {
+          const index = riff.id; // lazy refactoring
           if (
             this.curRiff[index] &&
             (t < riff.start || t > riff.start + riff.duration)
           ) {
             if (this.curRiff[index].inUse) this.curRiff[index].inUse = false;
+
+            console.log("killing riff", index, `${riff.start} > ${t} > ${riff.start + riff.duration}`);
 
             // by setting this to false, text riffs will be hidden
             this.props.setRiffPlaying(index, false);
@@ -160,9 +164,14 @@ class YouTubeVideo extends React.Component {
         });
 
         // next start any that should be playing
-        Object.values(this.props.riffs).forEach((riff, index) => {
+        Object.values(this.props.riffs).forEach((riff) =>
+        {
+          const index = riff.id;
           // the riff will start playing within half a second, or will be skipped
-          if (!this.curRiff[index] && t > riff.start && t < riff.start + 0.5) {
+          if (!this.curRiff[index] && t > riff.start && t < riff.start + 0.5)
+          {
+            console.log("starting riff", index, `${riff.start} < ${t} < ${riff.start + riff.duration}`);
+
             this.props.setRiffPlaying(index, true);
             this.curRiff[index] = true; // used for text only; overwritten for audio
 

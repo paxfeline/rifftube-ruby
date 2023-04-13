@@ -71,7 +71,7 @@
 </button>
 
 <button
-    onClick="rifftube.save_riff(event); event.preventDefault();">
+    onClick="rifftube.save_riff(event);">
     Save
 </button>
 </div>
@@ -233,13 +233,9 @@ rifftube.save_riff = function(event)
 
     event.preventDefault();
 
-    /*  old detail object:
-    detail:
-    {
-        id: <%= id.present? ? id : "null"  %>,
-        audio: rifftube.temp_audio,
-    }
-    */
+   // remove disabled attribute to send all fields
+   rifftube.curForm.querySelectorAll("[disabled]")
+        .forEach(el => el.removeAttribute("disabled"))
 
     let detail = new FormData(rifftube.curForm);
 
