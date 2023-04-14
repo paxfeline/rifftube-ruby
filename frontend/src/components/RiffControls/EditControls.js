@@ -14,6 +14,27 @@ function EditControls(props)
 {
   let templateRef = React.useRef(null);
 
+  // enforce focus on body
+  useEffect( () =>
+  {
+    const body = document.body;
+    body.setAttribute("tabindex", 0);
+    function resetFocus()
+    {
+      // I hate this use of timeout so. much.
+      setTimeout( () =>
+      {
+        body.focus();
+        console.log("reset focus", document.activeElement);
+        if (document.activeElement !== body)
+          setTimeout(resetFocus, 10);
+      }, 10 );
+    }
+    body.addEventListener("blur", resetFocus);
+
+    return ( () => body.removeEventListener("blur", resetFocus) );
+  }, [])
+
   // get user permission to record and save mediaRecorder object
   useEffect( () =>
   {

@@ -49,6 +49,7 @@ class RiffsController < ApplicationController
             print riff_params.inspect
 
             @riff = Riff.new(riff_params)
+            @riff.audio_type = riff_params[:audio_type]
 
             if @riff.save
                 render json: @riff, except: :audio
@@ -86,7 +87,7 @@ class RiffsController < ApplicationController
             return render plain: "Unauthorized", status: :unauthorized if current_user.id != riff.user_id
 
             if params[:fields].present?
-                # audio field not allowed currently
+                # 'audio' field not allowed currently
                 puts params.inspect
                 fields = params[:fields].split(",")
                 fields.each { |field|
@@ -100,7 +101,8 @@ class RiffsController < ApplicationController
                 end
             else
                 recode_audio
-                if riff.update(riff_params)
+                riff.audio_type = riff_params[:audio_type]
+                if riff.save and riff.update(riff_params)
                     render json: riff, except: :audio
                 else
                     render plain: "Error updating riff", status: :internal_server_error
@@ -125,7 +127,7 @@ end
 private
 def riff_params
   #params[:user][:email].downcase!
-  params.require(:riff).permit(:audio, :text, :start, :duration, :user_id, :video_id, :audio_type,  :showText, :autoDuration)
+  params.require(:riff).permit(:id, :audio, :text, :start, :duration, :user_id, :video_id, :audio_type,  :showText, :autoDuration)
 end
 
 def recode_audio
