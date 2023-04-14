@@ -1,10 +1,10 @@
-import React, { useState, useEffect, createRef } from 'react';
+import React, { useState, useEffect, createRef, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { editRiff, deleteRiff, updateRiffTime } from '../../actions/index.js';
 import Audio from '../../images/settings_voice-24px.svg';
 import Text from '../../images/chat-24px.svg';
 
-import { executeScriptElements } from './util.js';
+import { executeScriptElements, debounce } from './util.js';
 
 /*
 import Delete from '../../images/delete-24px.svg';
@@ -20,6 +20,8 @@ function RiffDetail(props) {
   useEffect(() => {
     setVisible(true);
   }, []);
+
+  const update = useCallback(debounce(props.updateRiffTime, 250), [props.updateRiffTime]);
 
   const divRef = createRef();
 
@@ -70,7 +72,8 @@ function RiffDetail(props) {
         defaultValue={props.start?.toFixed(2)} // start SHOULDN'T be nil, but...
         ref={timeRef}
         onChange={() => {
-          props.updateRiffTime(
+          update
+          (
             props.id,
             timeRef.current.value,
           );

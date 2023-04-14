@@ -22,10 +22,12 @@ function EditControls(props)
     function resetFocus()
     {
       // I hate this use of timeout so. much.
+      // but it seems necessary
       setTimeout( () =>
       {
         body.focus();
         console.log("reset focus", document.activeElement);
+        // this seems to be unnecessary, but who knows!?
         if (document.activeElement !== body)
           setTimeout(resetFocus, 10);
       }, 10 );
