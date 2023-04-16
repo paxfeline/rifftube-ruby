@@ -21,6 +21,8 @@ function EditControls(props)
     body.setAttribute("tabindex", 0);
     function resetFocus()
     {
+      // allow focus to leave the body if editing dialog is open
+      if (document.querySelector('.rifftube-riff-edit-dialog')) return;
       // I hate this use of timeout so. much.
       // but it seems necessary
       setTimeout( () =>

@@ -73,6 +73,9 @@ class RiffsController < ApplicationController
     def edit
         @id = params[:id]
         @riff = Riff.find(@id)
+        params[:audio_type] = @riff.audio_type
+        puts "set at"
+        puts params[:audio_type]
         render layout: false
     end
 
@@ -101,7 +104,12 @@ class RiffsController < ApplicationController
                 end
             else
                 recode_audio
+                puts "audio type"
+                puts riff_params[:audio_type]
                 riff.audio_type = riff_params[:audio_type]
+                puts riff.audio_type
+                puts riff.inspect
+                debugger
                 if riff.save and riff.update(riff_params)
                     render json: riff, except: :audio
                 else
