@@ -106,11 +106,11 @@ class RiffsController < ApplicationController
                 recode_audio
                 puts "audio type"
                 puts riff_params[:audio_type]
-                riff.audio_type = riff_params[:audio_type]
+                riff.audio_type = riff_params[:audio_type].to_i
                 puts riff.audio_type
                 puts riff.inspect
-                debugger
-                if riff.save and riff.update(riff_params)
+                #debugger
+                if riff.update(riff_params)
                     render json: riff, except: :audio
                 else
                     render plain: "Error updating riff", status: :internal_server_error

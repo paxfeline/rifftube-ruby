@@ -14,6 +14,7 @@ class Riff < ApplicationRecord
     end
     
     def audio_type=(value)
+        self.inspect
         if value == 1
             self.isText = false
             self.speak = false
