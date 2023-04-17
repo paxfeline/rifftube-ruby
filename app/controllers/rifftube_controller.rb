@@ -7,7 +7,7 @@ class RifftubeController < ApplicationController
 
   def index
     puts "rendering rifftube index"
-    render file: "#{Rails.root}/public/index.html"
+    render file: "#{Rails.root}/public/index.html", layout: false
   end
 
   def video_list
