@@ -91,7 +91,14 @@ function RiffDetail(props) {
                     let el = document.createElement("div");
                     el.innerHTML = text;
                     executeScriptElements(el);
-                    document.body.append(el.firstChild);
+                    let td = el.firstChild;
+                    document.body.append(td);
+
+                    let set_recorder_event = new CustomEvent("rifftube:riff:edit:setup:recorder",
+                    {
+                      detail: { recorder: props.recorder }
+                    });
+                    td.dispatchEvent(set_recorder_event);
                   });
             }
             /*
@@ -126,6 +133,7 @@ function RiffDetail(props) {
 const mapStateToProps = (state) => ({
   riffsAudio: state.riffsAudio.all,
   rifftubePlayer: state.rifftubePlayer,
+  recorder: state.recorder,
 });
 
 const mapDispatchToProps = {

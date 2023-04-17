@@ -30,6 +30,7 @@ const riffsAudioReducer = (state = initialState, action) => {
       return { ...state, all };
     }
     case SAVE_EDIT_RIFF: {
+      console.log("ser ra reducer", action.payload);
       // edit riff:
       return {
         ...state,

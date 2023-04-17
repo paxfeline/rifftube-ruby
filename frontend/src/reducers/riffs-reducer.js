@@ -39,6 +39,7 @@ const riffsReducer = (state = initialState, action) => {
     {
       const riff = action.payload;
       delete riff.audio;
+      // riff.unsaved = true; // already done... better there or here?
 
       // create new riffs list, including new riff
       return (
@@ -60,8 +61,10 @@ const riffsReducer = (state = initialState, action) => {
 
     case SAVE_EDIT_RIFF:
     {
-      const riff = action.payload;
+      // dup obj so that riffsAudio reducer can get the unaltered payload
+      const riff = { ...action.payload };
       delete riff.audio;
+      // riff.unsaved = true; // already done... better there or here?
 
       let riffs = { ...state };
       riffs[riff.id] = riff;

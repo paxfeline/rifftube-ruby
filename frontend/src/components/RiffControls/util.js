@@ -31,3 +31,10 @@ export const debounce = (func, delay) => {
           = setTimeout(() => func.apply(context, args), delay)
   }
 }
+
+
+
+export const duplicateBlob = (blob) =>
+{
+    return blob?.slice(0, blob.size, blob.type);
+}

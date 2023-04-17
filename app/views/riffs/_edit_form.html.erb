@@ -327,11 +327,16 @@ rifftube.audioAutoDurUICallback = function(e)
         rifftube.curDur.value = rifftube.cachedDur;
 };
 
-rifftube.setupCallback = function(e)
+rifftube.setupStartCallback = function(e)
 {
     console.log(e);
 
     rifftube.curStart.value = e.detail.start.toFixed(2);
+}
+
+rifftube.setupRecorderCallback = function(e)
+{
+    console.log(e);
 
     rifftube.recorder = e.detail.recorder; // new MediaRecorder(stream);
 
@@ -383,7 +388,8 @@ rifftube.curTextArea.addEventListener('keydown', e => e.stopPropagation(), false
 rifftube.curDial.addEventListener("cancel", () => { rifftube.close_modal(); }, false);
 
 //console.log("adding listener", rifftube.curDial);
-rifftube.curDial.addEventListener("rifftube:riff:edit:setup", rifftube.setupCallback, false);
+rifftube.curDial.addEventListener("rifftube:riff:edit:setup:recorder", rifftube.setupRecorderCallback, false);
+rifftube.curDial.addEventListener("rifftube:riff:edit:setup:start", rifftube.setupStartCallback, false);
 
 // no immediate record -> text only-riff
 if (rifftube.curDial.hasAttribute("data-immediate-record"))

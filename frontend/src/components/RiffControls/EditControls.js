@@ -7,7 +7,7 @@ import Login from '../Login/Login';
 import { setRifferName, togglePlayerMode, setRecorder,
   saveNewRiff, saveEditRiff } from '../../actions/index.js';
 
-import { executeScriptElements } from './util.js';
+import { executeScriptElements, duplicateBlob } from './util.js';
 
 /*This component houses all of the riff buttons and the rifflist*/
 function EditControls(props)
@@ -62,16 +62,20 @@ function EditControls(props)
           td.setAttribute("data-immediate-text", "true");
         document.body.append(td);
 
-        let cust_event = new CustomEvent("rifftube:riff:edit:setup",
+        // set up recorder and start time
+        let set_recorder_event = new CustomEvent("rifftube:riff:edit:setup:recorder",
         {
-          detail:
-            {
-              recorder: props.recorder,
-              start: props.rifftubePlayer?.getCurrentTime(),
-            }
+          detail: { recorder: props.recorder }
         });
-        td.dispatchEvent(cust_event);
-        console.log('dispatched', cust_event);
+        td.dispatchEvent(set_recorder_event);
+
+        let set_start_event = new CustomEvent("rifftube:riff:edit:setup:start",
+        {
+          detail: { start: props.rifftubePlayer?.getCurrentTime() }
+        });
+        td.dispatchEvent(set_start_event);
+
+        console.log('dispatched', set_recorder_event, set_start_event);
       }
 
       if (document.querySelector('.rifftube-riff-edit-dialog')) return;
@@ -118,6 +122,9 @@ function EditControls(props)
     // mark as unsaved
     const riff = Object.fromEntries(ents);
     riff.unsaved = true;
+
+    // the Blob used for fetch will become unusable, so it needs to be duplicated
+    riff.audio = duplicateBlob( riff.audio );
 
     // properly cast numeric fields
     const numericFields = ["start", "duration"];
