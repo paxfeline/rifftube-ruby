@@ -18,7 +18,7 @@ function EditControls(props)
   useEffect( () =>
   {
     const body = document.body;
-    body.setAttribute("tabindex", 0);
+    body.setAttribute("tabIndex", 1);
     function resetFocus()
     {
       // allow focus to leave the body if editing dialog is open
