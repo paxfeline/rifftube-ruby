@@ -38,7 +38,7 @@ const riffsReducer = (state = initialState, action) => {
     case SAVE_NEW_RIFF: // code block for variable grouping
     {
       const riff = action.payload;
-      delete riff.payload;
+      delete riff.audio;
 
       // create new riffs list, including new riff
       return (
@@ -47,17 +47,6 @@ const riffsReducer = (state = initialState, action) => {
           [riff.tempId]: riff
         });
     }
-    case SAVE_EDIT_RIFF:
-    {
-      const riff = action.payload;
-      delete riff.payload;
-
-      let riffs = { ...state };
-      riffs[riff.id] = riff;
-
-      return riffs;
-    }
-
     case SAVE_NEW_RIFF_SUCCESS:
     {
       let id = action.payload.id;
@@ -66,6 +55,17 @@ const riffsReducer = (state = initialState, action) => {
       riffs[id] = { ...riffs[tempId], id };
       delete riffs[id].unsaved;
       delete riffs[tempId];
+      return riffs;
+    }
+
+    case SAVE_EDIT_RIFF:
+    {
+      const riff = action.payload;
+      delete riff.audio;
+
+      let riffs = { ...state };
+      riffs[riff.id] = riff;
+
       return riffs;
     }
     case SAVE_EDIT_RIFF_SUCCESS:

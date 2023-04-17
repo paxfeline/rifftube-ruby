@@ -165,6 +165,7 @@ export const saveNewRiff = (body, riff) =>
   // add tempId
   debugger;
   let tempId = `temp-${new Date().getUTCMilliseconds()}`;
+  // add tempId to both body and riff
   body.set("tempId", tempId);
   riff.tempId = tempId;
   return (dispatch) =>
