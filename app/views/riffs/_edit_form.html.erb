@@ -117,6 +117,8 @@ isText = true, speak = false -> show = true (auto-duration = t/f)
 isText = true, speak = true -> auto-duration = true (show = t/f)
 */
 
+// maybe don't need to duplicate all the time? ... not sure
+
 if (rifftube.curFile.files.length == 1)
 {
     let audio_URL = URL.createObjectURL(duplicate_blob(rifftube.curFile.files[0]));

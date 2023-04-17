@@ -123,9 +123,6 @@ function EditControls(props)
     const riff = Object.fromEntries(ents);
     riff.unsaved = true;
 
-    // the Blob used for fetch will become unusable, so it needs to be duplicated
-    riff.audio = duplicateBlob( riff.audio );
-
     // properly cast numeric fields
     const numericFields = ["start", "duration"];
     numericFields.forEach(el => riff[el] = Number(riff[el]));
