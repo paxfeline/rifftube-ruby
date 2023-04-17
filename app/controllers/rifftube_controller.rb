@@ -5,6 +5,11 @@ RiffTrack = Struct.new(:cursor, :riffs)
 
 class RifftubeController < ApplicationController
 
+  def index
+    puts "rendering rifftube index"
+    render file: "#{Rails.root}/public/index.html"
+  end
+
   def video_list
     vids = Video.where(host: params[:host])
     hash = vids.as_json
@@ -47,9 +52,6 @@ class RifftubeController < ApplicationController
 
   def send_email
     UserMailer.with(user: nil).new_user_email.deliver_later
-  end
-
-  def index
   end
 
   def riff
