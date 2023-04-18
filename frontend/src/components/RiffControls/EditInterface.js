@@ -16,12 +16,15 @@ import NavBar from '../NavBar.js';
 class EditInterface extends React.Component {
   constructor(props) {
     super(props);
+
+    this.introDialogRef = React.createRef();
   }
 
   componentDidMount = () => {
     if (this.props.match.params.videoID) {
       this.props.setVideoID( this.props.match.params.videoID );
     }
+    this.introDialogRef.current?.showModal();
   };
 
   // watch for video id change
@@ -71,6 +74,40 @@ class EditInterface extends React.Component {
     return this.props.match.params.videoID ? (
       <React.Fragment>
         <NavBar color="grey" />
+
+        <dialog
+          id="introDialog"
+          ref={this.introDialogRef}
+          style={{ inset: "20%", zIndex: 1, }}>
+          <div style={{fontSize: "180%",}}>
+            <h1>Getting Started</h1>
+            <p>
+              To record a riff, press and hold the R key. Recording occurs while the key is held down.
+            </p>
+            <p>
+              To create a new text riff, press and hold the T key.
+            </p>
+            <p>
+              You can add audio to a text riff, or remove audio and use only text, at any time.
+            </p>
+            <p>
+              ⇥ means &quot;jump to&quot;
+            </p>
+            <p>
+              ✎ means &quot;edit&quot;
+            </p>
+            <p>
+              🗑 means &quot;delete&quot;
+            </p>
+            <p>
+              Adjust the timing by 0.5 seconds with the up and down arrows.
+            </p>
+            <form method="dialog">
+              <button>OK</button>
+            </form>
+          </div>
+        </dialog>
+
         <div className="youtube-section" style={ {marginTop: "8rem"} }>
           <YouTubeVideo id={this.props.videoID} riffs={this.props.riffs} />
           <MetaBar />
