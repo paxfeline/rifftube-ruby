@@ -5,9 +5,9 @@ import RiffList from './RiffList.js';
 import Login from '../Login/Login';
 
 import { setRifferName, togglePlayerMode, setRecorder,
-  saveNewRiff, saveEditRiff } from '../../actions/index.js';
+  saveNewRiff, saveEditRiff, setVideoID } from '../../actions/index.js';
 
-import { executeScriptElements, duplicateBlob } from './util.js';
+import { executeScriptElements, extractVideoID } from './util.js';
 
 /*This component houses all of the riff buttons and the rifflist*/
 function EditControls(props)
@@ -219,6 +219,17 @@ function EditControls(props)
 
   return (
         <div className="control-panel">
+          <button className="btn" id="change-video-btn" onClick={(e) => {
+              const vPrompt = prompt("Paste YouTube URL or video ID:");
+              if ( vPrompt )
+              {
+                const vID = extractVideoID(vPrompt);
+                props.history.push(`/riff/${vID}`);
+                props.setVideoID(vID);
+              }
+            }}>
+            Change Video
+          </button>
           {
             props.loggedIn ?
             (
@@ -263,6 +274,7 @@ const mapDispatchToProps = {
   setRecorder,
   saveNewRiff,
   saveEditRiff,
+  setVideoID,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditControls);

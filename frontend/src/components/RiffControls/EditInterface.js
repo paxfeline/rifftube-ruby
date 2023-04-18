@@ -16,24 +16,18 @@ import NavBar from '../NavBar.js';
 class EditInterface extends React.Component {
   constructor(props) {
     super(props);
-    this.videoIDRef = React.createRef();
   }
 
   componentDidMount = () => {
     if (this.props.match.params.videoID) {
-      this.props.setVideoID(
-        this.props.match.params.videoID
-      );
-      this.videoIDRef.current.value = this.props.match.params.videoID;
+      this.props.setVideoID( this.props.match.params.videoID );
     }
   };
 
+  // watch for video id change
   componentDidUpdate = (prevProps, prevState) => {
     if (this.props.match.params.videoID !== this.props.videoID) {
-      this.props.setVideoID(
-        this.props.match.params.videoID
-      );
-      this.videoIDRef.current.value = this.props.match.params.videoID;
+      this.props.setVideoID( this.props.match.params.videoID );
     }
 
     if (
@@ -73,38 +67,11 @@ class EditInterface extends React.Component {
     */
   };
 
-  /* extracts the youtube id from a url. got help from: https://ctrlq.org/code/19797-regex-youtube-id */
-  extractVideoID = (url) => {
-    var regExp =
-      /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-    var match = url.match(regExp);
-    if (match && match[7].length === 11) {
-      return match[7];
-    } else {
-      return url; // if extraction fails, fallback on assuming they gave an ID
-    }
-  };
-
   render() {
     return this.props.match.params.videoID ? (
       <React.Fragment>
         <NavBar color="grey" />
         <div className="youtube-section" style={ {marginTop: "8rem"} }>
-          <label>Paste any YouTube URL here &#8594; </label>
-          <input
-            type="text"
-            defaultValue={this.props.videoID}
-            ref={this.videoIDRef}
-          />
-          <button className="btn" id="change-video-btn" onClick={(e) => {
-              const vID = this.extractVideoID(this.videoIDRef.current.value);
-
-              this.props.history.push(`/riff/${vID}`);
-
-              this.props.setVideoID(vID);
-            }}>
-            Change Video
-          </button>
           <YouTubeVideo id={this.props.videoID} riffs={this.props.riffs} />
           <MetaBar />
           <div className="view-share-riff-link">
@@ -117,7 +84,7 @@ class EditInterface extends React.Component {
             </a>
           </div>
         </div>
-        <EditControls />
+        <EditControls history={this.props.history} />
       </React.Fragment>
     ) : (
       <Redirect to={`/riff/${this.props.videoID}`} />
