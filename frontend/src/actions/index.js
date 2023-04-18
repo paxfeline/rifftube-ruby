@@ -426,7 +426,7 @@ export const cancelEdit = () => ({
 export const updateRiffTime = (riff_id, start) => {
   return (dispatch) =>
     {
-      debugger;
+      console.log("update time called", riff_id, start);
       let body = new FormData();
       body.set('start', start);
       fetch(`/riffs/${riff_id}?fields=start`,

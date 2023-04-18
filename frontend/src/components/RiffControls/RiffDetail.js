@@ -21,7 +21,7 @@ function RiffDetail(props) {
     setVisible(true);
   }, []);
 
-  const update = useCallback(debounce(props.updateRiffTime, 250), [props.updateRiffTime]);
+  const update = useCallback(debounce(props.updateRiffTime, 500), [props.updateRiffTime]);
 
   const divRef = createRef();
 
@@ -32,7 +32,7 @@ function RiffDetail(props) {
 
   const timeRef = createRef();
 
-  console.log(props);
+  //console.log(props);
 
   return (
     <div
@@ -68,6 +68,7 @@ function RiffDetail(props) {
       <input
         type="number"
         className="edit-start"
+        min="0"
         step="0.5"
         defaultValue={props.start?.toFixed(2)} // start SHOULDN'T be nil, but...
         ref={timeRef}
