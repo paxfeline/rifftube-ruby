@@ -27,9 +27,38 @@ class EditInterface extends React.Component {
     this.introDialogRef = React.createRef();
   }
 
+  handleWSConnection(vid)
+  {
+    console.log("loading notif channel js");
+
+    // disconnect the previous ws
+    if (this.props.websocket) consumer.subscriptions.remove(this.props.websocket);
+
+    // set up new ws (cable subscription)
+    const ws = consumer.subscriptions.create({channel: "NotifChannel", video_id: this.props.videoID}, {
+      connected() {
+        // Called when the subscription is ready for use on the server
+        console.log("cable connected", vid);
+      },
+
+      disconnected() {
+        // Called when the subscription has been terminated by the server
+      },
+
+      received(data) {
+        // Called when there's incoming data on the websocket for this channel
+      }
+    });
+
+    // set global ws state
+    setWebSocket(ws);
+  }
+
   componentDidMount = () => {
     if (this.props.match.params.videoID) {
       this.props.setVideoID( this.props.match.params.videoID );
+      const vid = this.props.match.params.videoID;
+      this.handleWSConnection(vid);
     }
     this.introDialogRef.current?.showModal();
   };
@@ -38,41 +67,19 @@ class EditInterface extends React.Component {
   componentDidUpdate = (prevProps, prevState) => {
     if (this.props.match.params.videoID !== this.props.videoID) {
       this.props.setVideoID( this.props.match.params.videoID );
+
+      const vid = this.props.match.params.videoID;
+      this.handleWSConnection(vid);
     }
 
+    // invoke getRiffs if user has changed
+    // (q: when else does this happen?)
     if (
       this.props.loggedIn &&
       this.props.videoID &&
       this.props.userInfo !== prevProps.userInfo
     ) {
       this.props.getRiffs(this.props.videoID);
-
-
-      console.log("loading notif channel js");
-
-      // disconnect the previous ws
-      if (this.props.websocket) consumer.subscriptions.remove(this.props.websocket);
-
-      const vid = this.props.videoID;
-
-      // set up new ws (cable subscription)
-      const ws = consumer.subscriptions.create({channel: "NotifChannel", video_id: this.props.videoID}, {
-        connected() {
-          // Called when the subscription is ready for use on the server
-          console.log("cable connected", vid);
-        },
-
-        disconnected() {
-          // Called when the subscription has been terminated by the server
-        },
-
-        received(data) {
-          // Called when there's incoming data on the websocket for this channel
-        }
-      });
-
-      // set global ws state
-      setWebSocket(ws);
     }
 
     /*
