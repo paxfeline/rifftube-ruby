@@ -8,7 +8,6 @@ import {
   setWebSocket,
   getRiffsMeta,
   getRiffs,
-  setRecorder,
 } from '../../actions';
 import MetaBar from '../MetaBar';
 import NavBar from '../NavBar.js';
@@ -26,37 +25,6 @@ class EditInterface extends React.Component {
     super(props);
 
     this.introDialogRef = React.createRef();
-
-
-
-
-
-
-
-
-console.log("loading notif channel js");
-
-consumer.subscriptions.create({channel: "NotifChannel", video_id: 1}, {
-  connected() {
-    // Called when the subscription is ready for use on the server
-    console.log("cable connected");
-  },
-
-  disconnected() {
-    // Called when the subscription has been terminated by the server
-  },
-
-  received(data) {
-    // Called when there's incoming data on the websocket for this channel
-  }
-});
-
-
-
-
-
-
-
   }
 
   componentDidMount = () => {
@@ -78,6 +46,33 @@ consumer.subscriptions.create({channel: "NotifChannel", video_id: 1}, {
       this.props.userInfo !== prevProps.userInfo
     ) {
       this.props.getRiffs(this.props.videoID);
+
+
+      console.log("loading notif channel js");
+
+      // disconnect the previous ws
+      if (this.props.websocket) consumer.subscriptions.remove(this.props.websocket);
+
+      const vid = this.props.videoID;
+
+      // set up new ws (cable subscription)
+      const ws = consumer.subscriptions.create({channel: "NotifChannel", video_id: this.props.videoID}, {
+        connected() {
+          // Called when the subscription is ready for use on the server
+          console.log("cable connected", vid);
+        },
+
+        disconnected() {
+          // Called when the subscription has been terminated by the server
+        },
+
+        received(data) {
+          // Called when there's incoming data on the websocket for this channel
+        }
+      });
+
+      // set global ws state
+      setWebSocket(ws);
     }
 
     /*
@@ -171,11 +166,9 @@ consumer.subscriptions.create({channel: "NotifChannel", video_id: 1}, {
 const mapStateToProps = (state) => ({
   riffs: state.riffs,
   videoID: state.videoID,
-  websocket: state.websocket,
-  recorder: state.recorder,
-
   loggedIn: state.loggedIn,
   userInfo: state.userInfo,
+  websocket: state.websocket,
 });
 
 const mapDispatchToProps = {
@@ -183,7 +176,6 @@ const mapDispatchToProps = {
   setWebSocket,
   getRiffsMeta,
   getRiffs,
-  setRecorder,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditInterface);
