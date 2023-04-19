@@ -13,11 +13,50 @@ import {
 import MetaBar from '../MetaBar';
 import NavBar from '../NavBar.js';
 
+import consumer from "./cable/consumer"
+
+
+
+
+
+
+
 class EditInterface extends React.Component {
   constructor(props) {
     super(props);
 
     this.introDialogRef = React.createRef();
+
+
+
+
+
+
+
+
+console.log("loading notif channel js");
+
+consumer.subscriptions.create({channel: "NotifChannel", video_id: 1}, {
+  connected() {
+    // Called when the subscription is ready for use on the server
+    console.log("cable connected");
+  },
+
+  disconnected() {
+    // Called when the subscription has been terminated by the server
+  },
+
+  received(data) {
+    // Called when there's incoming data on the websocket for this channel
+  }
+});
+
+
+
+
+
+
+
   }
 
   componentDidMount = () => {
