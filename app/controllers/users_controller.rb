@@ -82,10 +82,15 @@ class UsersController < ApplicationController
   end
 
   def get_pic
-    user = User.find(params[:id])
+    user = User.find_by(id: params[:id])
     print "get pic"
     print user.inspect
-    send_data user.riff_pic, :type => "image/png", :disposition => "inline"
+    if user&.riff_pic.present?
+      send_data user.riff_pic, :type => "image/png", :disposition => "inline"
+    else
+      send_file "#{Rails.root}/public/images/default_pic.png", :disposition => "inline"
+    end
+
   end
 
 
