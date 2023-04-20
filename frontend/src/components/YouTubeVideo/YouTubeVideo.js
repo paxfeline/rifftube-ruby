@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createRef } from 'react';
 import { connect } from 'react-redux';
 import {
   setPlayerMode,
@@ -17,7 +17,14 @@ import AllowPlayback from './AllowPlayback.js';
 
 // based on https://stackoverflow.com/questions/54017100/how-to-integrate-youtube-iframe-api-in-reactjs-solution
 
-class YouTubeVideo extends React.Component {
+class YouTubeVideo extends React.Component
+{
+  constructor(props) {
+    super(props);
+    this.riffersRef = createRef();
+    this.state = { riffCont: {} };
+  }
+
   componentDidMount = () => {
     // On mount, check to see if the API script is already loaded
 
@@ -37,6 +44,45 @@ class YouTubeVideo extends React.Component {
       this.checkForRiffsToLoad(0); // check if any riffs at < 10s in need loading
     }
   };
+
+  showRiffer(riff)
+  {
+    console.log("show", riff);
+    let rifferCont = document.createElement("div");
+    let riffPic = document.createElement("img");
+    try
+    {
+      riffPic.src = `/riffer-pic/${riff.user_id}.png`;
+    }
+    catch (err)
+    {
+      console.log("showriff err", err);
+    }
+    rifferCont.append(riffPic);
+    if (riff.isText)
+    {
+      const textDiv = document.createElement("div");
+      textDiv.className = "rifftube-text-riff";
+      textDiv.innerHTML = riff.text;
+      rifferCont.append(textDiv);
+    }
+    this.riffersRef.current.append(rifferCont);
+    this.setState({ riffCont: {...this.state.riffCont, [riff.id]: rifferCont} });
+    //riff.riffPicCont = rifferCont;
+
+  }
+  
+  hideRiffer(riff)
+  {
+    console.log("hide", riff);
+    const cont = this.state.riffCont[riff.id];
+    cont.classList.add("hiding");
+    cont.addEventListener('animationend', () => {
+      //console.log('Animation ended');
+      cont.remove();
+      // remove from state?
+    });
+  }
 
   loadVideo = () => {
     if (!window.YT) return; // can be called by componentDidUpdate before window.YT has loaded
@@ -149,6 +195,8 @@ class YouTubeVideo extends React.Component {
 
             console.log("killing riff", index, `${riff.start} > ${t} > ${riff.start + riff.duration}`);
 
+            this.hideRiffer(riff);
+
             // by setting this to false, text riffs will be hidden
             this.props.setRiffPlaying(index, false);
             this.curRiff[index] = null;
@@ -174,6 +222,8 @@ class YouTubeVideo extends React.Component {
 
             this.props.setRiffPlaying(index, true);
             this.curRiff[index] = true; // used for text only; overwritten for audio
+
+            this.showRiffer(riff);
 
             if (!riff.isText) {
               if (!this.vol) {
@@ -307,7 +357,8 @@ class YouTubeVideo extends React.Component {
           <AllowPlayback />
           <div className="rifftube-overlay">
             <div className="rifftube-riffs-container">
-              {Object.keys(this.props.riffsPlaying)
+              <div class="rifftube-riffers" ref={this.riffersRef}></div>
+              {/*Object.keys(this.props.riffsPlaying)
                 .filter(
                   (i) =>
                     this.props.riffsPlaying[i] &&
@@ -321,7 +372,7 @@ class YouTubeVideo extends React.Component {
                   >
                     {this.props.riffs[key].payload}
                   </div>
-                ))}
+                ))*/}
             </div>
           </div>
           <div id="rifftube-player" />

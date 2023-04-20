@@ -21,7 +21,7 @@ class ViewInterface extends React.Component {
     return (
       <React.Fragment>
         <NavBar color="grey" />
-        <div style={{ marginTop: '4em' }}>
+        <div style={{ marginTop: '4em', width: '100%' }}>
           <h1>View {this.props.match.params.videoID}</h1>
           <AuthorSelector
             duration={this.props.duration}
