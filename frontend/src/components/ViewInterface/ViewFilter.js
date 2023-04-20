@@ -219,7 +219,7 @@ class ViewFilter extends React.Component {
         <YouTubeVideo id={this.props.id} riffs={this.state.filteredRiffs} />
         <div
           ref={this.selectDiv}
-          style={{ fontSize: '2em', overflow: 'hidden', width: '640px' }}
+          style={{ fontSize: '2em', overflow: 'hidden', width: '100%' }}
         >
           <div
             style={{

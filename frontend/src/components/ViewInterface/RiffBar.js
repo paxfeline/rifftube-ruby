@@ -96,7 +96,7 @@ class RiffBar extends React.Component {
         <YouTubeVideo id={this.props.id} riffs={this.props.riffs} />
         <div
           ref={this.selectDiv}
-          style={{ fontSize: '2em', overflow: 'hidden', width: '640px' }}
+          style={{ fontSize: '2em', overflow: 'hidden', width: '100%' }}
         >
           <div
             style={{

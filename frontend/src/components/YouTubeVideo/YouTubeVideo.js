@@ -357,7 +357,7 @@ class YouTubeVideo extends React.Component
           <AllowPlayback />
           <div className="rifftube-overlay">
             <div className="rifftube-riffs-container">
-              <div class="rifftube-riffers" ref={this.riffersRef}></div>
+              <div className="rifftube-riffers" ref={this.riffersRef}></div>
               {/*Object.keys(this.props.riffsPlaying)
                 .filter(
                   (i) =>
