@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+
+  # Serve websocket cable requests in-process
+  mount ActionCable.server => '/cable'
+
+  
   #get 'rifftube/index' # remove?
   #get 'rifftube/riff' # remove?
   #get 'riff/:video_id', to: "rifftube#riff" # remove?

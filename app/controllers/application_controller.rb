@@ -18,4 +18,12 @@ class ApplicationController < ActionController::Base
         end
     end
 
+    def broadcast_notification(riff)
+        WebNotificationsChannel.broadcast_to(
+            current_user,
+            command: 'new',
+            id: riff.id
+        )
+    end
+
 end

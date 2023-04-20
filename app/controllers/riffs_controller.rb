@@ -52,6 +52,12 @@ class RiffsController < ApplicationController
             @riff.audio_type = riff_params[:audio_type]
 
             if @riff.save
+                # websocket broadcast
+                ActionCable.server.broadcast(
+                    "video:#{riff.video_id}",
+                    { id: @riff.id }
+                )
+
                 render json: @riff, except: :audio
             else
                 render plain: "Error saving riff", status: :internal_server_error

@@ -14,12 +14,6 @@ import NavBar from '../NavBar.js';
 
 import consumer from "./cable/consumer"
 
-
-
-
-
-
-
 class EditInterface extends React.Component {
   constructor(props) {
     super(props);

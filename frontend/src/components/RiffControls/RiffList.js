@@ -31,11 +31,11 @@ function RiffList(props) {
         style={posStyles}
         {...riff}
         index={index}
-        selected={props.riffsPlaying[index]}
-        scroll={props.riffsPlaying[index] && scroll}
+        selected={props.riffsPlaying[riff.id]}
+        scroll={props.riffsPlaying[riff.id] && scroll}
       />
     );
-    if (props.riffsPlaying[index]) scroll = false;
+    if (props.riffsPlaying[riff.id]) scroll = false;
   }
 
   return (
