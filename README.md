@@ -7,7 +7,6 @@ rake start
 
 TODO:
 - where should cable files live? Maybe need to set up a copy when run (from the rails to react dir)
-- riffsPlaying
 - view author select
 
 

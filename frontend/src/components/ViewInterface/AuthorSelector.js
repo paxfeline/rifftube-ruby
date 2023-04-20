@@ -17,7 +17,7 @@ class AuthorSelector extends React.Component {
 
       return {
         muted: m,
-        filteredRiffs: props.riffs.filter((el) => !m[el.user_id]),
+        filteredRiffs: Object.values(props.riffs).filter((el) => !m[el.user_id]),
         all: false,
       };
     });
@@ -78,13 +78,13 @@ class AuthorSelector extends React.Component {
       this.setState({
         muted: m,
         all: this.props.riffers === undefined,
-        filteredRiffs: this.props.riffs.filter((el) => !m[el.user_id]),
+        filteredRiffs: Object.values(this.props.riffs).filter((el) => !m[el.user_id]),
       });
     }
 
     if (
       prevProps.timestamp !== this.props.timestamp ||
-      (prevProps.riffs.length === 0 && this.props.riffs.length > 0)
+      (Object.values(prevProps.riffs).length === 0 && Object.values(this.props.riffs).length > 0)
     ) {
       //( prevProps.riffs !== this.props.riffs )
       const includes = (arr, id) => arr.some((el) => el.id === id);
@@ -93,7 +93,7 @@ class AuthorSelector extends React.Component {
 
       const m = { ...this.state.muted };
 
-      this.props.riffs.forEach((riff) => {
+      Object.values(this.props.riffs).forEach((riff) => {
         if (!includes(names, riff.user_id)) {
           names.push({ name: riff.name, id: riff.user_id });
 
@@ -111,7 +111,7 @@ class AuthorSelector extends React.Component {
         filteredRiffs:
           this.props.riffers === undefined
             ? this.props.riffs
-            : this.props.riffs.filter((el) => !m[el.user_id]),
+            : Object.values(this.props.riffs).filter((el) => !m[el.user_id]),
       });
     }
   }
