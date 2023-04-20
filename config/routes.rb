@@ -62,6 +62,8 @@ Rails.application.routes.draw do
   get "riffer-pic/:id(.:format)", to: "users#get_pic"
   patch "riffer-pic", to: "users#set_pic"
 
+  patch "riffer-name", to: "users#set_name"
+
   # URL: /videos?host=www.youtube.com
   get "videos", to: "rifftube#video_list"
 

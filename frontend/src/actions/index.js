@@ -236,12 +236,12 @@ export const setVideoDuration = (payload) => ({
   payload,
 });
 
-export const setRifferName = (newName) => {
+export const setRifferName = (name) => {
   return (dispatch) => {
     axios({
-      method: 'post',
-      url: `/set-name`,
-      data: { newName },
+      method: 'PATCH',
+      url: `/riffer-name`,
+      data: { name },
     }).then((res) => {
       dispatch({ type: RECEIVE_NAME_UPDATE, payload: res.data });
     }).catch(err => console.log("error", err));

@@ -112,6 +112,20 @@ class UsersController < ApplicationController
     end
   end
 
+  def set_name
+    if logged_in?
+      user = @current_user
+      user.name = params[:name]
+      if user.save
+        render plain: "Updated", status: :ok
+      else
+        render plain: "Error saving pic", status: :internal_server_error
+      end
+    else
+      render plain: "Not logged in", status: :unauthorized
+    end
+  end
+
   def status
     if logged_in?
       render json: @current_user.to_json(except: [:riff_pic, :password_digest])
