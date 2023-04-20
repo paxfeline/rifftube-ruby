@@ -253,10 +253,10 @@ export const setRiffPic = (payload) => {
     let fd = new FormData();
     fd.append('image', payload);
     axios({
-      method: 'post',
-      url: `/save-pic`,
+      method: 'PATCH',
+      url: `/riffer-pic`,
       data: fd,
-      headers: { 'Content-Type': 'multipart/form-data' },
+      // headers: { 'Content-Type': 'multipart/form-data' }, // not needed, I think
     })
       .then((res) => {
         // res.data.data

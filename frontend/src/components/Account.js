@@ -32,7 +32,7 @@ const Account = ({
   const picSubmit = (event) => {
     event.preventDefault();
     //console.log(event.target.children[0].value);
-    setRiffPic(event.target.children[0].files[0]);
+    setRiffPic(event.target.children[0].files[0], userInfo.id);
   };
 
   const handleChange = (event) => {

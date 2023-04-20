@@ -137,6 +137,10 @@ class EditInterface extends React.Component {
             <p>
               Adjust the timing by 0.5 seconds with the up and down arrows.
             </p>
+            <p>
+              If pressing R and T does not bring up the New Riff dialog,
+              click somewhere outside the YouTube video.
+            </p>
             <form method="dialog">
               <button>OK</button>
             </form>

@@ -58,7 +58,9 @@ Rails.application.routes.draw do
   get "send_email", to: "rifftube#send_email" # just for testing
 
   get "user/confirm/:uuid", to: "users#confirm"
+
   get "riffer-pic/:id(.:format)", to: "users#get_pic"
+  patch "riffer-pic", to: "users#set_pic"
 
   # URL: /videos?host=www.youtube.com
   get "videos", to: "rifftube#video_list"

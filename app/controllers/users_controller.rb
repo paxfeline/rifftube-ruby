@@ -13,6 +13,7 @@ class UsersController < ApplicationController
 
   def create_with_token
     begin
+      # TODO: use ENV variable
       payload = Google::Auth::IDTokens.verify_oidc google_login_credentials, aud: "941154439836-s6iglcrdckcj6od74kssqsom58j96hd8.apps.googleusercontent.com"
       print payload
       # check for user in the db with this email
@@ -90,13 +91,30 @@ class UsersController < ApplicationController
     else
       send_file "#{Rails.root}/public/images/default_pic.png", :disposition => "inline"
     end
-
   end
 
+  def set_pic
+    if logged_in?
+      user = @current_user
+      #puts params[:image].inspect
+
+      img = params[:image].tempfile
+      img_data = File.read(img.path)
+
+      user.riff_pic = img_data
+      if user.save
+        render plain: "Updated", status: :ok
+      else
+        render plain: "Error saving pic", status: :internal_server_error
+      end
+    else
+      render plain: "Not logged in", status: :unauthorized
+    end
+  end
 
   def status
     if logged_in?
-      render json: current_user.to_json(except: [:riff_pic, :password_digest])
+      render json: @current_user.to_json(except: [:riff_pic, :password_digest])
     else
       render plain: "Not logged in", status: :unauthorized
     end
