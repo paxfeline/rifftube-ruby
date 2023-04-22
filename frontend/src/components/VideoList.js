@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const VideoList = ({ videoData }) => (
-  <ul>
+  <ul className='my-videos-list'>
     {videoData &&
       videoData.map(({ url, title, count }) => (
         <li className="my-video">

@@ -67,7 +67,7 @@ const Account = ({
               </label>
               <input type="submit" value="Submit" className="btn" />
             </form>
-            <img key={acctImgKey} src={`/riffer-pic/${userInfo.id}.png?${acctImgKey}`} />
+            <img key={acctImgKey} src={`/riffer-pic/${userInfo.id}.png?${acctImgKey}`} style={{ width: '15em' }} />
             <form onSubmit={(event) => picSubmit(event)}>
               <input type="file" name="image" /><br /><br />
               <button type="submit">Upload</button>
