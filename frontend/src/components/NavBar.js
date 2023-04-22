@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { logout } from '../actions';
 
-const NavBar = ({ color, loggedIn }) => (
+const NavBar = ({ color, loggedIn, logout }) => (
   <nav className="navbar">
     <NavLink
       activeClassName="navbar-home-link-active"
@@ -20,13 +21,22 @@ const NavBar = ({ color, loggedIn }) => (
     </NavLink>
     {loggedIn ? 
       (
-        <NavLink
-          activeClassName="navbar-link-active"
-          style={{ color }}
-          to="/account"
-        >
-          My Account
-        </NavLink>
+        <React.Fragment>
+          <NavLink
+            activeClassName="navbar-link-active"
+            style={{ color }}
+            to="/account"
+          >
+            My Account
+          </NavLink>
+          <NavLink
+            style={{ color }}
+            onClick={ e => { logout(); e.preventDefault(); }}
+            to="#"
+          >
+            Sign Out
+          </NavLink>
+        </React.Fragment>
       ) : (
         <NavLink
           activeClassName="navbar-link-active"
@@ -43,7 +53,7 @@ let mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  //getPublicUserData,
+  logout,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NavBar);

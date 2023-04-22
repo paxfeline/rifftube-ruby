@@ -39,9 +39,10 @@ class SessionsController < ApplicationController
   end
 
   def destroy
+    puts "de-stroy!"
     session[:user_id] = nil
     flash[:notice] = "You have been logged out."
-    render plain: "OK"
+    render plain: "Logged out", status: :ok
     #redirect_to root_path
     #redirect_back(fallback_location: root_path)
   end
