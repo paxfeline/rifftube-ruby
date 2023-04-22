@@ -13,7 +13,6 @@ import {
   PLAY_MODE,
   PAUSE_MODE,
 } from '../../actions/index.js';
-import AllowPlayback from './AllowPlayback.js';
 
 // based on https://stackoverflow.com/questions/54017100/how-to-integrate-youtube-iframe-api-in-reactjs-solution
 
@@ -354,7 +353,7 @@ class YouTubeVideo extends React.Component
     return (
       <React.Fragment>
         <div className="rifftube-container">
-          <AllowPlayback />
+          {/* <AllowPlayback />*/}
           <div className="rifftube-overlay">
             <div className="rifftube-riffs-container">
               <div className="rifftube-riffers" ref={this.riffersRef}></div>

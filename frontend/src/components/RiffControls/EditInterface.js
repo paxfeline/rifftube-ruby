@@ -8,6 +8,8 @@ import {
   setWebSocket,
   getRiffsMeta,
   getRiffs,
+  setAudioPlayers,
+  setAudioPlayerNotInUse,
 } from '../../actions';
 import MetaBar from '../MetaBar';
 import NavBar from '../NavBar.js';
@@ -20,6 +22,25 @@ class EditInterface extends React.Component {
 
     this.introDialogRef = React.createRef();
   }
+
+  setupAudioPlayers = () =>
+  {
+    console.log("setup audio players");
+    let audioPlayers = [];
+    let audioPlayersCount = 5;
+    for (let i = 0; i < audioPlayersCount; i++) {
+
+      audioPlayers[i] = new Audio(); // should be identical behavior to: document.createElement('audio');
+      audioPlayers[i].controls = false;
+      audioPlayers[i].addEventListener('ended', () =>
+      {
+        console.log('audio playback end', i);
+        this.props.setAudioPlayerNotInUse(i);
+      });
+    }
+
+    this.props.setAudioPlayers(audioPlayers);
+  };
 
   handleWSConnection(vid)
   {
@@ -142,7 +163,10 @@ class EditInterface extends React.Component {
               click somewhere outside the YouTube video.
             </p>
             <form method="dialog">
-              <button>OK</button>
+              <button
+                onClick={ () => this.setupAudioPlayers() }>
+                  OK
+              </button>
             </form>
           </div>
         </dialog>
@@ -181,6 +205,8 @@ const mapDispatchToProps = {
   setWebSocket,
   getRiffsMeta,
   getRiffs,
+  setAudioPlayers,
+  setAudioPlayerNotInUse,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditInterface);
