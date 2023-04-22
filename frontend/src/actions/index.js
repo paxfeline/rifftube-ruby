@@ -357,7 +357,7 @@ export const getUserData = () => {
   return (dispatch) => {
     axios({
       method: 'get',
-      url: '/get-user-data',
+      url: '/user/self/videos?host=www.youtube.com',
     }).then((res) => {
       dispatch({ type: LOAD_USER_DATA, payload: res.data });
     }).catch(err => console.log("error", err));

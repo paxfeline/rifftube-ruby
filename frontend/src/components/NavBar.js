@@ -32,7 +32,7 @@ const NavBar = ({ color, loggedIn, logout }) => (
           <NavLink
             style={{ color }}
             onClick={ e => { logout(); e.preventDefault(); }}
-            to="#"
+            to="/logout" // this is ignored, but looks good
           >
             Sign Out
           </NavLink>

@@ -73,7 +73,7 @@ const Account = ({
               <button type="submit">Upload</button>
             </form>
             <h2 className="account-section-title">My Videos</h2>
-            <VideoList userData={userData} />
+            <VideoList videoData={userData} />
           </React.Fragment>
         ) : (
           <React.Fragment>

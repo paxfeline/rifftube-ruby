@@ -134,6 +134,23 @@ class UsersController < ApplicationController
     end
   end
 
+  def video_list
+    if params[:id] == "self"
+      if logged_in?
+        user = @current_user
+      else
+        render plain: "Unauthorized", status: :unauthorized and return
+      end
+    else
+      user = User.find(params[:id])
+    end
+    vids = user.videos.where(host: params[:host]).uniq # Video.where(id: params[:id], host: params[:host])
+    hash = vids.as_json
+    hash&.each { |v| v["count"] = Video.find(v["id"]).riffs.count }
+    hash = hash&.sort { |a,b| b["count"] <=> a["count"] }
+    render json: hash
+  end
+
 private
   def user_params
     #params[:user][:email].downcase!

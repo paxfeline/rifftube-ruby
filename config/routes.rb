@@ -67,6 +67,9 @@ Rails.application.routes.draw do
   # URL: /videos?host=www.youtube.com
   get "videos", to: "rifftube#video_list"
 
+  # URL: /users/1/videos?host=www.youtube.com
+  get "user/:id/videos", to: "users#video_list"
+
   resources :users, except: [:new]
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
