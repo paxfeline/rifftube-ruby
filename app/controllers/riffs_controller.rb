@@ -12,7 +12,7 @@ class RiffsController < ApplicationController
         if user.present? and video.present?
             if user == "self"
                 if logged_in?
-                    riffs = current_user.videos.find_by(url: video)&.riffs.as_json&.each { |r| r.delete("audio") }
+                    riffs = @current_user.videos.find_by(url: video)&.riffs.as_json&.each { |r| r.delete("audio") }
                     render json: (riffs or [])
                 else
                     render plain: "Not logged in", status: :unauthorized
@@ -43,7 +43,7 @@ class RiffsController < ApplicationController
         if logged_in?
 
             recode_audio
-            params[:riff][:user_id] = current_user.id
+            params[:riff][:user_id] = @current_user.id
             vid_url = params[:riff][:video_id];
             params[:riff][:video_id] = Video.find_by(url: vid_url).id
             
@@ -56,7 +56,11 @@ class RiffsController < ApplicationController
                 # websocket broadcast
                 ActionCable.server.broadcast(
                     "video:#{vid_url}",
-                    { id: @riff.id }
+                    {
+                        from: @current_user.id,
+                        cmd: "new",
+                        riff: @riff.to_json(except: :audio)
+                    }
                 )
 
                 render json: @riff, except: :audio
@@ -94,7 +98,7 @@ class RiffsController < ApplicationController
 
             puts riff.inspect
 
-            return render plain: "Unauthorized", status: :unauthorized if current_user.id != riff.user_id
+            return render plain: "Unauthorized", status: :unauthorized if @current_user.id != riff.user_id
 
             if params[:fields].present?
                 # 'audio' field not allowed currently
@@ -150,8 +154,9 @@ def recode_audio
     return if not params[:riff][:audio]
 
     movie = FFMPEG::Movie.new(params[:riff][:audio].tempfile.path)
-    riff_path = "#{Rails.root}/tmp/riff-#{current_user.id}-#{Time.now.to_i}.mp4"
+    riff_path = "#{Rails.root}/tmp/riff-#{@current_user.id}-#{Time.now.to_i}.mp4"
     movie.transcode(riff_path) 
     mp4data = File.read(riff_path)
     params[:riff][:audio] = mp4data 
+    mp4data.delete # should be ok, data already read in 
 end

@@ -19,6 +19,7 @@ class RifftubeController < ApplicationController
   end
 
   # not working
+  # TODO: fix
   def random_video
     puts "random vid"
     vid = Video.first
