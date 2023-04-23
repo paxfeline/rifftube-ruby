@@ -10,6 +10,8 @@ import {
   getRiffs,
   setAudioPlayers,
   setAudioPlayerNotInUse,
+  cableUpdate,
+  cableDelete,
 } from '../../actions';
 import MetaBar from '../MetaBar';
 import NavBar from '../NavBar.js';
@@ -49,6 +51,8 @@ class EditInterface extends React.Component {
     // disconnect the previous ws
     if (this.props.websocket) consumer.subscriptions.remove(this.props.websocket);
 
+    const props = this.props;
+
     // set up new ws (cable subscription)
     const ws = consumer.subscriptions.create({channel: "NotifChannel", video_id: this.props.videoID}, {
       connected() {
@@ -63,6 +67,19 @@ class EditInterface extends React.Component {
       received(data) {
         // Called when there's incoming data on the websocket for this channel
         console.log(data);
+
+        // currently being used only to talk to self
+        // an odd situation for sure
+        if (data.from != props.userInfo.id) return;
+
+        if (data.cmd == "update")
+        {
+          props.cableUpdate(data);
+        }
+        else if (data.cmd == "delete")
+        {
+          props.cableDelete(data);
+        }
       }
     });
 
@@ -208,6 +225,8 @@ const mapDispatchToProps = {
   getRiffs,
   setAudioPlayers,
   setAudioPlayerNotInUse,
+  cableUpdate,
+  cableDelete,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditInterface);

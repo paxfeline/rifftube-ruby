@@ -4,6 +4,8 @@ import {
   SAVE_EDIT_RIFF,
   RIFF_LOADED,
   LOAD_RIFF,
+  WS_UPDATE_RIFF,
+  WS_DELETE_RIFF,
 } from '../actions/index.js';
 
 let initialState = { loading: {}, all: {} };
@@ -67,6 +69,23 @@ const riffsAudioReducer = (state = initialState, action) => {
           [action.id]: audio
         },
       };
+    }
+    case WS_UPDATE_RIFF:
+    {
+      return {
+        ...state,
+        all: {
+          ...state.all,
+          [action.payload.id]: null,
+        },
+      };
+    }
+    case WS_DELETE_RIFF:
+    {
+      let id = action.payload.id;
+      let all = { ...state.all };
+      delete all[id];
+      return { ...state, all };
     }
     default:
       return state;

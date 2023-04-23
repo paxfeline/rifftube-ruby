@@ -53,17 +53,8 @@ class RiffsController < ApplicationController
             @riff.audio_type = riff_params[:audio_type]
 
             if @riff.save
-                # websocket broadcast
-                ActionCable.server.broadcast(
-                    "video:#{vid_url}",
-                    {
-                        from: @current_user.id,
-                        cmd: "new",
-                        riff: @riff.to_json(except: :audio)
-                    }
-                )
-
                 render json: @riff, except: :audio
+                braodcast_update_riff vid_url, @riff
             else
                 render plain: "Error saving riff", status: :internal_server_error
             end
@@ -110,6 +101,7 @@ class RiffsController < ApplicationController
                 }
                 if riff.save
                     render json: riff, except: :audio
+                    braodcast_update_riff vid_url, riff
                 else
                     render plain: "Error updating riff", status: :internal_server_error
                 end
@@ -123,6 +115,7 @@ class RiffsController < ApplicationController
                 #debugger
                 if riff.update(riff_params)
                     render json: riff, except: :audio
+                    braodcast_update_riff vid_url, riff
                 else
                     render plain: "Error updating riff", status: :internal_server_error
                 end
@@ -137,6 +130,18 @@ class RiffsController < ApplicationController
         if logged_in?
             riff = Riff.find(params[:id])
             riff.destroy
+
+            vid_url = riff.video.url
+
+            # websocket broadcast
+            ActionCable.server.broadcast(
+                "video:#{vid_url}",
+                {
+                    from: @current_user.id,
+                    cmd: "delete",
+                    id: riff.id
+                }
+            )
         end
     end
 
@@ -159,4 +164,16 @@ def recode_audio
     mp4data = File.read(riff_path)
     params[:riff][:audio] = mp4data 
     mp4data.delete # should be ok, data already read in 
+end
+
+def braodcast_update_riff(vid_url, riff)
+    # websocket broadcast
+    ActionCable.server.broadcast(
+        "video:#{vid_url}",
+        {
+            from: @current_user.id,
+            cmd: "update",
+            riff: riff.to_json(except: :audio)
+        }
+    )
 end

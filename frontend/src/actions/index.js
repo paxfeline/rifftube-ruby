@@ -81,6 +81,9 @@ export const SET_FREE_AUDIO_PLAYER_IN_USE = 'SET_FREE_AUDIO_PLAYER_IN_USE';
 export const SET_AUDIO_PLAYER_IN_USE = 'SET_AUDIO_PLAYER_IN_USE';
 export const SET_AUDIO_PLAYER_NOT_IN_USE = 'SET_AUDIO_PLAYER_NOT_IN_USE';
 
+export const WS_UPDATE_RIFF = 'WS_UPDATE_RIFF';
+export const WS_DELETE_RIFF = 'WS_DELETE_RIFF';
+
 /******** Login and logout */
 
 export const login = (email, password) => {
@@ -226,6 +229,16 @@ export const setAudioPlayerNotInUse = (payload) => ({
 
 export const setWebSocket = (payload) => ({
   type: WEB_SOCKET_UPDATE,
+  payload,
+});
+
+export const cableUpdate = (payload) => ({
+  type: WS_UPDATE_RIFF,
+  payload,
+});
+
+export const cableDelete = (payload) => ({
+  type: WS_DELETE_RIFF,
   payload,
 });
 

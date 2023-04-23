@@ -6,6 +6,8 @@ import {
   SAVE_NEW_RIFF_SUCCESS,
   SAVE_EDIT_RIFF_SUCCESS,
   UPDATE_RIFF_TIME_SUCCESS,
+  WS_UPDATE_RIFF,
+  WS_DELETE_RIFF,
 } from '../actions/index.js';
 
 let initialState = [];
@@ -78,6 +80,20 @@ const riffsReducer = (state = initialState, action) => {
       riffs[id] = { ...riffs[id] };
       delete riffs[id].unsaved;
       return riffs;
+    }
+    case WS_UPDATE_RIFF:
+    {
+      const riff = { ...action.payload.riff }; // doesn't need duplicating, but no harm
+      let riffs = { ...state };
+      riffs[riff.id] = riff;
+
+      return riffs;
+    }
+    case WS_DELETE_RIFF:
+    {
+      let ret = { ...state };
+      delete ret[action.payload.id]
+      return ret;
     }
 
     default:
