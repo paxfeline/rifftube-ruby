@@ -12,7 +12,7 @@ class SessionsController < ApplicationController
     else
       flash.now[:alert] = "There was something wrong with your login details."
       #render 'new'
-      render plain: "Login Failed"
+      render plain: "Login Failed", status: :unauthorized
     end
   end
 
@@ -34,7 +34,7 @@ class SessionsController < ApplicationController
         raise "Login Failed"
       end
     rescue => e
-      render plain: "Login Failed"
+      render plain: "Login Failed", status: :unauthorized
     end
   end
 

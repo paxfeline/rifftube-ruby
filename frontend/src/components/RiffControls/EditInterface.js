@@ -62,6 +62,7 @@ class EditInterface extends React.Component {
 
       received(data) {
         // Called when there's incoming data on the websocket for this channel
+        console.log(data);
       }
     });
 

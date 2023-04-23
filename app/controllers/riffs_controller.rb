@@ -44,7 +44,8 @@ class RiffsController < ApplicationController
 
             recode_audio
             params[:riff][:user_id] = current_user.id
-            params[:riff][:video_id] = Video.find_by(url: params[:riff][:video_id]).id
+            vid_url = params[:riff][:video_id];
+            params[:riff][:video_id] = Video.find_by(url: vid_url).id
             
             print riff_params.inspect
 
@@ -54,7 +55,7 @@ class RiffsController < ApplicationController
             if @riff.save
                 # websocket broadcast
                 ActionCable.server.broadcast(
-                    "video:#{riff.video_id}",
+                    "video:#{vid_url}",
                     { id: @riff.id }
                 )
 

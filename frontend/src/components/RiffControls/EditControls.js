@@ -21,8 +21,13 @@ function EditControls(props)
     body.setAttribute("tabIndex", 1);
     function resetFocus()
     {
+      // allow focus to leave the body if not logged in
+      if (!props.loggedIn) return;
+
       // allow focus to leave the body if editing dialog is open
       if (document.querySelector('.rifftube-riff-edit-dialog')) return;
+
+
       // I hate this use of timeout so. much.
       // but it seems necessary
       setTimeout( () =>
@@ -53,6 +58,12 @@ function EditControls(props)
   // useCallback because the values of recorder and rifftubePlayer can change
   let keydown = useCallback( (e) =>
     {
+      // ignore if not logged in
+      if (!props.loggedIn) return;
+
+      // ignore if the edit dialog is open
+      if (document.querySelector('.rifftube-riff-edit-dialog')) return;
+
       let startNewRiff = (immediateRecord) =>
       {
         let td = templateRef.current.content.firstChild.cloneNode(true);
@@ -77,8 +88,6 @@ function EditControls(props)
 
         console.log('dispatched', set_recorder_event, set_start_event);
       }
-
-      if (document.querySelector('.rifftube-riff-edit-dialog')) return;
       
       console.log('kd meta count', e.getModifierState("Control") +
         e.getModifierState("Alt") +
@@ -95,7 +104,7 @@ function EditControls(props)
         startNewRiff(e.key);
       }
     },
-    [props.recorder, props.rifftubePlayer] );
+    [props.recorder, props.rifftubePlayer, props.loggedIn] );
 
   function saveRiff({ detail })
   {

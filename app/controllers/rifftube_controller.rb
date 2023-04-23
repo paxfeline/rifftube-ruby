@@ -18,6 +18,13 @@ class RifftubeController < ApplicationController
     render json: hash
   end
 
+  # not working
+  def random_video
+    puts "random vid"
+    vid = Video.first
+    redirect_to "/riff/#{vid.url}"
+  end
+
   def riffs_for_video
     riffs = Video.find_by(url: params[:video_id])&.riffs.select(:id, :user_id, :duration, :start, :isText, :text)
     if riffs.nil?
