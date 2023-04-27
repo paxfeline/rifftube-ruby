@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import RiffDetail from './RiffDetail.js';
 
 const size = 25; // 2.5em
 
 /* this component maps over all of the user's riffs for this video */
-function RiffList(props) {
+function RiffList(props)
+{
+  useEffect( () =>
+  {
+    
+  })
   console.log(props);
   var totalLength = 0;
   const riffs = props.riffs

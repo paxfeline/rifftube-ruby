@@ -83,14 +83,25 @@ const riffsReducer = (state = initialState, action) => {
     }
     case WS_UPDATE_RIFF:
     {
+      console.log("ws update", action.payload);
+      const cur = state[action.payload.riff.id];
       const riff = { ...action.payload.riff }; // doesn't need duplicating, but no harm
+
+      // if the new riff has a timestamp equal or less than the current riff, return current state
+      // this should prevent duplication on the computer that sends a save/update command
+      if (cur && cur.timestamp && riff.timestamp && cur.timestamp > riff.timestamp)
+        return state;
+
       let riffs = { ...state };
       riffs[riff.id] = riff;
-
+      
       return riffs;
     }
     case WS_DELETE_RIFF:
     {
+      // if the riff is already gone, return current state
+      if (!state[action.payload.id]) return state;
+
       let ret = { ...state };
       delete ret[action.payload.id]
       return ret;

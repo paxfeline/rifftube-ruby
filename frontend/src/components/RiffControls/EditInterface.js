@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import YouTubeVideo from '../YouTubeVideo/YouTubeVideo';
@@ -51,7 +51,7 @@ class EditInterface extends React.Component {
     // disconnect the previous ws
     if (this.props.websocket) consumer.subscriptions.remove(this.props.websocket);
 
-    const props = this.props;
+    const self = this;
 
     // set up new ws (cable subscription)
     const ws = consumer.subscriptions.create({channel: "NotifChannel", video_id: this.props.videoID}, {
@@ -70,15 +70,16 @@ class EditInterface extends React.Component {
 
         // currently being used only to talk to self
         // an odd situation for sure
-        if (data.from != props.userInfo.id) return;
+        if (data.from != self.props.userInfo.id) return;
 
+        debugger;
         if (data.cmd == "update")
         {
-          props.cableUpdate(data);
+          self.props.cableUpdate(data);
         }
         else if (data.cmd == "delete")
         {
-          props.cableDelete(data);
+          self.props.cableDelete(data);
         }
       }
     });

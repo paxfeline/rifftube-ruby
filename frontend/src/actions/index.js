@@ -150,6 +150,9 @@ export const saveEditRiff = (body, riff) =>
   debugger;
   return (dispatch) =>
   {
+    const now = Date.now();
+    body.append("timestamp", now); // timestamp used as unique identifier of this command
+    riff.timestamp = now;
     dispatch({ type: SAVE_EDIT_RIFF, payload: riff });
     fetch(`/riffs/${riff.id}`,
       {
@@ -165,6 +168,9 @@ export const saveEditRiff = (body, riff) =>
 
 export const saveNewRiff = (body, riff) =>
 {
+  const now = Date.now();
+  body.append("timestamp", now); // timestamp used as unique identifier of this command
+  riff.timestamp = now;
   // add tempId
   debugger;
   let tempId = `temp-${new Date().getUTCMilliseconds()}`;

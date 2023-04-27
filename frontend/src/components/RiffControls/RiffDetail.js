@@ -12,8 +12,8 @@ import Edit from '../../images/edit-24px.svg';
 */
 
 /* this component is where a user can edit their riff */
-function RiffDetail(props) {
-
+function RiffDetail(props)
+{
   const [visible, setVisible] = useState(false);
 
   //useEffect(() => { setTimeout(() => {setVisible(true);}, 20000); }, []);
@@ -32,7 +32,7 @@ function RiffDetail(props) {
 
   const timeRef = createRef();
 
-  //console.log(props);
+  console.log("start", props.start);
 
   return (
     <div
@@ -70,7 +70,7 @@ function RiffDetail(props) {
         className="edit-start"
         min="0"
         step="0.5"
-        defaultValue={props.start?.toFixed(2)} // start SHOULDN'T be nil, but...
+        value={props.start?.toFixed(2)} // start SHOULDN'T be nil, but...
         ref={timeRef}
         onChange={() => {
           update

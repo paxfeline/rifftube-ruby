@@ -53,8 +53,10 @@ class RiffsController < ApplicationController
             @riff.audio_type = riff_params[:audio_type]
 
             if @riff.save
-                render json: @riff, except: :audio
-                braodcast_update_riff vid_url, @riff
+                # used to avoid duplicating commands
+                output = @riff.attributes.except("audio").merge({"timestamp" => params[:timestamp]})
+                render json: output
+                braodcast_update_riff vid_url, output
             else
                 render plain: "Error saving riff", status: :internal_server_error
             end
@@ -100,8 +102,10 @@ class RiffsController < ApplicationController
                     riff[field.to_sym] = params[field.to_sym]
                 }
                 if riff.save
-                    render json: riff, except: :audio
-                    braodcast_update_riff vid_url, riff
+                    # timestamp used to avoid duplicating commands
+                    output = riff.attributes.except("audio").merge({"timestamp" => params[:timestamp]})
+                    render json: output
+                    braodcast_update_riff riff.video.url, output
                 else
                     render plain: "Error updating riff", status: :internal_server_error
                 end
@@ -114,8 +118,10 @@ class RiffsController < ApplicationController
                 puts riff.inspect
                 #debugger
                 if riff.update(riff_params)
-                    render json: riff, except: :audio
-                    braodcast_update_riff vid_url, riff
+                    # timestamp used to avoid duplicating commands
+                    output = riff.attributes.except("audio").merge({"timestamp" => params[:timestamp]})
+                    render json: output
+                    braodcast_update_riff riff.video.url, output
                 else
                     render plain: "Error updating riff", status: :internal_server_error
                 end
@@ -173,7 +179,7 @@ def braodcast_update_riff(vid_url, riff)
         {
             from: @current_user.id,
             cmd: "update",
-            riff: riff.to_json(except: :audio)
+            riff: riff
         }
     )
 end

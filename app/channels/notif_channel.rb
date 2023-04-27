@@ -6,6 +6,8 @@ class NotifChannel < ApplicationCable::Channel
   end
 
   def receive(data)
+    # could be used if the frontend needs to send a msg out directly
+    # currently the server is generating all cable msgs
     puts "cable data received"
     puts data
     #ActionCable.server.broadcast("video:#{Video.find(params[:video_id].url)}", data)
