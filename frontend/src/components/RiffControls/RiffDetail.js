@@ -32,7 +32,11 @@ function RiffDetail(props)
 
   const timeRef = createRef();
 
-  console.log("start", props.start);
+  // uncontrolled component needs this to update value
+  useEffect( () =>
+  {
+    timeRef.current.value = props.start;
+  }, [props.start]);
 
   return (
     <div
@@ -70,7 +74,7 @@ function RiffDetail(props)
         className="edit-start"
         min="0"
         step="0.5"
-        value={props.start?.toFixed(2)} // start SHOULDN'T be nil, but...
+        defaultValue={props.start?.toFixed(2)} // start SHOULDN'T be nil, but...
         ref={timeRef}
         onChange={() => {
           update
