@@ -225,8 +225,10 @@ rifftube.close_modal = function()
     console.log(cust_event);
     */
 
+    /*
     rifftube.curDial.close();
     rifftube.curDial.remove();
+    */
 }
 
 rifftube.save_riff = function(event)
@@ -254,6 +256,7 @@ console.log("injected script running");
 
 rifftube.rec_keydown = function(e)
 {
+    console.log("rec kd", rifftube.curTypeRad[2].checked);
     if ( event.getModifierState("Control") +
             event.getModifierState("Alt") +
             event.getModifierState("Meta") > 1 )
@@ -393,7 +396,6 @@ rifftube.curDial.addEventListener("cancel", () => { rifftube.close_modal(); }, f
 rifftube.curDial.addEventListener("rifftube:riff:edit:setup:recorder", rifftube.setupRecorderCallback, false);
 rifftube.curDial.addEventListener("rifftube:riff:edit:setup:start", rifftube.setupStartCallback, false);
 
-// no immediate record -> text only-riff
 if (rifftube.curDial.hasAttribute("data-immediate-record"))
 {
     rifftube.curTypeRad[0].checked = true;
@@ -411,6 +413,8 @@ else
     rifftube.audioTypeUICallback({ target: rifftube.curTypeSel });
 }
 
-rifftube.curDial.showModal();
+console.log("edit form loaded");
+
+//rifftube.curDial.showModal();
 
 </script>

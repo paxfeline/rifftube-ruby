@@ -210,3 +210,11 @@ server.get('/get-riffer-pic/:id', (req, res) =>
 // save pic does as it name suggests.
 server.post('/save-pic', upload.single('image'), (req, res) =>
         res.status(200).json({ status: 'ok', user_id })
+
+
+
+
+
+May 2 - Considering using iframe for riff editing
+The extension can't load external code, but can load an iframe with an external site
+Can't pass in audio recorder object, but maybe able to allow recording in iframe using allow attribute

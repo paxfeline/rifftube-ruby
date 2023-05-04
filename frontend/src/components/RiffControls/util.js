@@ -1,3 +1,6 @@
+export const baseURL = "http://localhost";
+export const baseURL2 = "http://localhost:3001";
+
 
 export const executeScriptElements = (containerElement) =>
 {
@@ -21,6 +24,8 @@ export const executeScriptElements = (containerElement) =>
     scriptElement.parentNode.replaceChild(clonedElement, scriptElement);
   });
 }
+
+
 export const debounce = (func, delay) => {
   let debounceTimer
   return function() {
@@ -31,7 +36,6 @@ export const debounce = (func, delay) => {
           = setTimeout(() => func.apply(context, args), delay)
   }
 }
-
 
 
 export const duplicateBlob = (blob) =>

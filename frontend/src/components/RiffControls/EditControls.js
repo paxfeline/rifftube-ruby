@@ -7,7 +7,7 @@ import Login from '../Login/Login';
 import { setRifferName, togglePlayerMode, setRecorder,
   saveNewRiff, saveEditRiff, setVideoID } from '../../actions/index.js';
 
-import { executeScriptElements, extractVideoID } from './util.js';
+import { executeScriptElements, extractVideoID, baseURL2 } from './util.js';
 
 /*This component houses all of the riff buttons and the rifflist*/
 function EditControls(props)
@@ -72,6 +72,7 @@ function EditControls(props)
         if (immediateRecord == 't')
           td.setAttribute("data-immediate-text", "true");
         document.body.append(td);
+        td.showModal();
 
         // set up recorder and start time
         let set_recorder_event = new CustomEvent("rifftube:riff:edit:setup:recorder",
@@ -173,14 +174,26 @@ function EditControls(props)
   {
     if (props.loggedIn)
     {
+      /*
+      let newRiffDialog = document.createElement("dialog");
+      templateRef.current.content.append(newRiffDialog);
+      let newRiffFrame = document.createElement("iframe");
+      newRiffFrame.setAttribute("allow", "microphone");
+      newRiffDialog.append(newRiffFrame);
+      newRiffFrame.src = `${baseURL2}/riffs/new?video_id=${props.videoID}`;
+      */
+      
       fetch(`/riffs/new?video_id=${props.videoID}`)
         .then(response => response.text())
         .then(text =>
           {
+            let dial = document.createElement("dialog");
+            dial.innerHTML = text;
             let el = templateRef.current;
-            el.innerHTML = text;
-            executeScriptElements(el.content);
+            el.content.append(dial);
+            executeScriptElements(dial);
           });
+          
     }
   }, [props.videoID, props.loggedIn]);
 
