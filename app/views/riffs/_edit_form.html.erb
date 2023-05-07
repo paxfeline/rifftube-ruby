@@ -257,9 +257,9 @@ console.log("injected script running");
 rifftube.rec_keydown = function(e)
 {
     console.log("rec kd", rifftube.curTypeRad[2].checked);
-    if ( event.getModifierState("Control") +
-            event.getModifierState("Alt") +
-            event.getModifierState("Meta") > 1 )
+    if ( event.getModifierState("Control") ||
+            event.getModifierState("Alt") ||
+            event.getModifierState("Meta") )
         return;
 
     if (e.key == 'r')
@@ -276,9 +276,9 @@ rifftube.rec_keydown = function(e)
 
 rifftube.rec_keyup = function(e)
 {
-    if ( event.getModifierState("Control") +
-            event.getModifierState("Alt") +
-            event.getModifierState("Meta") > 1 )
+    if ( event.getModifierState("Control") ||
+            event.getModifierState("Alt") ||
+            event.getModifierState("Meta") )
         return;
 
     if (e.key == 'r')
@@ -378,7 +378,33 @@ rifftube.setupRecorderCallback = function(e)
 
     // immediate start
     rifftube.recorderLoaded = true;
-    if (rifftube.curDial.hasAttribute("data-immediate-record"))
+}
+
+rifftube.startRecordCallback = function(e)
+{
+    if (e.detail.type == 'r')
+    {
+        rifftube.curTypeRad[0].checked = true;
+        rifftube.audioTypeUICallback({ target: rifftube.curTypeRad[0] });
+    }
+    else if (e.detail.type == 't')
+    {
+        rifftube.curTypeRad[2].checked = true;
+        rifftube.audioTypeUICallback({ target: rifftube.curTypeRad[2] });
+        rifftube.timing_start();
+    }
+
+    if (!rifftube.recorderLoaded)
+    {
+        navigator.mediaDevices
+        .getUserMedia({ audio: true })
+        .then((stream) => {
+            let mediaRecorder = new MediaRecorder(stream);
+            rifftube.setupRecorderCallback({detail: {recorder: mediaRecorder}});
+            rifftube.record_start();
+        });
+    }
+    else
         rifftube.record_start();
 }
 
@@ -395,23 +421,10 @@ rifftube.curDial.addEventListener("cancel", () => { rifftube.close_modal(); }, f
 //console.log("adding listener", rifftube.curDial);
 rifftube.curDial.addEventListener("rifftube:riff:edit:setup:recorder", rifftube.setupRecorderCallback, false);
 rifftube.curDial.addEventListener("rifftube:riff:edit:setup:start", rifftube.setupStartCallback, false);
+rifftube.curDial.addEventListener("rifftube:riff:edit:start", rifftube.startRecordCallback, false);
 
-if (rifftube.curDial.hasAttribute("data-immediate-record"))
-{
-    rifftube.curTypeRad[0].checked = true;
-    rifftube.audioTypeUICallback({ target: rifftube.curTypeRad[0] });
-}
-else if (rifftube.curDial.hasAttribute("data-immediate-text"))
-{
-    rifftube.curTypeRad[2].checked = true;
-    rifftube.audioTypeUICallback({ target: rifftube.curTypeRad[2] });
-    rifftube.timing_start();
-}
-else
-{
-    rifftube.curTypeSel = rifftube.curForm.querySelector("[type='radio'][name='riff[audio_type]'][checked]");
-    rifftube.audioTypeUICallback({ target: rifftube.curTypeSel });
-}
+rifftube.curTypeSel = rifftube.curForm.querySelector("[type='radio'][name='riff[audio_type]'][checked]");
+rifftube.audioTypeUICallback({ target: rifftube.curTypeSel });
 
 console.log("edit form loaded");
 

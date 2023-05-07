@@ -93,17 +93,16 @@ function RiffDetail(props)
                 .then(response => response.text())
                 .then(text =>
                   {
-                    let el = document.createElement("div");
+                    let el = document.createElement("dialog");
                     el.innerHTML = text;
                     executeScriptElements(el);
-                    let td = el.firstChild;
-                    document.body.append(td);
-
+                    document.body.append(el);
+                    el.showModal();
                     let set_recorder_event = new CustomEvent("rifftube:riff:edit:setup:recorder",
                     {
                       detail: { recorder: props.recorder }
                     });
-                    td.dispatchEvent(set_recorder_event);
+                    el.dispatchEvent(set_recorder_event);
                   });
             }
             /*

@@ -74,29 +74,37 @@ function EditControls(props)
         document.body.append(td);
         td.showModal();
 
+        let et = td.firstChild;
+
         // set up recorder and start time
         let set_recorder_event = new CustomEvent("rifftube:riff:edit:setup:recorder",
         {
           detail: { recorder: props.recorder }
         });
-        td.dispatchEvent(set_recorder_event);
+        et.dispatchEvent(set_recorder_event);
 
         let set_start_event = new CustomEvent("rifftube:riff:edit:setup:start",
         {
           detail: { start: props.rifftubePlayer?.getCurrentTime() }
         });
-        td.dispatchEvent(set_start_event);
+        et.dispatchEvent(set_start_event);
 
-        console.log('dispatched', set_recorder_event, set_start_event);
+        let immediate_start_event = new CustomEvent("rifftube:riff:edit:start",
+        {
+          detail: { type: immediateRecord }
+        });
+        et.dispatchEvent(immediate_start_event);
+
+        //console.log('dispatched', set_recorder_event, set_start_event);
       }
       
-      console.log('kd meta count', e.getModifierState("Control") +
-        e.getModifierState("Alt") +
+      console.log('kd meta count', e.getModifierState("Control") ||
+        e.getModifierState("Alt") ||
         e.getModifierState("Meta"));
 
-      if ( e.getModifierState("Control") +
-              e.getModifierState("Alt") +
-              e.getModifierState("Meta") > 0 )
+      if ( e.getModifierState("Control") ||
+              e.getModifierState("Alt") ||
+              e.getModifierState("Meta") )
           return;
 
       if (e.key == 'r' || e.key == 't')
