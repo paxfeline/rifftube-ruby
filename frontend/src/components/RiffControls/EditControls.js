@@ -67,10 +67,6 @@ function EditControls(props)
       let startNewRiff = (immediateRecord) =>
       {
         let td = templateRef.current.content.firstChild.cloneNode(true);
-        if (immediateRecord == 'r')
-          td.setAttribute("data-immediate-record", "true");
-        if (immediateRecord == 't')
-          td.setAttribute("data-immediate-text", "true");
         document.body.append(td);
         td.showModal();
 

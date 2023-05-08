@@ -217,11 +217,34 @@ rifftube.record_stop = function()
     rifftube.curDur.value = rifftube.riff_duration;
 }
 
+function topLevel()
+{
+    return (window.top == window);
+}
+
+rifftube.sendMessage = function (type, detail)
+{
+    if (topLevel())
+    {
+        let cust_event = new CustomEvent(type, { detail });
+        document.dispatchEvent(cust_event);
+    }
+    else
+    {
+        postMessage( { type, detail }, "*" )
+    }
+    console.log("sent", topLevel(), type, detail);
+}
+
 rifftube.close_modal = function()
 {
+    rifftube.sendMessage("rifftube:riff:save:close");
+
+    /*
     let cust_event = new CustomEvent("rifftube:riff:save:close");
     document.dispatchEvent(cust_event);
     console.log(cust_event);
+    */
 
     /*
     rifftube.curDial.close();
@@ -236,16 +259,22 @@ rifftube.save_riff = function(event)
     event.preventDefault();
 
    // remove disabled attribute to send all fields
-   rifftube.curForm.querySelectorAll("[disabled]")
+    rifftube.curForm.querySelectorAll("[disabled]")
         .forEach(el => el.removeAttribute("disabled"))
 
     let detail = new FormData(rifftube.curForm);
+    let detailObj = {};
+    detail.forEach((value, key) => detailObj[key] = value);
+    rifftube.sendMessage("rifftube:riff:save", detailObj);
 
+    /*
     let cust_event = new CustomEvent("rifftube:riff:save", { detail });
     document.dispatchEvent(cust_event);
     console.log(cust_event);
+    */
 
-    rifftube.close_modal();
+   // handled on other end
+    //rifftube.close_modal();
 }
 
 console.log("injected script running");
@@ -406,6 +435,11 @@ rifftube.startRecordCallback = function(e)
         rifftube.record_start();
 }
 
+rifftube.messageCallback = function(e)
+{
+    console.log("edit form message", e.data);
+}
+
 rifftube.curTypeRad.forEach( el => el.addEventListener("change", rifftube.audioTypeUICallback) );
 rifftube.curAutoChk.addEventListener("change", rifftube.audioAutoDurUICallback);
 
@@ -420,6 +454,7 @@ rifftube.curDial.addEventListener("cancel", () => { rifftube.close_modal(); }, f
 rifftube.curDial.addEventListener("rifftube:riff:edit:setup:recorder", rifftube.setupRecorderCallback, false);
 rifftube.curDial.addEventListener("rifftube:riff:edit:setup:start", rifftube.setupStartCallback, false);
 rifftube.curDial.addEventListener("rifftube:riff:edit:start", rifftube.startRecordCallback, false);
+window.addEventListener("message", rifftube.messageCallback, false);
 
 rifftube.curTypeSel = rifftube.curForm.querySelector("[type='radio'][name='riff[audio_type]'][checked]");
 rifftube.audioTypeUICallback({ target: rifftube.curTypeSel });
