@@ -284,9 +284,9 @@ console.log("injected script running");
 rifftube.rec_keydown = function(e)
 {
     console.log("rec kd", rifftube.curTypeRad[2].checked);
-    if ( event.getModifierState("Control") ||
-            event.getModifierState("Alt") ||
-            event.getModifierState("Meta") )
+    if ( e.getModifierState("Control") ||
+            e.getModifierState("Alt") ||
+            e.getModifierState("Meta") )
         return;
 
     if (e.key == 'r')
@@ -303,11 +303,6 @@ rifftube.rec_keydown = function(e)
 
 rifftube.rec_keyup = function(e)
 {
-    if ( event.getModifierState("Control") ||
-            event.getModifierState("Alt") ||
-            event.getModifierState("Meta") )
-        return;
-
     if (e.key == 'r')
     {
         rifftube.record_stop();
@@ -468,5 +463,7 @@ rifftube.audioTypeUICallback({ target: rifftube.curTypeSel });
 console.log("edit form loaded");
 
 //rifftube.curDial.showModal();
+
+rifftube.curDial.focus();
 
 </script>
