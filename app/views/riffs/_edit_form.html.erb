@@ -231,7 +231,7 @@ rifftube.sendMessage = function (type, detail)
     }
     else
     {
-        postMessage( { type, detail }, "*" )
+        window.parent.postMessage( { type, detail }, "*" )
     }
     console.log("sent", topLevel(), type, detail);
 }
@@ -399,16 +399,15 @@ rifftube.setupRecorderCallback = function(e)
         rifftube.curFile.files = container.files;
     }
 
-    console.log("checking for immediate record")
-
     //debugger;
 
-    // immediate start
     rifftube.recorderLoaded = true;
 }
 
-rifftube.startRecordCallback = function(e)
+rifftube.startRecordCallback = async function(e)
 {
+    console.log(e);
+
     if (e.detail.type == 'r')
     {
         rifftube.curTypeRad[0].checked = true;
@@ -423,21 +422,28 @@ rifftube.startRecordCallback = function(e)
 
     if (!rifftube.recorderLoaded)
     {
-        navigator.mediaDevices
+        await navigator.mediaDevices
         .getUserMedia({ audio: true })
         .then((stream) => {
             let mediaRecorder = new MediaRecorder(stream);
             rifftube.setupRecorderCallback({detail: {recorder: mediaRecorder}});
-            rifftube.record_start();
         });
     }
-    else
-        rifftube.record_start();
+
+    rifftube.record_start();
 }
 
 rifftube.messageCallback = function(e)
 {
     console.log("edit form message", e.data);
+
+    //debugger;
+
+    let event = new CustomEvent(e.data.type,
+    {
+        detail: e.data.detail
+    });
+    rifftube.curDial.dispatchEvent(event);
 }
 
 rifftube.curTypeRad.forEach( el => el.addEventListener("change", rifftube.audioTypeUICallback) );
