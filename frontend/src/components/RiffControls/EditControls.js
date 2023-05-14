@@ -7,7 +7,7 @@ import Login from '../Login/Login';
 import { setRifferName, togglePlayerMode, setRecorder,
   saveNewRiff, saveEditRiff, setVideoID } from '../../actions/index.js';
 
-import { executeScriptElements, extractVideoID, baseURL2 } from './util.js';
+import { executeScriptElements, extractVideoID, baseURL2, riffFD2Obj } from './util.js';
 
 /*This component houses all of the riff buttons and the rifflist*/
 function EditControls(props)
@@ -118,23 +118,27 @@ function EditControls(props)
 
     debugger;
 
+    /*
     // get FormData entries
     const ents = Array.from(detail.entries())
       .map(
         ([key, val]) =>
         (
+          // convert keys from e.g. 'riff[start]' to 'start'
+          // leave other keys unchanged
           [
-            // convert keys from e.g. 'riff[start]' to 'start'
-            // leave other keys unchanged
             key.match(/riff\[(\w+)\]/)?.[1] ?? key,
             val
           ]
         )
       );
-
     // create object from entries
-    // mark as unsaved
     const riff = Object.fromEntries(ents);
+    */
+
+    const riff = riffFD2Obj(detail);
+
+    // mark as unsaved
     riff.unsaved = true;
 
     // properly cast numeric fields

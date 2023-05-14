@@ -57,3 +57,26 @@ export const duplicateBlob = (blob) =>
       return url; // if extraction fails, fallback on assuming they gave an ID
     }
   };
+
+  // convert keys from e.g. 'riff[start]' to 'start'
+  // leave non-matching keys unchanged
+export const riffKeyMatcher = key => key.match(/riff\[(\w+)\]/)?.[1] ?? key;
+
+    // get FormData entries
+export const FD2Obj =
+  (detail, keyMatcherCallback) =>
+    // arrow single-line return val
+    Object.fromEntries(
+      Array.from(detail.entries())
+      .map(
+        ([key, val]) =>
+        (
+          [
+            keyMatcherCallback(key),
+            val
+          ]
+        )
+      )
+    );
+
+  export const riffFD2Obj = detail => FD2Obj(detail, riffKeyMatcher);
