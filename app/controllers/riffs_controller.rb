@@ -171,7 +171,7 @@ def recode_audio
     movie.transcode(riff_path) 
     mp4data = File.read(riff_path)
     params[:riff][:audio] = mp4data 
-    mp4data.delete # should be ok, data already read in 
+    File.delete(riff_path); # should be ok, data already read in 
 end
 
 def braodcast_update_riff(vid_url, riff)
