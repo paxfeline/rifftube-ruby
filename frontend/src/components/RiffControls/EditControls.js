@@ -13,6 +13,7 @@ import { executeScriptElements, extractVideoID, baseURL2, riffFD2Obj } from './u
 function EditControls(props)
 {
   let templateRef = React.useRef(null);
+  let [curDial, setCurDial] = React.useState(null);
 
   // enforce focus on body
   useEffect( () =>
@@ -70,6 +71,8 @@ function EditControls(props)
         document.body.append(td);
         td.showModal();
 
+        setCurDial(td);
+
         let et = td.firstChild;
 
         // set up recorder and start time
@@ -111,30 +114,18 @@ function EditControls(props)
     },
     [props.recorder, props.rifftubePlayer, props.loggedIn] );
 
+  function closeDial()
+  {
+    curDial.close();
+    setCurDial(null);
+  }
+
   function saveRiff({ detail })
   {
     // detail is FormData
     console.log( "sr", detail );
 
     debugger;
-
-    /*
-    // get FormData entries
-    const ents = Array.from(detail.entries())
-      .map(
-        ([key, val]) =>
-        (
-          // convert keys from e.g. 'riff[start]' to 'start'
-          // leave other keys unchanged
-          [
-            key.match(/riff\[(\w+)\]/)?.[1] ?? key,
-            val
-          ]
-        )
-      );
-    // create object from entries
-    const riff = Object.fromEntries(ents);
-    */
 
     const riff = riffFD2Obj(detail);
 
@@ -156,15 +147,20 @@ function EditControls(props)
     {
       props.saveNewRiff(detail, riff);
     }
+
+    curDial.close();
+    setCurDial(null);
   }
   
   useEffect(() =>
   {
-    document.addEventListener('rifftube:riff:save', saveRiff, false);
+    document.addEventListener('rifftube:riff:edit:save', saveRiff, false);
+    document.addEventListener('rifftube:riff:edit:close', closeDial, false);
 
     return () =>
     {
-      document.removeEventListener('rifftube:riff:save', saveRiff, false);
+      document.removeEventListener('rifftube:riff:edit:save', saveRiff, false);
+      document.removeEventListener('rifftube:riff:edit:close', closeDial, false);
     }
   }, []);
 

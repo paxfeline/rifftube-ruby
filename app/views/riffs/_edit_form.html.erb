@@ -90,9 +90,11 @@ function duplicate_blob(blob)
 
 // rifftube-riff-edit-dialog class
 // data-riff-id or data-new-riff attribute for edit / new
-var dialSel = ".rifftube-riff-edit-dialog[data-<%= id.present? ? "riff-id='#{id}'".html_safe : "new-riff" %>]";
+
+var dialSel = ".rifftube-riff-edit-dialog"; //[data-<%= id.present? ? "riff-id='#{id}'".html_safe : "new-riff" %>]";
 var curDial = document.querySelector(dialSel);
-var rifftube = curDial.rifftube || {};
+
+var rifftube = window.rifftube || {};
 
 rifftube.curDial = curDial;
 rifftube.curRecBtn = rifftube.curDial.querySelector(".rifftube-record-btn");
@@ -177,6 +179,19 @@ rifftube.timing_stop = function()
     rifftube.curDur.value = rifftube.riff_duration;
 }
 
+function setFocus(el)
+{
+	let sfi = setInterval(
+		() =>
+		{
+			if (document.activeElement == el)
+				clearInterval(sfi);
+			console.log("set focus", el);
+			el.focus();
+		}
+	)
+}
+
 rifftube.record_start = function()
 {
     // make sure the recorder has been set up
@@ -186,6 +201,9 @@ rifftube.record_start = function()
     if (rifftube.recording) return;
 
     //debugger;
+
+    setFocus(document.body.firstElementChild);
+    //document.body.firstElementChild.focus();
 
     console.log("start rec", rifftube)
 
@@ -238,7 +256,7 @@ rifftube.sendMessage = function (type, detail)
 
 rifftube.close_modal = function()
 {
-    rifftube.sendMessage("rifftube:riff:save:close");
+    rifftube.sendMessage("rifftube:riff:edit:close");
 
     /*
     let cust_event = new CustomEvent("rifftube:riff:save:close");
@@ -265,7 +283,7 @@ rifftube.save_riff = function(event)
     let detail = new FormData(rifftube.curForm);
     let detailObj = {};
     detail.forEach((value, key) => detailObj[key] = value);
-    rifftube.sendMessage("rifftube:riff:save", detailObj);
+    rifftube.sendMessage("rifftube:riff:edit:save", detailObj);
 
     /*
     let cust_event = new CustomEvent("rifftube:riff:save", { detail });
@@ -463,6 +481,23 @@ rifftube.audioTypeUICallback({ target: rifftube.curTypeSel });
 console.log("edit form loaded");
 
 //rifftube.curDial.showModal();
+
+//debugger;
+
+
+window.addEventListener("resize",
+    e =>
+    {
+        if (!window.innerWidth || !window.innerWidth) return;
+        console.log({ width: window.innerWidth, height: window.innerHeight });
+        if (!topLevel())
+            rifftube.sendMessage("rifftube:riff:edit:ext-ui-update",
+                {
+                    width: document.body.scrollWidth,
+                    height: document.body.scrollHeight
+                }
+            );
+    });
 
 rifftube.curDial.focus();
 
