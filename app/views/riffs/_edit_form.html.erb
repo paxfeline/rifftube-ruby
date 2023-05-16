@@ -484,12 +484,13 @@ console.log("edit form loaded");
 
 //debugger;
 
-
+/*
+// not worthwhile:
 window.addEventListener("resize",
     e =>
     {
-        if (!window.innerWidth || !window.innerWidth) return;
-        console.log({ width: window.innerWidth, height: window.innerHeight });
+        if (!document.body.scrollWidth || !document.body.scrollHeight) return;
+        console.log({ width: document.body.scrollWidth, height: document.body.scrollHeight });
         if (!topLevel())
             rifftube.sendMessage("rifftube:riff:edit:ext-ui-update",
                 {
@@ -498,6 +499,7 @@ window.addEventListener("resize",
                 }
             );
     });
+*/
 
 rifftube.curDial.focus();
 

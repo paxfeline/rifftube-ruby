@@ -13,18 +13,33 @@ class RiffsController < ApplicationController
             if user == "self"
                 if logged_in?
                     #riffs = @current_user.videos.find_by(url: video)&.riffs.as_json&.each { |r| r.delete("audio") }
-                    riffs = Video.find_by(url: video).riffs.where(user: @current_user)
+                    #riffs = Video.find_by(url: video).riffs.where(user: @current_user).except("audio")
+                    riffs = Video.find_by(url: video).riffs.where(user: @current_user).as_json
+                        &.each { |r|
+                            r.delete("audio")
+                            r["name"] = User.find(r["user_id"]).name;
+                        }
                     render json: (riffs or [])
                 else
                     render plain: "Not logged in", status: :unauthorized
                 end
             else
                 #riffs = User.find(params[user]).videos.find_by(url: video)&.riffs.as_json&.each { |r| r.delete("audio") }
-                riffs = Video.find_by(url: video).riffs.where(user: user)
+                riffs = Video.find_by(url: video).riffs.where(user: user).as_json
+                    &.each { |r|
+                        r.delete("audio")
+                        r["name"] = User.find(r["user_id"]).name;
+                    }
                 render json: (riffs or [])
             end
         elsif video.present?
-            riffs = Video.find_by(url: video)&.riffs.as_json&.each { |r| r.delete("audio") }
+            riffs = Video.find_by(url: video)
+                &.riffs
+                .as_json
+                &.each { |r|
+                    r.delete("audio")
+                    r["name"] = User.find(r["user_id"]).name;
+                }
             render json: (riffs or [])
         else
             render plain: "Unable to load riffs", status: :internal_server_error
