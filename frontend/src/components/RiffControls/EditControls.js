@@ -120,6 +120,7 @@ function EditControls(props)
   {
     let dial = document.querySelector('#rifftube-edit-dialog');
     dial.close();
+    dial.remove();
   }
 
   function saveRiff({ detail })

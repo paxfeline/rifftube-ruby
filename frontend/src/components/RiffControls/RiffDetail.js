@@ -94,6 +94,7 @@ function RiffDetail(props)
                 .then(text =>
                   {
                     let el = document.createElement("dialog");
+                    el.id = "rifftube-edit-dialog";
                     el.innerHTML = text;
                     executeScriptElements(el);
                     document.body.append(el);
