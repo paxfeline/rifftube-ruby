@@ -18,6 +18,8 @@ class ApplicationController < ActionController::Base
         end
     end
 
+    # TODO: change to NotifChannel?
+    # or remove? unused?
     def broadcast_notification(riff)
         WebNotificationsChannel.broadcast_to(
             current_user,

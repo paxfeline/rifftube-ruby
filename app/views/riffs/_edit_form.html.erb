@@ -186,9 +186,10 @@ function setFocus(el)
 		{
 			if (document.activeElement == el)
 				clearInterval(sfi);
-			console.log("set focus", el);
+			console.log("set focus:", el, "active", document.activeElement);
 			el.focus();
-		}
+		},
+        500 //ms
 	)
 }
 
@@ -202,7 +203,9 @@ rifftube.record_start = function()
 
     //debugger;
 
-    setFocus(document.body.firstElementChild);
+    let rootDiv = document.querySelector(".rifftube-riff-edit-dialog");
+    setFocus(rootDiv);
+    //setFocus(document.body.firstElementChild);
     //document.body.firstElementChild.focus();
 
     console.log("start rec", rifftube)
@@ -257,17 +260,6 @@ rifftube.sendMessage = function (type, detail)
 rifftube.close_modal = function()
 {
     rifftube.sendMessage("rifftube:riff:edit:close");
-
-    /*
-    let cust_event = new CustomEvent("rifftube:riff:save:close");
-    document.dispatchEvent(cust_event);
-    console.log(cust_event);
-    */
-
-    /*
-    rifftube.curDial.close();
-    rifftube.curDial.remove();
-    */
 }
 
 rifftube.save_riff = function(event)
@@ -280,19 +272,12 @@ rifftube.save_riff = function(event)
     rifftube.curForm.querySelectorAll("[disabled]")
         .forEach(el => el.removeAttribute("disabled"))
 
-    let detail = new FormData(rifftube.curForm);
-    let detailObj = {};
-    detail.forEach((value, key) => detailObj[key] = value);
-    rifftube.sendMessage("rifftube:riff:edit:save", detailObj);
-
+    let body = new FormData(rifftube.curForm);
     /*
-    let cust_event = new CustomEvent("rifftube:riff:save", { detail });
-    document.dispatchEvent(cust_event);
-    console.log(cust_event);
+    let riff = {};
+    body.forEach((value, key) => riff[key] = value);
     */
-
-   // handled on other end
-    //rifftube.close_modal();
+    rifftube.sendMessage("rifftube:riff:edit:save", body);
 }
 
 console.log("injected script running");
@@ -381,7 +366,7 @@ rifftube.setupStartCallback = function(e)
 
 rifftube.setupRecorderCallback = function(e)
 {
-    console.log(e);
+    //console.log(e);
 
     rifftube.recorder = e.detail.recorder; // new MediaRecorder(stream);
 
@@ -419,7 +404,7 @@ rifftube.setupRecorderCallback = function(e)
 
 rifftube.startRecordCallback = async function(e)
 {
-    console.log(e);
+    //console.log(e);
 
     if (e.detail.type == 'r')
     {
@@ -448,9 +433,11 @@ rifftube.startRecordCallback = async function(e)
 
 rifftube.messageCallback = function(e)
 {
-    console.log("edit form message", e.data);
+    //console.log("edit form message", e.data);
 
     //debugger;
+
+    if (!e.data.type) return;
 
     let event = new CustomEvent(e.data.type,
     {

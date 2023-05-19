@@ -62,21 +62,22 @@ export const duplicateBlob = (blob) =>
   // leave non-matching keys unchanged
 export const riffKeyMatcher = key => key.match(/riff\[(\w+)\]/)?.[1] ?? key;
 
-    // get FormData entries
-export const FD2Obj =
-  (detail, keyMatcherCallback) =>
-    // arrow single-line return val
-    Object.fromEntries(
-      Array.from(detail.entries())
-      .map(
-        ([key, val]) =>
-        (
-          [
-            keyMatcherCallback(key),
-            val
-          ]
-        )
-      )
-    );
+const riffNumericFields = ["riff[start]", "riff[duration]"];
 
-  export const riffFD2Obj = detail => FD2Obj(detail, riffKeyMatcher);
+// get FormData entries
+export const FD2Obj =
+(detail, keyMatcherCallback, numericFields) =>
+  Object.fromEntries(
+    Array.from(detail.entries())
+    .map(
+      ([key, val]) =>
+      (
+        [
+          keyMatcherCallback(key),
+          numericFields.includes(key) ? Number(val) : val
+        ]
+      )
+    )
+  );
+
+  export const riffFD2Obj = detail => FD2Obj(detail, riffKeyMatcher, riffNumericFields);

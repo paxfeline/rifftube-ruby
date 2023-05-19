@@ -7,13 +7,12 @@ import Login from '../Login/Login';
 import { setRifferName, togglePlayerMode, setRecorder,
   saveNewRiff, saveEditRiff, setVideoID } from '../../actions/index.js';
 
-import { executeScriptElements, extractVideoID, baseURL2, riffFD2Obj } from './util.js';
+import { executeScriptElements, extractVideoID, riffFD2Obj } from './util.js';
 
 /*This component houses all of the riff buttons and the rifflist*/
 function EditControls(props)
 {
   let templateRef = React.useRef(null);
-  let [curDial, setCurDial] = React.useState(null);
 
   // enforce focus on body
   useEffect( () =>
@@ -68,10 +67,11 @@ function EditControls(props)
       let startNewRiff = (immediateRecord) =>
       {
         let td = templateRef.current.content.firstChild.cloneNode(true);
+        td.id = "rifftube-edit-dialog";
         document.body.append(td);
+        console.log("set cur dial", td);
         td.showModal();
 
-        setCurDial(td);
 
         let et = td.firstChild;
 
@@ -84,7 +84,7 @@ function EditControls(props)
 
         let set_start_event = new CustomEvent("rifftube:riff:edit:setup:start",
         {
-          detail: { start: props.rifftubePlayer?.getCurrentTime() }
+          detail: { start: props?.rifftubePlayer?.getCurrentTime() || 0 }
         });
         et.dispatchEvent(set_start_event);
 
@@ -97,9 +97,11 @@ function EditControls(props)
         //console.log('dispatched', set_recorder_event, set_start_event);
       }
       
+      /*
       console.log('kd meta count', e.getModifierState("Control") ||
         e.getModifierState("Alt") ||
         e.getModifierState("Meta"));
+        */
 
       if ( e.getModifierState("Control") ||
               e.getModifierState("Alt") ||
@@ -116,8 +118,8 @@ function EditControls(props)
 
   function closeDial()
   {
-    curDial.close();
-    setCurDial(null);
+    let dial = document.querySelector('#rifftube-edit-dialog');
+    dial.close();
   }
 
   function saveRiff({ detail })
@@ -127,14 +129,10 @@ function EditControls(props)
 
     debugger;
 
-    const riff = riffFD2Obj(detail);
+    let riff = riffFD2Obj(detail);
 
     // mark as unsaved
     riff.unsaved = true;
-
-    // properly cast numeric fields
-    const numericFields = ["start", "duration"];
-    numericFields.forEach(el => riff[el] = Number(riff[el]));
 
       //...action.payload,
     //delete riff.payload;
@@ -148,8 +146,7 @@ function EditControls(props)
       props.saveNewRiff(detail, riff);
     }
 
-    curDial.close();
-    setCurDial(null);
+    closeDial();
   }
   
   useEffect(() =>
@@ -194,7 +191,7 @@ function EditControls(props)
             let dial = document.createElement("dialog");
             dial.innerHTML = text;
             let el = templateRef.current;
-            el.content.append(dial);
+            el.content.replaceChildren(dial);
             executeScriptElements(dial);
           });
           
@@ -241,7 +238,7 @@ function EditControls(props)
   }, [props]);
   */
 
-  console.log("ec props", props);
+  //console.log("ec props", props);
 
   return (
         <div className="control-panel">

@@ -168,11 +168,12 @@ export const saveEditRiff = (body, riff) =>
 
 export const saveNewRiff = (body, riff) =>
 {
+  // TODO: move to _edit_form partial
   const now = Date.now();
   body.append("timestamp", now); // timestamp used as unique identifier of this command
   riff.timestamp = now;
   // add tempId
-  debugger;
+  //debugger;
   let tempId = `temp-${new Date().getUTCMilliseconds()}`;
   // add tempId to both body and riff
   body.set("tempId", tempId);
