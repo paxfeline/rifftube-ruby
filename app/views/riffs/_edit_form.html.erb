@@ -256,8 +256,6 @@ rifftube.animationPrep = function ()
     rifftube.audioTypeUICallback({ target: rifftube.curTypeSel });
 }
 
-rifftube.animationPrep();
-
 // timing and recording
 
 rifftube.timing_start = function()
@@ -426,10 +424,8 @@ rifftube.rec_keydown = function(e)
             rifftube.curTypeRad[2].checked = true;
             rifftube.curTypeSel = rifftube.curTypeRad[2];
             rifftube.audioTypeUICallback({ target: rifftube.curTypeSel });
-            // set unchecked after call to audioTypeUICallback
-            if (rifftube.curAutoChk.checked)
-                rifftube.curAutoChk.checked = false;
         }
+        rifftube.curAutoChk.checked = false;
         rifftube.timing_start();
     }
 
@@ -653,6 +649,8 @@ window.addEventListener("resize",
             );
     });
 */
+
+rifftube.animationPrep();
 
 rifftube.curDial.focus();
 
