@@ -44,6 +44,8 @@ function EditControls(props)
     return ( () => body.removeEventListener("blur", resetFocus) );
   }, [])
 
+  let cancelHandler = e => { console.log(42); closeDial(); e.preventDefault(); };
+
   // get user permission to record and save mediaRecorder object
   useEffect( () =>
   {
@@ -95,6 +97,8 @@ function EditControls(props)
           detail: { type: immediateRecord }
         });
         et.dispatchEvent(immediate_start_event);
+
+        td.addEventListener('cancel', cancelHandler, false);
 
         //console.log('dispatched', set_recorder_event, set_start_event);
       }
@@ -151,6 +155,7 @@ function EditControls(props)
 
     closeDial();
   }
+
   
   useEffect(() =>
   {

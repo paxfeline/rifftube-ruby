@@ -2,7 +2,7 @@
 
 .rifftube-riff-edit-animated
 {
-    transition: max-height 0.5s cubic-bezier(0.5, 0, 0.5, 1.0);
+    transition: max-height 0.25s cubic-bezier(0.5, 0, 0.5, 1.0);
     max-height: var(--max-height);
     overflow: hidden;
 }
@@ -30,7 +30,7 @@
     (press and hold)
 </div>
 
-<%= form_with model: @riff, multipart: true do |form| %>
+<%= form_with model: @riff, multipart: true, html: {'novalidate' => 'true'} do |form| %>
 
 <div style="margin-top: 1em;" id="rifftube-edit-synth-playback" class="rifftube-riff-edit-animated">
     <button
@@ -85,8 +85,9 @@
 <div id="rifftube-riff-edit-time-div" class="rifftube-riff-edit-animated">
     <button
         class="rifftube-timing-btn"
-        onMouseDown="rifftube.timing_start()"
-        onMouseUp="rifftube.timing_stop()">
+        onMouseDown="rifftube.timing_start();"
+        onMouseUp="rifftube.timing_stop();"
+        onClick="event.preventDefault();">
         time
     </button>
     (press and hold)
@@ -407,10 +408,25 @@ rifftube.rec_keydown = function(e)
 
     if (e.key == 'r')
     {
+        if (rifftube.curTypeSel != rifftube.curTypeRad[0])
+        {
+            rifftube.curTypeRad[0].checked = true;
+            rifftube.curTypeSel = rifftube.curTypeRad[0];
+            rifftube.audioTypeUICallback({ target: rifftube.curTypeSel });
+        }
         rifftube.record_start();
     }
-    else if (e.key == 't' && rifftube.curTypeRad[2].checked)
+    else if (e.key == 't')
     {
+        if (rifftube.curTypeSel != rifftube.curTypeRad[2])
+        {
+            rifftube.curTypeRad[2].checked = true;
+            rifftube.curTypeSel = rifftube.curTypeRad[2];
+            rifftube.audioTypeUICallback({ target: rifftube.curTypeSel });
+            // set unchecked after call to audioTypeUICallback
+            if (rifftube.curAutoChk.checked)
+                rifftube.curAutoChk.checked = false;
+        }
         rifftube.timing_start();
     }
 
@@ -431,8 +447,11 @@ rifftube.rec_keyup = function(e)
 
 rifftube.audioTypeUICallback = function(e)
 {
+    console.log("atui", e);
+
     if ( e.target == rifftube.curTypeRad[0] ) // recorded audio
     {
+        //debugger;
         rifftube.curAutoChk.checked = true;
         rifftube.curAutoChk.disabled = true;
         rifftube.curDur.disabled = true;
@@ -536,17 +555,21 @@ rifftube.setupRecorderCallback = function(e)
 
 rifftube.startRecordCallback = async function(e)
 {
-    //console.log(e);
+    console.log("sr", e);
 
     if (e.detail.type == 'r')
     {
         rifftube.curTypeRad[0].checked = true;
-        rifftube.audioTypeUICallback({ target: rifftube.curTypeRad[0] });
+        rifftube.curTypeSel = rifftube.curTypeRad[0];
+        rifftube.audioTypeUICallback({ target: rifftube.curTypeSel });
     }
     else if (e.detail.type == 't')
     {
         rifftube.curTypeRad[2].checked = true;
-        rifftube.audioTypeUICallback({ target: rifftube.curTypeRad[2] });
+        rifftube.curTypeSel = rifftube.curTypeRad[2];
+        if (rifftube.curAutoChk.checked)
+            rifftube.curAutoChk.checked = false;
+        rifftube.audioTypeUICallback({ target: rifftube.curTypeSel });
         rifftube.timing_start();
     }
 
@@ -590,8 +613,6 @@ rifftube.curDial.addEventListener('keydown', rifftube.rec_keydown, false);
 rifftube.curDial.addEventListener('keyup', rifftube.rec_keyup, false);
 
 rifftube.curTextArea.addEventListener('keydown', e => e.stopPropagation(), false);
-
-rifftube.curDial.addEventListener("cancel", () => { rifftube.close_modal(); }, false);
 
 //console.log("adding listener", rifftube.curDial);
 rifftube.curDial.addEventListener("rifftube:riff:edit:setup:recorder", rifftube.setupRecorderCallback, false);
