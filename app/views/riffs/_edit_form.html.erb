@@ -380,7 +380,7 @@ rifftube.sendMessage = function (type, detail, obj)
 
 rifftube.close_modal = function()
 {
-    debugger;
+    //debugger;
     rifftube.sendMessage("rifftube:riff:edit:close");
 }
 
@@ -411,7 +411,7 @@ console.log("injected script running");
 rifftube.rec_keydown = function(e)
 {
     console.log("rec kd", rifftube.curTypeRad[2].checked);
-    debugger;
+    //debugger;
     if ( e.getModifierState("Control") ||
             e.getModifierState("Alt") ||
             e.getModifierState("Meta") )
