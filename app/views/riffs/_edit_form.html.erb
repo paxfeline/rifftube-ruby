@@ -191,6 +191,7 @@ rifftube.getVoices = function()
         option.textContent = `${voice.name} (${voice.lang})`;
 
         option.dataset.voiceID = `${voice.lang}/${voice.name}`;
+        option.voice = voice;
 
         rifftube.curVoicesSel.appendChild(option);
 
@@ -203,19 +204,25 @@ rifftube.getVoices = function()
         {
             rifftube.curVoicesSel.selectedIndex = i;
             voiceFound = true;
+            rifftube.synthVoice = voice;
         }
     }
 
     if (!voiceFound)
+    {
         rifftube.curVoicesSel.selectedIndex = sysInd;
+        rifftube.synthVoice = voices[sysInd];
+    }
 }
 
 rifftube.curVoicesSel.addEventListener("change",
     e =>
     {
-        console.log(e, e.target.dataset.voiceID);
-        let voice = e.target.dataset.voiceID;
-        rifftube.curVoice.value = voice;
+        const opt = e.target[e.target.selectedIndex];
+        console.log(e, opt.voice);
+        let voiceID = e.target.dataset.voiceID;
+        rifftube.curVoice.value = voiceID;
+        rifftube.synthVoice = opt.voice;
     }
 );
 
@@ -356,7 +363,7 @@ function topLevel()
     return (window.top == window);
 }
 
-rifftube.sendMessage = function (type, detail)
+rifftube.sendMessage = function (type, detail, obj)
 {
     if (topLevel())
     {
@@ -365,6 +372,7 @@ rifftube.sendMessage = function (type, detail)
     }
     else
     {
+        detail = obj || detail;
         window.parent.postMessage( { type, detail }, "*" )
     }
     console.log("sent", topLevel(), type, detail);
@@ -387,11 +395,13 @@ rifftube.save_riff = function(event)
         .forEach(el => el.removeAttribute("disabled"))
 
     let body = new FormData(rifftube.curForm);
-    /*
+    
     let riff = {};
     body.forEach((value, key) => riff[key] = value);
-    */
-    rifftube.sendMessage("rifftube:riff:edit:save", body);
+    
+    // body (FormData) for rifftube website
+    // riff (Object) backup for extension
+    rifftube.sendMessage("rifftube:riff:edit:save", body, riff);
 }
 
 console.log("injected script running");
@@ -609,6 +619,11 @@ rifftube.messageCallback = function(e)
 rifftube.synth_playback = function (e)
 {
     e.preventDefault();
+
+    const utterThis = new SpeechSynthesisUtterance(rifftube.curTextArea.value);
+    utterThis.voice = rifftube.synthVoice;
+    speechSynthesis.speak(utterThis);
+
 }
 
 rifftube.curTypeRad.forEach( el => el.addEventListener("change", rifftube.audioTypeUICallback) );
