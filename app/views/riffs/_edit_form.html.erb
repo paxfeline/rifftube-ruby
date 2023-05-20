@@ -75,8 +75,9 @@
 
 <div>
     <%= form.label :duration %>
-    <%= form.number_field :duration, step: 0.5 %>
+    <%= form.number_field :duration %>
 </div>
+
 <div>
     <%= form.check_box :autoDuration %>
     <%= form.label :autoDuration, "Auto-determine duration" %>
@@ -497,6 +498,7 @@ rifftube.audioTypeUICallback = function(e)
 
 rifftube.audioAutoDurUICallback = function(e)
 {
+    console.log("aadui", e, e.target.checked);
     rifftube.curDur.disabled = e.target.checked;
     rifftube.curTimeBtn.disabled = e.target.checked;
     if (e.target.checked)
@@ -505,7 +507,10 @@ rifftube.audioAutoDurUICallback = function(e)
         rifftube.curDur.value = "";
     }
     else
-        rifftube.curDur.value = rifftube.cachedDur;
+    {
+        if (rifftube.cachedDur)
+            rifftube.curDur.value = rifftube.cachedDur;
+    }
 };
 
 rifftube.setupStartCallback = function(e)
