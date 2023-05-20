@@ -72,7 +72,6 @@ function EditControls(props)
         console.log("set cur dial", td);
         td.showModal();
 
-
         let et = td.firstChild;
 
         // set up recorder and start time
@@ -82,9 +81,12 @@ function EditControls(props)
         });
         et.dispatchEvent(set_recorder_event);
 
+        let set_anim_event = new CustomEvent("rifftube:riff:edit:setup:anim");
+        et.dispatchEvent(set_anim_event);
+
         let set_start_event = new CustomEvent("rifftube:riff:edit:setup:start",
         {
-          detail: { start: props?.rifftubePlayer?.getCurrentTime() || 0 }
+          detail: { start: props.rifftubePlayer?.getCurrentTime?.() || 0 }
         });
         et.dispatchEvent(set_start_event);
 

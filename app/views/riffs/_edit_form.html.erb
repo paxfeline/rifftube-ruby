@@ -147,6 +147,8 @@ rifftube.curAutoChk = rifftube.curForm.querySelector("[type='checkbox'][name='ri
 rifftube.curTypeRad = rifftube.curForm.querySelectorAll("[type='radio'][name='riff[audio_type]']");
 rifftube.curStart = rifftube.curForm.querySelector("[name='riff[start]']");
 
+rifftube.curTypeSel = rifftube.curForm.querySelector("[type='radio'][name='riff[audio_type]'][checked]");
+
 rifftube.curVoicesSel = rifftube.curDial.querySelector("#rifftube-riff-edit-voice-sel");
 rifftube.curVoice = rifftube.curForm.querySelector("[name='riff[voice]']");
 
@@ -220,20 +222,42 @@ rifftube.curVoicesSel.addEventListener("change",
 
 rifftube.getVoices();
 
-rifftube.curDial.querySelectorAll(".rifftube-riff-edit-animated").forEach(
-    el =>
-    {
-        //el.style.maxHeight = `${Math.ceil(el.offsetHeight * 100 / window.innerHeight)}vh`;
-        el.style.setProperty("--max-height", `${Math.ceil(el.offsetHeight)}px`);
-    }
-);
-
 speechSynthesis.addEventListener("voiceschanged",
     e =>
     {
         rifftube.getVoices();
     }
 );
+
+// animation prep
+
+rifftube.animationPrep = function ()
+{
+    let flag = false;
+    rifftube.curDial.querySelectorAll(".rifftube-riff-edit-animated").forEach(
+        el =>
+        {
+            //el.style.maxHeight = `${Math.ceil(el.offsetHeight * 100 / window.innerHeight)}vh`;
+            if (el.offsetHeight == 0 && el.style.getPropertyValue("--max-height") === "")
+            {
+                console.log("mh!", el, el.offsetHeight);
+                flag = true;
+            }
+            else if (el.style.getPropertyValue("--max-height") === "")
+                el.style.setProperty("--max-height", `${Math.ceil(el.offsetHeight)}px`);
+        }
+    );
+
+    if (flag)
+    {
+        setTimeout(rifftube.animationPrep);
+        return;
+    }
+
+    rifftube.audioTypeUICallback({ target: rifftube.curTypeSel });
+}
+
+rifftube.animationPrep();
 
 // timing and recording
 
@@ -572,12 +596,10 @@ rifftube.curDial.addEventListener("cancel", () => { rifftube.close_modal(); }, f
 //console.log("adding listener", rifftube.curDial);
 rifftube.curDial.addEventListener("rifftube:riff:edit:setup:recorder", rifftube.setupRecorderCallback, false);
 rifftube.curDial.addEventListener("rifftube:riff:edit:setup:start", rifftube.setupStartCallback, false);
+rifftube.curDial.addEventListener("rifftube:riff:edit:setup:anim", rifftube.animationPrep, false);
 rifftube.curDial.addEventListener("rifftube:riff:edit:start", rifftube.startRecordCallback, false);
 window.addEventListener("message", rifftube.messageCallback, false);
 
-rifftube.curTypeSel = rifftube.curForm.querySelector("[type='radio'][name='riff[audio_type]'][checked]");
-rifftube.audioTypeUICallback({ target: rifftube.curTypeSel });
-rifftube.audioAutoDurUICallback({target: rifftube.curAutoChk});
 
 console.log("edit form loaded");
 
