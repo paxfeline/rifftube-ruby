@@ -1,5 +1,21 @@
+<style>
 
-<div id="rifftube-riff-edit-rec-div">
+.rifftube-riff-edit-animated
+{
+    transition: max-height 0.5s cubic-bezier(0.5, 0, 0.5, 1.0);
+    max-height: var(--height);
+    overflow: hidden;
+}
+
+.rifftube-riff-edit-anim-hide
+{
+    max-height: 0vh;
+}
+
+</style>
+
+
+<div id="rifftube-riff-edit-rec-div" class="rifftube-riff-edit-animated">
     <div style="margin-top: 1em;" id="rifftube-edit-audio-playback">
         <audio controls
             src="<%= id.present? ? riff_path(id) : '' %>">
@@ -16,7 +32,7 @@
 
 <%= form_with model: @riff, multipart: true do |form| %>
 
-<div style="margin-top: 1em;" id="rifftube-edit-synth-playback">
+<div style="margin-top: 1em;" id="rifftube-edit-synth-playback" class="rifftube-riff-edit-animated">
     <button
         class="rifftube-synth-play-btn"
         onClick="rifftube.synth_playback(event)">
@@ -66,7 +82,7 @@
     <%= form.label :autoDuration, "Auto-determine duration" %>
 </div>
 
-<div id="rifftube-riff-edit-time-div">
+<div id="rifftube-riff-edit-time-div" class="rifftube-riff-edit-animated">
     <button
         class="rifftube-timing-btn"
         onMouseDown="rifftube.timing_start()"
@@ -203,6 +219,14 @@ rifftube.curVoicesSel.addEventListener("change",
 );
 
 rifftube.getVoices();
+
+rifftube.curDial.querySelectorAll(".rifftube-riff-edit-animated").forEach(
+    el =>
+    {
+        //el.style.maxHeight = `${Math.ceil(el.offsetHeight * 100 / window.innerHeight)}vh`;
+        el.style.setProperty("--height", `${Math.ceil(el.offsetHeight * 100 / window.innerHeight)}vh`);
+    }
+);
 
 speechSynthesis.addEventListener("voiceschanged",
     e =>
@@ -388,10 +412,13 @@ rifftube.audioTypeUICallback = function(e)
         rifftube.curAutoChk.checked = true;
         rifftube.curAutoChk.disabled = true;
         rifftube.curDur.disabled = true;
-        rifftube.curRecDiv.removeAttribute("hidden");
+        //rifftube.curRecDiv.removeAttribute("hidden");
+        rifftube.curRecDiv.classList.remove("rifftube-riff-edit-anim-hide");
         //rifftube.curTimeBtn.disabled = true;
-        rifftube.curTimeDiv.setAttribute("hidden", true);
-        rifftube.curSynthDiv.setAttribute("hidden", true);
+        //rifftube.curTimeDiv.setAttribute("hidden", true);
+        rifftube.curTimeDiv.classList.add("rifftube-riff-edit-anim-hide");
+        //rifftube.curSynthDiv.setAttribute("hidden", true);
+        rifftube.curSynthDiv.classList.add("rifftube-riff-edit-anim-hide");
         rifftube.curShowChk.disabled = false;
     }
     else if ( e.target == rifftube.curTypeRad[1] ) // synth audio
@@ -399,10 +426,13 @@ rifftube.audioTypeUICallback = function(e)
         rifftube.curAutoChk.checked = true;
         rifftube.curAutoChk.disabled = true;
         rifftube.curDur.disabled = true;
-        rifftube.curRecDiv.setAttribute("hidden", true);
+        //rifftube.curRecDiv.setAttribute("hidden", true);
+        rifftube.curRecDiv.classList.add("rifftube-riff-edit-anim-hide");
         //rifftube.curTimeBtn.disabled = true;
-        rifftube.curTimeDiv.setAttribute("hidden", true);
-        rifftube.curSynthDiv.removeAttribute("hidden");
+        //rifftube.curTimeDiv.setAttribute("hidden", true);
+        rifftube.curTimeDiv.classList.add("rifftube-riff-edit-anim-hide");
+        //rifftube.curSynthDiv.removeAttribute("hidden");
+        rifftube.curSynthDiv.classList.remove("rifftube-riff-edit-anim-hide");
         rifftube.curShowChk.disabled = false;
     }
     else if ( e.target == rifftube.curTypeRad[2] ) // no audio
@@ -411,10 +441,13 @@ rifftube.audioTypeUICallback = function(e)
         rifftube.curShowChk.disabled = true;
         rifftube.curAutoChk.disabled = false;
         rifftube.curDur.disabled = false;
-        rifftube.curRecDiv.setAttribute("hidden", true);
-        rifftube.curSynthDiv.setAttribute("hidden", true);
+        //rifftube.curRecDiv.setAttribute("hidden", true);
+        rifftube.curRecDiv.classList.add("rifftube-riff-edit-anim-hide");
+        //rifftube.curSynthDiv.setAttribute("hidden", true);
+        rifftube.curSynthDiv.classList.add("rifftube-riff-edit-anim-hide");
         //rifftube.curTimeBtn.disabled = false;
-        rifftube.curTimeDiv.removeAttribute("hidden");
+        //rifftube.curTimeDiv.removeAttribute("hidden");
+        rifftube.curTimeDiv.classList.remove("rifftube-riff-edit-anim-hide");
     }
     rifftube.audioAutoDurUICallback({target: rifftube.curAutoChk});
 };
