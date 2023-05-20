@@ -3,13 +3,13 @@
 .rifftube-riff-edit-animated
 {
     transition: max-height 0.5s cubic-bezier(0.5, 0, 0.5, 1.0);
-    max-height: var(--height);
+    max-height: var(--max-height);
     overflow: hidden;
 }
 
 .rifftube-riff-edit-anim-hide
 {
-    max-height: 0vh;
+    max-height: 0;
 }
 
 </style>
@@ -224,7 +224,7 @@ rifftube.curDial.querySelectorAll(".rifftube-riff-edit-animated").forEach(
     el =>
     {
         //el.style.maxHeight = `${Math.ceil(el.offsetHeight * 100 / window.innerHeight)}vh`;
-        el.style.setProperty("--height", `${Math.ceil(el.offsetHeight * 100 / window.innerHeight)}vh`);
+        el.style.setProperty("--max-height", `${Math.ceil(el.offsetHeight)}px`);
     }
 );
 
