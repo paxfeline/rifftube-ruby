@@ -28,6 +28,13 @@
         record
     </button>
     (press and hold)
+
+    <details open id="rifftube-riff-edit-rec-adv-det">
+        <summary>Advanced Options</summary>
+        <div>
+            <input type="file" name="riff[audio]" accept="audio/mp4">
+        </div>
+    </details>
 </div>
 
 <%= form_with model: @riff, multipart: true, html: {'novalidate' => 'true'} do |form| %>
@@ -39,10 +46,29 @@
         ▶️
     </button>
 
-<select id="rifftube-riff-edit-voice-sel">
-</select>
+    <select id="rifftube-riff-edit-voice-sel">
+    </select>
 
-<%= form.hidden_field :voice %>
+    <%= form.hidden_field :voice %>
+
+    <details open id="rifftube-riff-edit-synth-adv-det">
+        <summary>Advanced Options</summary>
+        <div>
+            Pitch: <input type="range" id="rifftube-riff-edit-synth-pitch" step="0.1" min="0" max="2" value="1">
+            <button
+                onClick="rifftube.curSynthPitchRange.value=1; event.preventDefault();">
+                Reset
+            </button>
+                
+        </div>
+        <div>
+            Rate: <input type="range" id="rifftube-riff-edit-synth-rate" step="0.1" min="0.1" max="10" value="1">
+            <button
+                onClick="rifftube.curSynthRateRange.value=1; event.preventDefault();">
+                Reset
+            </button>
+        </div>
+    </details>
 
 </div>
 
@@ -94,13 +120,6 @@
     (press and hold)
 </div>
 
-<details>
-    <summary>Advanced Options</summary>
-    <div>
-        <input type="file" name="riff[audio]" accept="audio/mp4">
-    </div>
-</details>
-
 <div style="margin-top: 1em;">
 <button
     onClick="rifftube.close_modal(); event.preventDefault();">
@@ -134,8 +153,12 @@ rifftube.curDial = curDial;
 rifftube.curRecDiv = rifftube.curDial.querySelector("#rifftube-riff-edit-rec-div");
 rifftube.curTimeDiv = rifftube.curDial.querySelector("#rifftube-riff-edit-time-div");
 rifftube.curSynthDiv = rifftube.curDial.querySelector("#rifftube-edit-synth-playback");
+rifftube.curSynthPitchRange = rifftube.curDial.querySelector("#rifftube-riff-edit-synth-pitch");
+rifftube.curSynthRateRange = rifftube.curDial.querySelector("#rifftube-riff-edit-synth-rate");
 rifftube.curRecBtn = rifftube.curDial.querySelector(".rifftube-record-btn");
 rifftube.curTimeBtn = rifftube.curDial.querySelector(".rifftube-timing-btn");
+rifftube.curRecAdvDet = rifftube.curDial.querySelector("#rifftube-riff-edit-rec-adv-det");
+rifftube.curSynthAdvDet = rifftube.curDial.querySelector("#rifftube-riff-edit-synth-adv-det");
 rifftube.curPlayer = rifftube.curDial.querySelector("audio");
 rifftube.curForm = rifftube.curDial.querySelector("form");
 rifftube.curFile = rifftube.curDial.querySelector("input[type='file']");
@@ -259,6 +282,9 @@ rifftube.animationPrep = function ()
         setTimeout(rifftube.animationPrep);
         return;
     }
+
+    rifftube.curRecAdvDet.removeAttribute("open");
+    rifftube.curSynthAdvDet.removeAttribute("open");
 
     rifftube.audioTypeUICallback({ target: rifftube.curTypeSel });
 }
