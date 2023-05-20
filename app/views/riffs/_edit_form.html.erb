@@ -124,10 +124,7 @@ function duplicate_blob(blob)
     return blob.slice(0, blob.size, blob.type);
 }
 
-
-// rifftube-riff-edit-dialog class
-// data-riff-id or data-new-riff attribute for edit / new
-
+// actually a div:
 var dialSel = ".rifftube-riff-edit-dialog"; //[data-<%= id.present? ? "riff-id='#{id}'".html_safe : "new-riff" %>]";
 var curDial = document.querySelector(dialSel);
 
@@ -266,6 +263,8 @@ rifftube.animationPrep();
 rifftube.timing_start = function()
 {
     if (rifftube.recording) return;
+    
+    setFocus(rifftube.curDial);
 
     //debugger;
 
@@ -318,8 +317,9 @@ rifftube.record_start = function()
 
     //debugger;
 
-    let rootDiv = document.querySelector(".rifftube-riff-edit-dialog");
-    setFocus(rootDiv);
+    //let rootDiv = document.querySelector(".rifftube-riff-edit-dialog");
+    setFocus(rifftube.curDial);
+
     //setFocus(document.body.firstElementChild);
     //document.body.firstElementChild.focus();
 
@@ -374,6 +374,7 @@ rifftube.sendMessage = function (type, detail)
 
 rifftube.close_modal = function()
 {
+    debugger;
     rifftube.sendMessage("rifftube:riff:edit:close");
 }
 
@@ -402,6 +403,7 @@ console.log("injected script running");
 rifftube.rec_keydown = function(e)
 {
     console.log("rec kd", rifftube.curTypeRad[2].checked);
+    debugger;
     if ( e.getModifierState("Control") ||
             e.getModifierState("Alt") ||
             e.getModifierState("Meta") )
@@ -449,6 +451,8 @@ rifftube.rec_keyup = function(e)
 rifftube.audioTypeUICallback = function(e)
 {
     console.log("atui", e);
+
+    rifftube.curTypeSel = e.target;
 
     if ( e.target == rifftube.curTypeRad[0] ) // recorded audio
     {
