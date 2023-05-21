@@ -107,12 +107,11 @@
     <%= form.number_field :duration %>
 </div>
 
-<div>
-    <%= form.check_box :autoDuration %>
-    <%= form.label :autoDuration, "Auto-determine duration" %>
-</div>
-
 <div id="rifftube-riff-edit-time-div" class="rifftube-riff-edit-animated">
+    <div>
+        <%= form.check_box :autoDuration %>
+        <%= form.label :autoDuration, "Auto-determine duration" %>
+    </div>
     <button
         class="rifftube-timing-btn"
         onMouseDown="rifftube.timing_start();"
@@ -566,6 +565,10 @@ rifftube.audioTypeUICallback = function(e)
     }
     else if ( e.target == rifftube.curTypeRad[2] ) // no audio
     {
+        //debugger;
+        if (rifftube.autoDurCache !== undefined)
+            rifftube.curAutoChk.checked = rifftube.autoDurCache;
+
         rifftube.curShowChk.checked = true;
         rifftube.curShowChk.disabled = true;
         rifftube.curAutoChk.disabled = false;
@@ -581,21 +584,43 @@ rifftube.audioTypeUICallback = function(e)
     rifftube.audioAutoDurUICallback({target: rifftube.curAutoChk});
 };
 
+rifftube.initialDur = rifftube.curDur.value;
+rifftube.initialType = rifftube.curTypeSel;
+
 // TODO: fix up duration
 rifftube.audioAutoDurUICallback = function(e)
 {
-    console.log("aadui", e, e.target.checked);
+    debugger;
+    console.log("aadui", rifftube.curTypeSel, e, e.target.checked);
     rifftube.curDur.disabled = e.target.checked;
     rifftube.curTimeBtn.disabled = e.target.checked;
-    if (e.target.checked)
+
+    if ( rifftube.curTypeSel == rifftube.curTypeRad[0] ) // recorded audio
     {
-        rifftube.cachedDur = rifftube.curDur.value;
+        if (!isNaN(rifftube.curPlayer.duration))
+            rifftube.curDur.value = rifftube.curPlayer.duration;
+        else if (rifftube.initialType == rifftube.curTypeSel)
+            rifftube.curDur.value = rifftube.initialDur;
+        else
+            console.log("duration error");
+    }
+    else if ( rifftube.curTypeSel == rifftube.curTypeRad[1] ) // synth audio
+    {
         rifftube.curDur.value = "";
     }
-    else
+    else if ( rifftube.curTypeSel == rifftube.curTypeRad[2] ) // no audio
     {
-        if (rifftube.cachedDur)
-            rifftube.curDur.value = rifftube.cachedDur;
+        if (e.target.checked)
+        {
+            rifftube.cachedDur = rifftube.curDur.value;
+            rifftube.curDur.value = "";
+        }
+        else
+        {
+            rifftube.curDur.value = rifftube.cachedDur || rifftube.initialDur;
+        }
+
+        rifftube.autoDurCache = e.target.checked;
     }
 };
 
