@@ -3,34 +3,34 @@ class Riff < ApplicationRecord
     belongs_to :video
     has_and_belongs_to_many :riff_sets
 
-    attribute :audio_type, :integer
+    attribute :riff_kind, :integer
 
-    def audio_type
-        self[:audio_type]
-    end
+    after_initialize :update_riff_kind
+    after_touch :update_riff_kind
 
-    def audio_type
-        read_attribute(:isText) ? (read_attribute(:speak) ? 2 : 3) : 1
+    # not needed?:
+    #def riff_kind
+    #    self[:riff_kind]
+    #    self[:isText] ? (self[:speak] ? 2 : 3) : 1
+    #end
+    
+    def update_riff_kind
+        self[:riff_kind] = self[:isText] ? (self[:speak] ? 2 : 3) : 1
     end
     
-    def audio_type=(value)
+    def riff_kind=(value)
         self.inspect
         if value == 1
-            self.isText = false
-            self.speak = false
-            #write_attribute(:isText, false)
-            #write_attribute(:speak, false)
+            self[:isText] = false
+            self[:speak] = false
         elsif value == 2
-            self.isText = true
-            self.speak = true
-            #write_attribute(:isText, true)
-            #write_attribute(:speak, true)
+            self[:isText] = true
+            self[:speak] = true
         elsif value == 3
-            self.isText = true
-            self.speak = false
-            #write_attribute(:isText, true)
-            #write_attribute(:speak, false)
+            self[:isText] = true
+            self[:speak] = false
         end
+        update_riff_kind
     end
       
 end

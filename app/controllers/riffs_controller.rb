@@ -67,7 +67,7 @@ class RiffsController < ApplicationController
             print riff_params.inspect
 
             @riff = Riff.new(riff_params)
-            @riff.audio_type = riff_params[:audio_type]
+            @riff.riff_kind = riff_params[:riff_kind]
 
             if @riff.save
                 # used to avoid duplicating commands
@@ -94,9 +94,9 @@ class RiffsController < ApplicationController
     def edit
         @id = params[:id]
         @riff = Riff.find(@id)
-        params[:audio_type] = @riff.audio_type
+        params[:riff_kind] = @riff.riff_kind
         puts "set at"
-        puts params[:audio_type]
+        puts params[:riff_kind]
         render layout: false
     end
 
@@ -129,9 +129,9 @@ class RiffsController < ApplicationController
             else
                 recode_audio
                 puts "audio type"
-                puts riff_params[:audio_type]
-                riff.audio_type = riff_params[:audio_type].to_i
-                puts riff.audio_type
+                puts riff_params[:riff_kind]
+                riff.riff_kind = riff_params[:riff_kind].to_i
+                puts riff.riff_kind
                 puts riff.inspect
                 #debugger
                 if riff.update(riff_params)
@@ -174,12 +174,17 @@ end
 private
 def riff_params
   #params[:user][:email].downcase!
-  params.require(:riff).permit(:id, :audio, :text, :start, :duration, :user_id, :video_id, :audio_type,  :showText, :autoDuration)
+  params.require(:riff).permit(:id, :audio, :text, :start, :duration, :user_id, :video_id, :riff_kind,  :showText, :autoDuration, :voice)
 end
 
 def recode_audio
     # skip if there is no audio to recode
     return if not params[:riff][:audio]
+
+    puts "recorde audio length"
+    puts File.size(params[:riff][:audio].tempfile.path)
+
+    return if File.size(params[:riff][:audio].tempfile.path) == 0
 
     movie = FFMPEG::Movie.new(params[:riff][:audio].tempfile.path)
     riff_path = "#{Rails.root}/tmp/riff-#{@current_user.id}-#{Time.now.to_i}.mp4"

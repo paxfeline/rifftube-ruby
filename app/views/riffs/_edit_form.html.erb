@@ -17,7 +17,7 @@
 <%= form_with model: @riff, multipart: true, html: {'novalidate' => 'true'} do |form| %>
 
 <div>
-<%= form.collection_radio_buttons :audio_type,
+<%= form.collection_radio_buttons :riff_kind,
     [[1, "Recorded audio"], [2, "Synthesized audio"], [3, "No audio"]],
     :first, :last %>
 </div>
@@ -171,10 +171,10 @@ rifftube.curDur = rifftube.curForm.querySelector("[name='riff[duration]']");
 rifftube.curShowChk = rifftube.curForm.querySelector("[type='checkbox'][name='riff[showText]']");
 rifftube.curTextArea = rifftube.curForm.querySelector("textarea");
 rifftube.curAutoChk = rifftube.curForm.querySelector("[type='checkbox'][name='riff[autoDuration]']");
-rifftube.curTypeRad = rifftube.curForm.querySelectorAll("[type='radio'][name='riff[audio_type]']");
+rifftube.curTypeRad = rifftube.curForm.querySelectorAll("[type='radio'][name='riff[riff_kind]']");
 rifftube.curStart = rifftube.curForm.querySelector("[name='riff[start]']");
 
-rifftube.curTypeSel = rifftube.curForm.querySelector("[type='radio'][name='riff[audio_type]'][checked]");
+rifftube.curTypeSel = rifftube.curForm.querySelector("[type='radio'][name='riff[riff_kind]'][checked]");
 
 rifftube.curVoicesSel = rifftube.curDial.querySelector("#rifftube-riff-edit-voice-sel");
 rifftube.curVoice = rifftube.curForm.querySelector("[name='riff[voice]']");
@@ -201,6 +201,23 @@ if (rifftube.curFile.files.length == 1)
 
 // voices
 
+rifftube.setVoiceInfo = function (voice)
+{
+    rifftube.curVoiceInfo =
+        {
+            name: voice.name,
+            lang: voice.lang,
+            pitch: 1,
+            rate: 1
+        };
+    rifftube.updateVoiceInfo();
+}
+
+rifftube.updateVoiceInfo = function ()
+{
+    rifftube.curVoice.value = JSON.stringify(rifftube.curVoiceInfo);
+}
+
 rifftube.getVoices = function()
 {
     let voices = speechSynthesis.getVoices();
@@ -211,6 +228,26 @@ rifftube.getVoices = function()
 
     rifftube.curVoicesSel.innerHTML = "";
 
+    let voiceInfo =
+        rifftube.curVoice.value ?
+            JSON.parse(rifftube.curVoice.value)
+        :
+            null;
+    rifftube.curVoiceInfo = voiceInfo;
+
+    // set pitch and rate controls
+    if (voiceInfo)
+    {
+        rifftube.curSynthPitchRange.value = rifftube.curSynthPitchNum.value = voiceInfo.pitch;
+        rifftube.curSynthRateRange.value = rifftube.curSynthRateNum.value = voiceInfo.rate;
+    }
+    else
+    {
+        rifftube.curSynthPitchRange.value = rifftube.curSynthPitchNum.value = 1;
+        rifftube.curSynthRateRange.value = rifftube.curSynthRateNum.value = 1;
+    }
+
+    // search for voice language + name in list
     for (let i = 0; i < voices.length; i++)
     {
         const voice = voices[i];
@@ -228,7 +265,8 @@ rifftube.getVoices = function()
             sysInd = i;
         }
 
-        if (rifftube.curVoice.value == `${voice.lang}/${voice.name}`)
+        // voiceInfo may be null
+        if (voiceInfo?.lang == voice.lang && voiceInfo?.name == voice.name)
         {
             rifftube.curVoicesSel.selectedIndex = i;
             voiceFound = true;
@@ -236,10 +274,15 @@ rifftube.getVoices = function()
         }
     }
 
+    // if not found, use default
     if (!voiceFound)
     {
         rifftube.curVoicesSel.selectedIndex = sysInd;
         rifftube.synthVoice = voices[sysInd];
+        // leave the info alone if it exists (don't overwrite if not voice found)
+        // otherwise fill in with default (if found -- they aren't loaded at first?)
+        if (!rifftube.curVoiceInfo && rifftube.synthVoice)
+            rifftube.setVoiceInfo(rifftube.synthVoice);
     }
 }
 
@@ -251,6 +294,7 @@ rifftube.curVoicesSel.addEventListener("change",
         let voiceID = e.target.dataset.voiceID;
         rifftube.curVoice.value = voiceID;
         rifftube.synthVoice = opt.voice;
+        rifftube.setVoiceInfo(opt.voice);
     }
 );
 
@@ -673,29 +717,29 @@ rifftube.curDial.addEventListener("rifftube:riff:edit:start", rifftube.startReco
 window.addEventListener("message", rifftube.messageCallback, false);
 
 rifftube.curSynthPitchRange.addEventListener("input",
-    e =>
-    {
-        rifftube.curSynthPitchNum.value = e.target.value;
-    }
-);
+    e => { rifftube.curSynthPitchNum.value = e.target.value; });
 rifftube.curSynthRateRange.addEventListener("input",
-    e =>
-    {
-        rifftube.curSynthRateNum.value = e.target.value;
-    }
-);
+    e => { rifftube.curSynthRateNum.value = e.target.value; });
 rifftube.curSynthPitchNum.addEventListener("input",
-    e =>
-    {
-        rifftube.curSynthPitchRange.value = e.target.value;
-    }
-);
+    e => { rifftube.curSynthPitchRange.value = e.target.value; });
 rifftube.curSynthRateNum.addEventListener("input",
-    e =>
-    {
-        rifftube.curSynthRateRange.value = e.target.value;
-    }
-);
+    e => { rifftube.curSynthRateRange.value = e.target.value; });
+
+rifftube.updateVoiceExtras = function ()
+{
+    rifftube.curVoiceInfo.pitch = rifftube.curSynthPitchNum.value;
+    rifftube.curVoiceInfo.rate = rifftube.curSynthRateNum.value;
+}
+
+rifftube.curSynthPitchRange.addEventListener("input", rifftube.updateVoiceExtras);
+rifftube.curSynthRateRange.addEventListener("input", rifftube.updateVoiceExtras);
+rifftube.curSynthPitchNum.addEventListener("input", rifftube.updateVoiceExtras);
+rifftube.curSynthRateNum.addEventListener("input", rifftube.updateVoiceExtras);
+
+rifftube.curSynthPitchRange.addEventListener("input", rifftube.updateVoiceInfo);
+rifftube.curSynthRateRange.addEventListener("input", rifftube.updateVoiceInfo);
+rifftube.curSynthPitchNum.addEventListener("input", rifftube.updateVoiceInfo);
+rifftube.curSynthRateNum.addEventListener("input", rifftube.updateVoiceInfo);
 
 console.log("edit form loaded");
 
