@@ -14,6 +14,13 @@
 
 </style>
 
+<%= form_with model: @riff, multipart: true, html: {'novalidate' => 'true'} do |form| %>
+
+<div>
+<%= form.collection_radio_buttons :audio_type,
+    [[1, "Recorded audio"], [2, "Synthesized audio"], [3, "No audio"]],
+    :first, :last %>
+</div>
 
 <div id="rifftube-riff-edit-rec-div" class="rifftube-riff-edit-animated">
     <div style="margin-top: 1em;" id="rifftube-edit-audio-playback">
@@ -37,8 +44,6 @@
     </details>
 </div>
 
-<%= form_with model: @riff, multipart: true, html: {'novalidate' => 'true'} do |form| %>
-
 <div style="margin-top: 1em;" id="rifftube-edit-synth-playback" class="rifftube-riff-edit-animated">
     <button
         class="rifftube-synth-play-btn"
@@ -54,17 +59,21 @@
     <details open id="rifftube-riff-edit-synth-adv-det">
         <summary>Advanced Options</summary>
         <div>
-            Pitch: <input type="range" id="rifftube-riff-edit-synth-pitch" step="0.1" min="0" max="2" value="1">
+            Pitch:
+            <input type="range" id="rifftube-riff-edit-synth-pitch" step="0.1" min="0" max="2" value="1">
+            <input type="number" id="rifftube-riff-edit-synth-pitch-num" step="0.1" min="0" max="2" value="1">
             <button
-                onClick="rifftube.curSynthPitchRange.value=1; event.preventDefault();">
+                onClick="rifftube.curSynthPitchNum.value=rifftube.curSynthPitchRange.value=1; event.preventDefault();">
                 Reset
             </button>
                 
         </div>
         <div>
-            Rate: <input type="range" id="rifftube-riff-edit-synth-rate" step="0.1" min="0.1" max="10" value="1">
+            Rate:
+            <input type="range" id="rifftube-riff-edit-synth-rate" step="0.1" min="0.1" max="10" value="1">
+            <input type="number" id="rifftube-riff-edit-synth-rate-num" step="0.1" min="0.1" max="10" value="1">
             <button
-                onClick="rifftube.curSynthRateRange.value=1; event.preventDefault();">
+                onClick="rifftube.curSynthRateNum.value=rifftube.curSynthRateRange.value=1; event.preventDefault();">
                 Reset
             </button>
         </div>
@@ -77,12 +86,6 @@
 <% if video_id.present? %>
 <input type="hidden" name="riff[video_id]" value="<%= video_id %>">
 <% end %>
-
-<div>
-<%= form.collection_radio_buttons :audio_type,
-    [[1, "Recorded audio"], [2, "Synthesized audio"], [3, "No audio"]],
-    :first, :last %>
-</div>
 
 <div>
 <%= form.label :text, "Riff Text" %><br>
@@ -155,6 +158,8 @@ rifftube.curTimeDiv = rifftube.curDial.querySelector("#rifftube-riff-edit-time-d
 rifftube.curSynthDiv = rifftube.curDial.querySelector("#rifftube-edit-synth-playback");
 rifftube.curSynthPitchRange = rifftube.curDial.querySelector("#rifftube-riff-edit-synth-pitch");
 rifftube.curSynthRateRange = rifftube.curDial.querySelector("#rifftube-riff-edit-synth-rate");
+rifftube.curSynthPitchNum = rifftube.curDial.querySelector("#rifftube-riff-edit-synth-pitch-num");
+rifftube.curSynthRateNum = rifftube.curDial.querySelector("#rifftube-riff-edit-synth-rate-num");
 rifftube.curRecBtn = rifftube.curDial.querySelector(".rifftube-record-btn");
 rifftube.curTimeBtn = rifftube.curDial.querySelector(".rifftube-timing-btn");
 rifftube.curRecAdvDet = rifftube.curDial.querySelector("#rifftube-riff-edit-rec-adv-det");
@@ -667,6 +672,30 @@ rifftube.curDial.addEventListener("rifftube:riff:edit:setup:anim", rifftube.anim
 rifftube.curDial.addEventListener("rifftube:riff:edit:start", rifftube.startRecordCallback, false);
 window.addEventListener("message", rifftube.messageCallback, false);
 
+rifftube.curSynthPitchRange.addEventListener("input",
+    e =>
+    {
+        rifftube.curSynthPitchNum.value = e.target.value;
+    }
+);
+rifftube.curSynthRateRange.addEventListener("input",
+    e =>
+    {
+        rifftube.curSynthRateNum.value = e.target.value;
+    }
+);
+rifftube.curSynthPitchNum.addEventListener("input",
+    e =>
+    {
+        rifftube.curSynthPitchRange.value = e.target.value;
+    }
+);
+rifftube.curSynthRateNum.addEventListener("input",
+    e =>
+    {
+        rifftube.curSynthRateRange.value = e.target.value;
+    }
+);
 
 console.log("edit form loaded");
 
