@@ -3,6 +3,9 @@ class Riff < ApplicationRecord
     belongs_to :video
     has_and_belongs_to_many :riff_sets
 
+    # all unneeded, maybe:
+    # (because to_json gets correct value)
+
     attribute :riff_kind, :integer
 
     after_initialize :update_riff_kind

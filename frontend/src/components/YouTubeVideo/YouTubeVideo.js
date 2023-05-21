@@ -58,7 +58,7 @@ class YouTubeVideo extends React.Component
       console.log("showriff err", err);
     }
     rifferCont.append(riffPic);
-    if (riff.isText)
+    if (riff.showText)
     {
       const textDiv = document.createElement("div");
       textDiv.className = "rifftube-text-riff";
