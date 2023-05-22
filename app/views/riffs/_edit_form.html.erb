@@ -12,6 +12,11 @@
     max-height: 0;
 }
 
+.rifftube-hidden
+{
+    display: none;
+}
+
 </style>
 
 <%= form_with model: @riff, multipart: true, html: {'novalidate' => 'true'} do |form| %>
@@ -566,6 +571,7 @@ rifftube.audioTypeUICallback = function(e)
     else if ( e.target == rifftube.curTypeRad[2] ) // no audio
     {
         //debugger;
+        // TODO: fix switch from type 1 to type 3 duration cache
         if (rifftube.autoDurCache !== undefined)
             rifftube.curAutoChk.checked = rifftube.autoDurCache;
 
@@ -584,10 +590,11 @@ rifftube.audioTypeUICallback = function(e)
     rifftube.audioAutoDurUICallback({target: rifftube.curAutoChk});
 };
 
-rifftube.initialDur = rifftube.curDur.value;
-rifftube.initialType = rifftube.curTypeSel;
+rifftube.lastTypeSel = rifftube.curTypeSel;
 
 // TODO: fix up duration
+// upadte cachedDur every time it changes? in timing end and it's input input event
+// better: create a set duration function to hold the logic
 rifftube.audioAutoDurUICallback = function(e)
 {
     debugger;
@@ -595,29 +602,35 @@ rifftube.audioAutoDurUICallback = function(e)
     rifftube.curDur.disabled = e.target.checked;
     rifftube.curTimeBtn.disabled = e.target.checked;
 
+    if (rifftube.lastTypeSel == rifftube.curTypeRad[2] && rifftube.curTypeSel != rifftube.lastTypeSel)
+        rifftube.cachedDur = rifftube.curDur.value;
+
+    rifftube.lastTypeSel = rifftube.curTypeSel;
+
     if ( rifftube.curTypeSel == rifftube.curTypeRad[0] ) // recorded audio
     {
-        if (!isNaN(rifftube.curPlayer.duration))
-            rifftube.curDur.value = rifftube.curPlayer.duration;
-        else if (rifftube.initialType == rifftube.curTypeSel)
-            rifftube.curDur.value = rifftube.initialDur;
-        else
+        rifftube.curDur.classList.remove("rifftube-hidden");
+
+        rifftube.curDur.value = rifftube.curPlayer.duration;
+
+        if (isNaN(rifftube.curPlayer.duration))
             console.log("duration error");
     }
     else if ( rifftube.curTypeSel == rifftube.curTypeRad[1] ) // synth audio
     {
-        rifftube.curDur.value = "";
+        rifftube.curDur.classList.add("rifftube-hidden");
     }
     else if ( rifftube.curTypeSel == rifftube.curTypeRad[2] ) // no audio
     {
+        rifftube.curDur.value = rifftube.cachedDur || 0;
+            
         if (e.target.checked)
         {
-            rifftube.cachedDur = rifftube.curDur.value;
-            rifftube.curDur.value = "";
+            rifftube.curDur.classList.add("rifftube-hidden");
         }
         else
         {
-            rifftube.curDur.value = rifftube.cachedDur || rifftube.initialDur;
+            rifftube.curDur.classList.remove("rifftube-hidden");
         }
 
         rifftube.autoDurCache = e.target.checked;
