@@ -108,11 +108,15 @@ function RiffDetail(props)
                     executeScriptElements(el);
                     document.body.append(el);
                     el.showModal();
+                    let et = el.firstElementChild;
                     let set_recorder_event = new CustomEvent("rifftube:riff:edit:setup:recorder",
                     {
                       detail: { recorder: props.recorder }
                     });
-                    el.dispatchEvent(set_recorder_event);
+                    et.dispatchEvent(set_recorder_event);
+
+                    let set_anim_event = new CustomEvent("rifftube:riff:edit:setup:anim");
+                    et.dispatchEvent(set_anim_event);
 
                     el.addEventListener('cancel', cancelHandler, false);
                   });

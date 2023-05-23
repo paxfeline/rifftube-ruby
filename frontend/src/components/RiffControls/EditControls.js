@@ -74,7 +74,7 @@ function EditControls(props)
         console.log("set cur dial", td);
         td.showModal();
 
-        let et = td.firstChild;
+        let et = td.firstElementChild;
 
         // set up recorder and start time
         let set_recorder_event = new CustomEvent("rifftube:riff:edit:setup:recorder",
