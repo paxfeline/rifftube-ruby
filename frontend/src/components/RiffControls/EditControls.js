@@ -44,7 +44,7 @@ function EditControls(props)
     return ( () => body.removeEventListener("blur", resetFocus) );
   }, [])
 
-  let cancelHandler = e => { console.log(42); closeDial(); e.preventDefault(); };
+  let cancelHandler = e => { console.log("dial cancel"); closeDial(); e.preventDefault(); };
 
   // get user permission to record and save mediaRecorder object
   useEffect( () =>
@@ -178,6 +178,8 @@ function EditControls(props)
       document.removeEventListener('keydown', keydown, false);
     }
   }, [keydown]);
+
+  
   
   useEffect(() =>
   {

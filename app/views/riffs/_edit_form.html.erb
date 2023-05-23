@@ -109,7 +109,8 @@
 
 <div>
     <%= form.label :duration %>
-    <%= form.number_field :duration %>
+    <%= form.number_field :duration, step: 0.5 %>
+    <span id="rifftube-riff-edit-duration-auto">(auto)</span>
 </div>
 
 <div id="rifftube-riff-edit-time-div" class="rifftube-riff-edit-animated">
@@ -175,6 +176,7 @@ rifftube.curDur = rifftube.curForm.querySelector("[name='riff[duration]']");
 rifftube.curShowChk = rifftube.curForm.querySelector("[type='checkbox'][name='riff[showText]']");
 rifftube.curTextArea = rifftube.curForm.querySelector("textarea");
 rifftube.curAutoChk = rifftube.curForm.querySelector("[type='checkbox'][name='riff[autoDuration]']");
+rifftube.curDurAuto = rifftube.curForm.querySelector("#rifftube-riff-edit-duration-auto");
 rifftube.curTypeRad = rifftube.curForm.querySelectorAll("[type='radio'][name='riff[riff_kind]']");
 rifftube.curStart = rifftube.curForm.querySelector("[name='riff[start]']");
 
@@ -590,6 +592,12 @@ rifftube.audioTypeUICallback = function(e)
     rifftube.audioAutoDurUICallback({target: rifftube.curAutoChk});
 };
 
+rifftube.setInitialDuration = function()
+{
+    console.log("sid", rifftube.curPlayer.duration);
+    rifftube.curDur.value = rifftube.curPlayer.duration;
+};
+
 rifftube.lastTypeSel = rifftube.curTypeSel;
 
 // TODO: fix up duration
@@ -610,8 +618,13 @@ rifftube.audioAutoDurUICallback = function(e)
     if ( rifftube.curTypeSel == rifftube.curTypeRad[0] ) // recorded audio
     {
         rifftube.curDur.classList.remove("rifftube-hidden");
+        rifftube.curDurAuto.classList.add("rifftube-hidden");
 
-        rifftube.curDur.value = rifftube.curPlayer.duration;
+        // duration may (will) be NaN at first,
+        // and should be skipped (leaving the value from the DB)
+        console.log(rifftube.curPlayer.duration);
+        if (!isNaN(rifftube.curPlayer.duration))
+            rifftube.curDur.value = rifftube.curPlayer.duration;
 
         if (isNaN(rifftube.curPlayer.duration))
             console.log("duration error");
@@ -619,6 +632,7 @@ rifftube.audioAutoDurUICallback = function(e)
     else if ( rifftube.curTypeSel == rifftube.curTypeRad[1] ) // synth audio
     {
         rifftube.curDur.classList.add("rifftube-hidden");
+        rifftube.curDurAuto.classList.remove("rifftube-hidden");
     }
     else if ( rifftube.curTypeSel == rifftube.curTypeRad[2] ) // no audio
     {
@@ -627,10 +641,12 @@ rifftube.audioAutoDurUICallback = function(e)
         if (e.target.checked)
         {
             rifftube.curDur.classList.add("rifftube-hidden");
+            rifftube.curDurAuto.classList.remove("rifftube-hidden");
         }
         else
         {
             rifftube.curDur.classList.remove("rifftube-hidden");
+            rifftube.curDurAuto.classList.add("rifftube-hidden");
         }
 
         rifftube.autoDurCache = e.target.checked;
@@ -753,7 +769,10 @@ rifftube.curDial.addEventListener("rifftube:riff:edit:setup:recorder", rifftube.
 rifftube.curDial.addEventListener("rifftube:riff:edit:setup:start", rifftube.setupStartCallback, false);
 rifftube.curDial.addEventListener("rifftube:riff:edit:setup:anim", rifftube.animationPrep, false);
 rifftube.curDial.addEventListener("rifftube:riff:edit:start", rifftube.startRecordCallback, false);
+
 window.addEventListener("message", rifftube.messageCallback, false);
+
+rifftube.curPlayer.addEventListener("loadmetadata", rifftube.setInitialDuration);
 
 rifftube.curSynthPitchRange.addEventListener("input",
     e => { rifftube.curSynthPitchNum.value = e.target.value; });

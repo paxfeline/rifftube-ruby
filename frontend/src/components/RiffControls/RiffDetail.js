@@ -38,6 +38,15 @@ function RiffDetail(props)
     timeRef.current.value = props.start;
   }, [props.start]);
 
+  function closeDial()
+  {
+    let dial = document.querySelector('#rifftube-edit-dialog');
+    dial.close();
+    dial.remove();
+  }
+  let cancelHandler = e => { console.log("dial cancel"); closeDial(); e.preventDefault(); };
+
+
   return (
     <div
       ref={divRef}
@@ -104,6 +113,8 @@ function RiffDetail(props)
                       detail: { recorder: props.recorder }
                     });
                     el.dispatchEvent(set_recorder_event);
+
+                    el.addEventListener('cancel', cancelHandler, false);
                   });
             }
             /*
