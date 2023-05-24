@@ -3,8 +3,6 @@ class NotifChannel < ApplicationCable::Channel
     # stream_from "some_channel"
     puts "subbed video:#{params[:video_id]}"
     stream_from "video:#{params[:video_id]}"
-    puts "subbed #{@current_user}"
-    stream_from @current_user
   end
 
   def receive(data)
