@@ -46,7 +46,7 @@ class EditInterface extends React.Component {
 
   handleWSConnection(vid)
   {
-    console.log("loading notif channel js");
+    console.log("loading notif channel js", vid);
 
     // disconnect the previous ws
     if (this.props.websocket) consumer.subscriptions.remove(this.props.websocket);
@@ -54,7 +54,7 @@ class EditInterface extends React.Component {
     const self = this;
 
     // set up new ws (cable subscription)
-    const ws = consumer.subscriptions.create({channel: "NotifChannel", video_id: this.props.videoID}, {
+    const ws = consumer.subscriptions.create({channel: "NotifChannel", video_id: vid}, {
       connected() {
         // Called when the subscription is ready for use on the server
         console.log("cable connected", vid);
@@ -66,7 +66,7 @@ class EditInterface extends React.Component {
 
       received(data) {
         // Called when there's incoming data on the websocket for this channel
-        console.log(data);
+        console.log("actioncable received!", data);
 
         // currently being used only to talk to self
         // an odd situation for sure
@@ -81,6 +81,11 @@ class EditInterface extends React.Component {
         {
           self.props.cableDelete(data);
         }
+      },
+
+      rejected()
+      {
+        console.log("ActionCable rejected!");
       }
     });
 

@@ -7,10 +7,14 @@ class SessionsController < ApplicationController
     puts params
     user = User.find_by(email: params[:session][:email].downcase)
     if user && user.authenticate(params[:session][:password])
-      session[:user_id] = user.id
-      flash[:notice] = "Logged in successfully."
-      render json: user.to_json(except: [:riff_pic, :password_digest])
-      #redirect_to user
+      if user.confirmed?
+        session[:user_id] = user.id
+        flash[:notice] = "Logged in successfully."
+        render json: user.to_json(except: [:riff_pic, :password_digest])
+        #redirect_to user
+      else
+        render plain: "Login Failed: Please confirm", status: :unauthorized
+      end
     else
       flash.now[:alert] = "There was something wrong with your login details."
       #render 'new'

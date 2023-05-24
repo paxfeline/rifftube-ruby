@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@react-oauth/google@^0.7.1":
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/@react-oauth/google/-/google-0.7.1.tgz#3a68444468a9196882b724295b8d2ab62a42596d"
-  integrity sha512-FIMKcXGAbgUinUSM7VpH9VbA6tZNcXEYgi0jmlHIT1FDs4aON80jZsPUX98/TqKznWZHY4l2J9CTL62bskr7Fg==
+"@react-oauth/google@^0.7.3":
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/@react-oauth/google/-/google-0.7.3.tgz#3db501482d7dcb0b8f583ed737b01a8d52fe34df"
+  integrity sha512-sGlysUSEH5cQu6mRgXA/3deYDMl0YIn/OWM1H3QiPVVJxGNlPLACe5J6s/jKGaxVWb+8OMNrVE573+tWMJFCFw==
 
 "js-tokens@^3.0.0 || ^4.0.0":
   version "4.0.0"

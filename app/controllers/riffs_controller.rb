@@ -196,6 +196,7 @@ end
 
 def braodcast_update_riff(vid_url, riff)
     # websocket broadcast
+    puts "broadcast #{vid_url}/#{riff}/#{@current_user}"
     ActionCable.server.broadcast(
         "video:#{vid_url}",
         {
