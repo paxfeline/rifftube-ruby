@@ -611,8 +611,14 @@ rifftube.audioAutoDurUICallback = function(e)
     rifftube.curDur.disabled = e.target.checked;
     rifftube.curTimeBtn.disabled = e.target.checked;
 
-    if (rifftube.lastTypeSel == rifftube.curTypeRad[2] && rifftube.curTypeSel != rifftube.lastTypeSel)
-        rifftube.cachedDur = rifftube.curDur.value;
+    if (rifftube.curTypeSel != rifftube.lastTypeSel)
+    {
+        if (rifftube.lastTypeSel == rifftube.curTypeRad[2])
+            rifftube.cachedDur = rifftube.curDur.value;
+
+        if (rifftube.lastTypeSel == rifftube.curTypeRad[1])
+            rifftube.cachedAudioDur = rifftube.curDur.value;
+    }
 
     rifftube.lastTypeSel = rifftube.curTypeSel;
 
@@ -625,10 +631,16 @@ rifftube.audioAutoDurUICallback = function(e)
         // and should be skipped (leaving the value from the DB)
         console.log(rifftube.curPlayer.duration);
         if (!isNaN(rifftube.curPlayer.duration))
-            rifftube.curDur.value = rifftube.curPlayer.duration;
-
+        {
+            if (rifftube.curPlayer.duration == Infinity
+                    && rifftube.cachedAudioDur)
+                rifftube.curDur.value = rifftube.cachedAudioDur
+            else
+                rifftube.curDur.value = rifftube.curPlayer.duration;
+        }
+        
         if (isNaN(rifftube.curPlayer.duration))
-            console.log("duration error");
+            console.log("duration NaN");
     }
     else if ( rifftube.curTypeSel == rifftube.curTypeRad[1] ) // synth audio
     {
