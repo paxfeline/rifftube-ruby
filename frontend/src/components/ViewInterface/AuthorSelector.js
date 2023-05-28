@@ -126,7 +126,7 @@ class AuthorSelector extends React.Component {
         />
         <div
           onClick={() => {
-            if (!this.state)
+            if (!this.state.all)
               this.props.history.push(`/view/${this.props.videoID}`);
             else {
               const nm2 = this.state.names.map((el) => el.id);
@@ -139,7 +139,7 @@ class AuthorSelector extends React.Component {
             }
           }}
           style={{
-            backgroundColor: this.state ? 'blue' : 'gray',
+            backgroundColor: this.state.all ? 'blue' : 'gray',
           }}
         >
           All

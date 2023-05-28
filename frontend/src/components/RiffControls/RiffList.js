@@ -19,13 +19,17 @@ function RiffList(props)
 
   var scroll = true;
   const riffDetails = [];
-  for (const index in riffs) {
+  for (const index in riffs)
+  {
     const riff = riffs[index];
     const posStyles = {};
-    if (riff.start > totalLength) {
+    if (riff.start > totalLength)
+    {
       posStyles.top = `${riff.start / 10}em`;
       totalLength = riff.start + Math.max(riff.duration, size);
-    } else {
+    }
+    else
+    {
       posStyles.top = `${totalLength / 10}em`;
       totalLength += Math.max(riff.duration, size);
     }
