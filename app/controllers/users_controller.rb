@@ -127,9 +127,12 @@ class UsersController < ApplicationController
   end
 
   def status
+    puts "checking status"
     if logged_in?
+      puts "logged in"
       render json: @current_user.to_json(except: [:riff_pic, :password_digest])
     else
+      puts "not logged in"
       render plain: "Not logged in", status: :unauthorized
     end
   end

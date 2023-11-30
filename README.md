@@ -5,7 +5,13 @@ rake start
 
 
 
+
+
 TODO:
+- fix audio for view (if don't riff first)
+
+- display text riffs
+
 - where should cable files live? Maybe need to set up a copy when run (from the rails to react dir)
 
 - allow file uploads
@@ -221,3 +227,23 @@ server.post('/save-pic', upload.single('image'), (req, res) =>
 May 2 - Considering using iframe for riff editing
 The extension can't load external code, but can load an iframe with an external site
 Can't pass in audio recorder object, but maybe able to allow recording in iframe using allow attribute
+
+
+
+Welcome letter:
+
+Thanks for signing up for RiffTube!
+
+Your participation is what RiffTube is all about. As a fan of Mystery Science Theater 3000 and RiffTrax -- which RiffTube is 100% not affiliated with -- I always dreamed of adding my voice to the choir.  And there is so much out there just begging to be riffed! So I hope you add your voice and humor, wit, wisdom, or "other".
+
+You retain complete ownership and control over the riffs, and all other content, you may create. You can choose to remove or edit your riffs on RiffTube at any time, and RiffTube will never sell your work or personal information.
+
+Because of how RiffTube works, it is possible for a person to download any riff (much like anyone can download images from the web), though RiffTube provides no convenient method to do so.
+
+I hope you enjoy using RiffTube. I look forward to see what we all create together.
+
+See you out there!
+-David Newberry
+ Benevolent Dictator for Life
+
+

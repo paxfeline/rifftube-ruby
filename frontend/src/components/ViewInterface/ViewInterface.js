@@ -9,6 +9,7 @@ const queryString = require('query-string');
 class ViewInterface extends React.Component {
   componentDidMount = () => {
     this.props.setVideoID(this.props.match.params.videoID);
+    this.props.getViewRiffs(this.props.match.params.videoID);
 
     // this was redundant, and caused an error?
     // because setVideoID was updated to also call the same endpoint?

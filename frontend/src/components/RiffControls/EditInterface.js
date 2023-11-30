@@ -5,6 +5,8 @@ import YouTubeVideo from '../YouTubeVideo/YouTubeVideo';
 import EditControls from './EditControls';
 import {
   setVideoID,
+  getAllRiffs,
+  getMyRiffs,
   setWebSocket,
   getRiffsMeta,
   getRiffs,
@@ -96,6 +98,8 @@ class EditInterface extends React.Component {
   componentDidMount = () => {
     if (this.props.match.params.videoID) {
       this.props.setVideoID( this.props.match.params.videoID );
+      this.props.getAllRiffs( this.props.match.params.videoID );
+      this.props.getMyRiffs( this.props.match.params.videoID );
       const vid = this.props.match.params.videoID;
       this.handleWSConnection(vid);
     }
@@ -226,6 +230,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   setVideoID,
+  getAllRiffs,
+  getMyRiffs,
   setWebSocket,
   getRiffsMeta,
   getRiffs,

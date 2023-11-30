@@ -5,7 +5,7 @@ import RiffList from './RiffList.js';
 import Login from '../Login/Login';
 
 import { setRifferName, togglePlayerMode, setRecorder,
-  saveNewRiff, saveEditRiff, setVideoID } from '../../actions/index.js';
+  saveNewRiff, saveEditRiff, setVideoID, getAllRiffs, getMyRiffs } from '../../actions/index.js';
 
 import { executeScriptElements, extractVideoID, riffFD2Obj } from './util.js';
 
@@ -259,6 +259,8 @@ function EditControls(props)
                 const vID = extractVideoID(vPrompt);
                 props.history.push(`/riff/${vID}`);
                 props.setVideoID(vID);
+                props.getAllRiffs(vID);
+                props.getMyRiffs(vID);
               }
             }}>
             Change Video
@@ -308,6 +310,8 @@ const mapDispatchToProps = {
   saveNewRiff,
   saveEditRiff,
   setVideoID,
+  getAllRiffs,
+  getMyRiffs,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditControls);

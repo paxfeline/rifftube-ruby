@@ -313,7 +313,11 @@ export const setVideoID = (videoID) => {
       type: SET_VIDEO_ID,
       payload: videoID,
     });
-    
+  };
+};
+
+export const getAllRiffs = (videoID) => {
+  return (dispatch) => {
     axios({
       method: 'get',
       url: `/riffs?video_id=${videoID}`,
@@ -322,7 +326,11 @@ export const setVideoID = (videoID) => {
     }).catch(error => {
       dispatch({ type: RECEIVE_RIFF_META, payload: [] });
     });
-  
+  };
+};
+
+export const getMyRiffs = (videoID) => {
+  return (dispatch) => {
     axios({
       method: 'get',
       url: `/riffs?video_id=${videoID}&user_id=self`,
@@ -362,6 +370,7 @@ export const getRiffsMeta = (videoID) => {
   };
 };
 
+
 export const getViewRiffs = (videoID) => {
   return (dispatch) => {
     axios({
@@ -372,6 +381,7 @@ export const getViewRiffs = (videoID) => {
     }).catch(err => console.log("error", err));
   };
 };
+
 
 export const getUserData = () => {
   return (dispatch) => {
