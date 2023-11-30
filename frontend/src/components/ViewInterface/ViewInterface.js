@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import AuthorSelector from './AuthorSelector';
-import { setVideoID, getViewRiffs } from '../../actions';
+import { setVideoID, getViewRiffs, setAudioPlayers, setAudioPlayerNotInUse } from '../../actions';
 import NavBar from '../NavBar.js';
 
 const queryString = require('query-string');
@@ -11,9 +11,21 @@ class ViewInterface extends React.Component {
     this.props.setVideoID(this.props.match.params.videoID);
     this.props.getViewRiffs(this.props.match.params.videoID);
 
-    // this was redundant, and caused an error?
-    // because setVideoID was updated to also call the same endpoint?
-    //this.props.getViewRiffs(this.props.match.params.videoID);
+    console.log("setup audio players");
+    let audioPlayers = [];
+    let audioPlayersCount = 5;
+    for (let i = 0; i < audioPlayersCount; i++) {
+
+      audioPlayers[i] = new Audio(); // should be identical behavior to: document.createElement('audio');
+      audioPlayers[i].controls = false;
+      audioPlayers[i].addEventListener('ended', () =>
+      {
+        console.log('audio playback end', i);
+        this.props.setAudioPlayerNotInUse(i);
+      });
+    }
+
+    this.props.setAudioPlayers(audioPlayers);
   };
 
   render = () => {
@@ -45,6 +57,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   setVideoID,
   getViewRiffs,
+  setAudioPlayers,
+  setAudioPlayerNotInUse,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewInterface);
