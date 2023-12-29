@@ -7,11 +7,12 @@ const NavBar = ({ color, loggedIn, logout }) => (
   <nav className="navbar">
     <NavLink
       activeClassName="navbar-home-link-active"
+      className="heading-primary-nav"
       exact
-      style={{ color }}
+      /*style={{ color }}*/
       to="/"
     >
-      <span className="heading-primary-nav">RiffTube</span>
+      RiffTube
     </NavLink>
     <NavLink activeClassName="navbar-link-active" style={{ color }} to="/riff">
       Riff<em>!</em>

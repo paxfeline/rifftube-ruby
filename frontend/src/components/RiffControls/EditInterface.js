@@ -48,9 +48,33 @@ class EditInterface extends React.Component {
 
   handleWSConnection(vid)
   {
+    var arr_of_identifiers = consumer.subscriptions.subscriptions.map(s => {
+      return s.identifier
+    });
+    //debugger;
+    /*
+    var is_subscribed = false;
+    for (const identifier of arr_of_identifiers) {
+      if(identifier.includes(chatRoomId)) {
+        is_subscribed = true;
+        break;
+      }
+    }
+    console.log(is_subscribed);
+    if(is_subscribed == false) {
+      // subscribe to server
+    }
+    */
+
+
     console.log("loading notif channel js", vid);
 
     // disconnect the previous ws
+
+    console.log(this.props.websocket);
+
+    if (this.props.websocket) return;
+
     if (this.props.websocket) consumer.subscriptions.remove(this.props.websocket);
 
     const self = this;
@@ -93,6 +117,8 @@ class EditInterface extends React.Component {
 
     // set global ws state
     setWebSocket(ws);
+
+    console.log(ws);
   }
 
   componentDidMount = () => {

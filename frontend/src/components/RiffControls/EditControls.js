@@ -134,8 +134,6 @@ function EditControls(props)
     // detail is FormData
     console.log( "sr", detail );
 
-    debugger;
-
     let riff = riffFD2Obj(detail);
 
     // mark as unsaved

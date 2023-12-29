@@ -7,10 +7,14 @@ import NavBar from '../NavBar.js';
 const queryString = require('query-string');
 
 class ViewInterface extends React.Component {
-  componentDidMount = () => {
-    this.props.setVideoID(this.props.match.params.videoID);
-    this.props.getViewRiffs(this.props.match.params.videoID);
+  constructor(props) {
+    super(props);
 
+    this.introDialogRef = React.createRef();
+  }
+
+  setupAudioPlayers = () =>
+  {
     console.log("setup audio players");
     let audioPlayers = [];
     let audioPlayersCount = 5;
@@ -28,12 +32,45 @@ class ViewInterface extends React.Component {
     this.props.setAudioPlayers(audioPlayers);
   };
 
+  componentDidMount = () => {
+    this.props.setVideoID(this.props.match.params.videoID);
+    this.props.getViewRiffs(this.props.match.params.videoID);
+
+    this.introDialogRef.current?.showModal();
+  };
+
   render = () => {
     const parsed = queryString.parse(this.props.location.search);
 
     return (
       <React.Fragment>
         <NavBar color="grey" />
+
+        <dialog
+          id="introDialog"
+          ref={this.introDialogRef}
+          style={{ inset: "20%", zIndex: 1, }}>
+          <div style={{fontSize: "180%",}}>
+            <h1>Riffers:</h1>
+            <p>
+              {
+                this.props.riffs && Object.values(this.props.riffs).length > 0 ?
+                  JSON.stringify(Object.values(this.props.riffs)
+                    .map(el => ({name: el.name, id: el.user_id}))
+                    .reduce((acc, cur) => {if (!acc.find(({id}) => id == cur.id)) acc.push(cur); return acc;}, []))
+                :
+                  <em>Loading...</em>
+              }
+            </p>
+            <form method="dialog">
+              <button
+                onClick={ () => this.setupAudioPlayers() }>
+                  OK
+              </button>
+            </form>
+          </div>
+        </dialog>
+
         <div style={{ marginTop: '4em', width: '100%' }}>
           <h1>View {this.props.match.params.videoID}</h1>
           <AuthorSelector
