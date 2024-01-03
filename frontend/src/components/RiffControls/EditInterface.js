@@ -181,68 +181,86 @@ class EditInterface extends React.Component {
   };
 
   render() {
-    return this.props.match.params.videoID ? (
-      <React.Fragment>
-        <NavBar color="grey" />
+    if (this.props.match.params.videoID)
+    {
+      return (
+        <React.Fragment>
+          <NavBar color="grey" />
 
-        <dialog
-          id="introDialog"
-          ref={this.introDialogRef}
-          style={{ inset: "20%", zIndex: 1, }}>
-          <div style={{fontSize: "180%",}}>
-            <h1>Getting Started</h1>
-            <p>
-              To record a riff, press and hold the R key. Recording occurs while the key is held down.
-            </p>
-            <p>
-              To create a new text riff, press and hold the T key.
-            </p>
-            <p>
-              You can add audio to a text riff, or remove audio and use only text, at any time.
-            </p>
-            <p>
-              ⇥ means &quot;jump to&quot;
-            </p>
-            <p>
-              ✎ means &quot;edit&quot;
-            </p>
-            <p>
-              🗑 means &quot;delete&quot;
-            </p>
-            <p>
-              Adjust the timing by 0.5 seconds with the up and down arrows.
-            </p>
-            <p>
-              If pressing R and T does not bring up the New Riff dialog,
-              click somewhere outside the YouTube video.
-            </p>
-            <form method="dialog">
-              <button
-                onClick={ () => this.setupAudioPlayers() }>
-                  OK
-              </button>
-            </form>
-          </div>
-        </dialog>
+          <dialog
+            id="introDialog"
+            ref={this.introDialogRef}
+            style={{ inset: "20%", zIndex: 1, }}>
+            <div style={{fontSize: "180%",}}>
+              <h1>Getting Started</h1>
+              <p>
+                To record a riff, press and hold the R key. Recording occurs while the key is held down.
+              </p>
+              <p>
+                To create a new text riff, press and hold the T key.
+              </p>
+              <p>
+                You can add audio to a text riff, or remove audio and use only text, at any time.
+              </p>
+              <p>
+                ⇥ means &quot;jump to&quot;
+              </p>
+              <p>
+                ✎ means &quot;edit&quot;
+              </p>
+              <p>
+                🗑 means &quot;delete&quot;
+              </p>
+              <p>
+                Adjust the timing by 0.5 seconds with the up and down arrows.
+              </p>
+              <p>
+                If pressing R and T does not bring up the New Riff dialog,
+                click somewhere outside the YouTube video.
+              </p>
+              <form method="dialog">
+                <button
+                  onClick={ () => this.setupAudioPlayers() }>
+                    OK
+                </button>
+              </form>
+            </div>
+          </dialog>
 
-        <div className="youtube-section" style={ {marginTop: "8rem"} }>
-          <YouTubeVideo id={this.props.videoID} riffs={this.props.riffs} />
-          <MetaBar />
-          <div className="view-share-riff-link">
-            <a
-              href={`/view/${this.props.videoID}${this.props.userInfo ? `?solo=${this.props.userInfo.id}` : ''}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              View Riffed Video
-            </a>
+          <div className="youtube-section" style={ {marginTop: "8rem"} }>
+          { this.props.loggedIn && !this.props.confirmed ?
+              <div class="need-to-confirm-div">You need to confirm your email address.
+                <button type="button"
+                  onClick={ () =>
+                    fetch("/user/confirm/reissue", { method: "POST" })
+                    .then( () => alert("Done! Check your email for the welcome letter.") )
+                    .catch( err => { console.log(err); alert("Error sending welcome letter. Please try again later.") } )
+                  }>
+                    Click here
+                  </button> to re-send
+                the welcome letter with confirmation link.
+              </div>
+            : '' }
+            <YouTubeVideo id={this.props.videoID} riffs={this.props.riffs} />
+            <MetaBar />
+            <div className="view-share-riff-link">
+              <a
+                href={`/view/${this.props.videoID}${this.props.userInfo ? `?solo=${this.props.userInfo.id}` : ''}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View Riffed Video
+              </a>
+            </div>
           </div>
-        </div>
-        <EditControls history={this.props.history} />
-      </React.Fragment>
-    ) : (
-      <Redirect to={`/riff/${this.props.videoID}`} />
-    );
+          <EditControls history={this.props.history} />
+        </React.Fragment>
+      );
+    }
+    else
+      return (
+        <Redirect to={`/riff/${this.props.videoID}`} />
+      );
   }
 }
 
@@ -250,6 +268,7 @@ const mapStateToProps = (state) => ({
   riffs: state.riffs,
   videoID: state.videoID,
   loggedIn: state.loggedIn,
+  confirmed: state.confirmed,
   userInfo: state.userInfo,
   websocket: state.websocket,
 });

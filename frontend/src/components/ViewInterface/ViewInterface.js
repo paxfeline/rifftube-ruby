@@ -56,8 +56,9 @@ class ViewInterface extends React.Component {
               {
                 this.props.riffs && Object.values(this.props.riffs).length > 0 ?
                   JSON.stringify(Object.values(this.props.riffs)
-                    .map(el => ({name: el.name, id: el.user_id}))
-                    .reduce((acc, cur) => {if (!acc.find(({id}) => id == cur.id)) acc.push(cur); return acc;}, []))
+                    .map(({name, user_id: id}) => ({name, id})) // fun with destructuring and implicit return
+                    .reduce((acc, cur) => {if (!acc.find(({id}) => id == cur.id)) acc.push(cur); return acc;}, [])
+                    .map(({name}) => ({name})))
                 :
                   <em>Loading...</em>
               }

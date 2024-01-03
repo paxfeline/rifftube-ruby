@@ -82,6 +82,16 @@ class UsersController < ApplicationController
     end
   end
 
+  def reissue_confirm
+    if logged_in?
+      user = @current_user
+      UserMailer.with(user: user).new_user_email.deliver_later
+      render plain: "New confirmation code sent.", status: :ok
+    else
+      render plain: "Not logged in", status: :unauthorized
+    end
+  end
+
   def get_pic
     user = User.find_by(id: params[:id])
     print "get pic"

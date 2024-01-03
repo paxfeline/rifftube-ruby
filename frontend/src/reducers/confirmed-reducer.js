@@ -1,9 +1,9 @@
 import { LOGIN, LOGOUT } from '../actions/index.js';
 
-const loggedInReducer = (state = false, action) => {
+const confirmedReducer = (state = false, action) => {
     switch (action.type) {
         case LOGIN:
-            return true;
+            return action.payload.confirmed;
         case LOGOUT:
             return false;
         default:
@@ -11,4 +11,4 @@ const loggedInReducer = (state = false, action) => {
         }
     };
 
-export default loggedInReducer;
+export default confirmedReducer;

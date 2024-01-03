@@ -19,6 +19,7 @@ import acctImgKeyReducer from './acctImgKey-reducer';
 
 import userInfoReducer from './user-info-reducer';
 import loggedInReducer from './logged-in-reducer';
+import confirmedReducer from './confirmed-reducer';
 
 import metaBarPlayheadReducer from './metaBarPlayhead-reducer';
 import metaBarCallbackReducer from './metaBarCallback-reducer';
@@ -48,6 +49,7 @@ export default combineReducers({
 
   userInfo: userInfoReducer,
   loggedIn: loggedInReducer,
+  confirmed: confirmedReducer,
 
   metaBarPlayhead: metaBarPlayheadReducer,
   metaBarCallback: metaBarCallbackReducer,

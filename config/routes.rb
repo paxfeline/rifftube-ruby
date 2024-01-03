@@ -57,6 +57,7 @@ Rails.application.routes.draw do
 
   get "send_email", to: "rifftube#send_email" # just for testing
 
+  post "user/confirm/reissue", to: "users#reissue_confirm"
   get "user/confirm/:uuid", to: "users#confirm"
 
   get "riffer-pic/:id(.:format)", to: "users#get_pic"
