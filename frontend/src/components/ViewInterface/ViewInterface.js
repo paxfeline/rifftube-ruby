@@ -52,17 +52,18 @@ class ViewInterface extends React.Component {
           style={{ inset: "20%", zIndex: 1, }}>
           <div style={{fontSize: "180%",}}>
             <h1>Riffers:</h1>
-            <p>
-              {
-                this.props.riffs && Object.values(this.props.riffs).length > 0 ?
-                  JSON.stringify(Object.values(this.props.riffs)
+            {
+              this.props.riffs && Object.values(this.props.riffs).length > 0 ?
+                <p dangerouslySetInnerHTML={{__html:
+                    Object.values(this.props.riffs)
                     .map(({name, user_id: id}) => ({name, id})) // fun with destructuring and implicit return
                     .reduce((acc, cur) => {if (!acc.find(({id}) => id == cur.id)) acc.push(cur); return acc;}, [])
-                    .map(({name}) => ({name})))
-                :
-                  <em>Loading...</em>
-              }
-            </p>
+                    .reduce((acc, {name}) => `${acc}${name}<br>`, "")
+                }}/>
+              :
+                <em>Loading...</em>
+            }
+            
             <form method="dialog">
               <button
                 onClick={ () => this.setupAudioPlayers() }>
