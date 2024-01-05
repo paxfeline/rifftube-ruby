@@ -52,7 +52,7 @@ const Account = ({
         {loggedIn ? (
           <React.Fragment>
             <h3>
-              visit <Link to={`/profile/${userInfo.id}`}>public profile</Link>
+              <Link to={`/profile/${userInfo.id}`}>visit public profile</Link>
             </h3>
             <form onSubmit={(event) => handleSubmit(event)}>
               <label>
@@ -89,6 +89,7 @@ let mapStateToProps = (state) => ({
   userData: state.userData,
   acctImgKey: state.acctImgKey,
   loggedIn: state.loggedIn,
+  confirmed: state.confirmed,
   userInfo: state.userInfo,
 });
 

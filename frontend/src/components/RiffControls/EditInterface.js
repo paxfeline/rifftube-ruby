@@ -229,7 +229,7 @@ class EditInterface extends React.Component {
 
           <div className="youtube-section" style={ {marginTop: "8rem"} }>
           { this.props.loggedIn && !this.props.confirmed ?
-              <div class="need-to-confirm-div">You need to confirm your email address.
+              <div className="need-to-confirm-div">You need to confirm your email address.
                 <button type="button"
                   onClick={ () =>
                     fetch("/user/confirm/reissue", { method: "POST" })

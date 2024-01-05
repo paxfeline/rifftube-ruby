@@ -61,7 +61,7 @@ function EditControls(props)
   let keydown = useCallback( (e) =>
     {
       // ignore if not logged in
-      if (!props.loggedIn) return;
+      if (!props.loggedIn || !props.confirmed) return;
 
       // ignore if the edit dialog is open
       if (document.querySelector('.rifftube-riff-edit-dialog')) return;
@@ -120,7 +120,7 @@ function EditControls(props)
         startNewRiff(e.key);
       }
     },
-    [props.recorder, props.rifftubePlayer, props.loggedIn] );
+    [props.recorder, props.rifftubePlayer, props.loggedIn, props.confirmed] );
 
   function closeDial()
   {
@@ -181,7 +181,7 @@ function EditControls(props)
   
   useEffect(() =>
   {
-    if (props.loggedIn)
+    if (props.loggedIn && props.confirmed)
     {
       /*
       let newRiffDialog = document.createElement("dialog");
@@ -204,7 +204,7 @@ function EditControls(props)
           });
           
     }
-  }, [props.videoID, props.loggedIn]);
+  }, [props.videoID, props.loggedIn, props.confirmed]);
 
 
     /*
@@ -298,6 +298,7 @@ let mapStateToProps = (state) => ({
   duration: state.duration,
   recorder: state.recorder,
   loggedIn: state.loggedIn,
+  confirmed: state.confirmed,
   rifftubePlayer: state.rifftubePlayer,
 });
 
