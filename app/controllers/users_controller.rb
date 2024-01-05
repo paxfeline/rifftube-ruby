@@ -78,7 +78,12 @@ class UsersController < ApplicationController
     if @found
       @user = User.find(uc.user_id)
       @user.confirmed = true
-      @user.save
+      if @user.save
+        render plain: "Email confirmed. Thank you!", status: :ok
+      else
+        render plain: "Email confirmation error.", status: :internal_server_error
+        puts @user.errors.full_messages
+      end
     end
   end
 
