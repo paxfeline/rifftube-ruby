@@ -117,7 +117,7 @@ class UsersController < ApplicationController
       img_data = File.read(img.path)
 
       user.riff_pic = img_data
-      if user.save(validate: false)
+      if user.save
         render plain: "Updated", status: :ok
       else
         render plain: "Error saving pic", status: :internal_server_error
