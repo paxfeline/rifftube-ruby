@@ -55,6 +55,7 @@ heroku pg:backups:restore 'https://github.com/paxfeline/paxfeline.github.io/raw/
 process:
 
 psql:
+\c rifftube
 drop database rifftube;
 create database rifftube;
 

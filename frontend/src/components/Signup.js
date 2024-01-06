@@ -37,10 +37,15 @@ const Signup = ({
 
     const signupWithGoogle = (credentials, password, name, pic) =>
     {
+        let fd = new FormData();
+        fd.append('credentials', credentials);
+        fd.append('user[password]', password);
+        fd.append('user[name]', name);
+        fd.append('user[riff_pic]', pic)
         axios({
             method: 'post',
             url: `/signup-with-google`,
-            data: { credentials, password, name, pic },
+            data: fd, //{ credentials, password, name, pic },
         }).then((res) => {
             //debugger;
             history.push('/');

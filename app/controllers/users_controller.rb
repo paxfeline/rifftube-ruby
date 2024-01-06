@@ -16,8 +16,9 @@ class UsersController < ApplicationController
       # TODO: use ENV variable
       payload = Google::Auth::IDTokens.verify_oidc google_login_credentials, aud: "941154439836-s6iglcrdckcj6od74kssqsom58j96hd8.apps.googleusercontent.com"
       print payload
+      print payload["email"].downcase
       # check for user in the db with this email
-      params[:user][:email] = payload["email"].downcase!
+      params[:user][:email] = payload["email"].downcase
       params[:user][:confirmed] = true
       #existing_user.confirmed = true # creation with google = auto confirmed (good idea?)
       create_helper
@@ -50,7 +51,10 @@ class UsersController < ApplicationController
       end
     elsif existing_user.password_digest.nil?
       # if user exists, update password
-      existing_user.password_digest = BCrypt::Password.create(user_params[:password])
+      #puts params.inspect
+      #puts user_params.inspect
+      #puts "pw? #{params[:user][:password]}"
+      existing_user.password_digest = BCrypt::Password.create(params[:user][:password])
       @user = existing_user
       if @user.save
         flash[:notice] = "OG User created."
@@ -179,5 +183,10 @@ private
     email_parts = email.split('@')
     email_parts[0] = email_parts[0][0..3] + "***"
     @email = email_parts.join('@')
+  end
+
+  def google_login_credentials
+    params.require(:credentials)
+    #params.require(:credentials).permit(:search)
   end
 end

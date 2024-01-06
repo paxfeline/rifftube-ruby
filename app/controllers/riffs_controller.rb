@@ -14,7 +14,7 @@ class RiffsController < ApplicationController
                 if logged_in?
                     #riffs = @current_user.videos.find_by(url: video)&.riffs.as_json&.each { |r| r.delete("audio") }
                     #riffs = Video.find_by(url: video).riffs.where(user: @current_user).except("audio")
-                    riffs = Video.find_by(url: video).riffs.where(user: @current_user).as_json
+                    riffs = Video.find_by(url: video)&.riffs.where(user: @current_user).as_json
                         &.each { |r|
                             r.delete("audio")
                             r["name"] = User.find(r["user_id"]).name;
