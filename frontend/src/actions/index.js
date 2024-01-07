@@ -398,7 +398,7 @@ export const getPublicUserData = (id) => {
   return (dispatch) => {
     axios({
       method: 'get',
-      url: `/get-user-data-by-id/${id}`,
+      url: `/users/${id}`,
     }).then((res) => {
       dispatch({ type: LOAD_PUBLIC_USER_DATA, payload: res.data });
     }).catch(err => console.log("error", err));

@@ -19,7 +19,7 @@ class UsersController < ApplicationController
       print payload["email"].downcase
       # check for user in the db with this email
       params[:user][:email] = payload["email"].downcase
-      params[:user][:confirmed] = true
+      #params[:user][:confirmed] = true # doesn't work with OG users; decided didn't want anyway
       #existing_user.confirmed = true # creation with google = auto confirmed (good idea?)
       create_helper
     rescue => e
@@ -73,6 +73,10 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
+    vids = @user.videos.uniq
+      .map { |v| v.as_json.merge({"count" => v.riffs.where(user: @user).count}) }
+      &.sort { |a,b| b["count"] <=> a["count"] }
+    render json: { "name": @user.name, "body": vids }
   end
 
   def confirm
@@ -167,8 +171,9 @@ class UsersController < ApplicationController
       user = User.find(params[:id])
     end
     vids = user.videos.where(host: params[:host]).uniq # Video.where(id: params[:id], host: params[:host])
-    hash = vids.as_json
-    hash&.each { |v| v["count"] = Video.find(v["id"]).riffs.count }
+    hash = vids.map { |v| v.as_json.merge({"count" => v.riffs.where(user: user).count}) }
+    #hash = vids.as_json
+    #hash&.each { |v| v["count"] = Video.find(v["id"]).riffs.count }
     hash = hash&.sort { |a,b| b["count"] <=> a["count"] }
     render json: hash
   end

@@ -26,7 +26,7 @@ const Profile = ({
       </div>
       <section className="top-part">
         <h2 className="account-section-title">Videos</h2>
-        <VideoList userData={publicProfileData} />
+        <VideoList videoData={publicProfileData} desc={` by ${publicProfileName}`} />
       </section>
     </div>
   );

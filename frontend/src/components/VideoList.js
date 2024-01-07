@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const VideoList = ({ videoData }) => (
+const VideoList = ({ videoData, desc = '' }) => (
   <ul className='my-videos-list'>
     {videoData &&
       videoData.map(({ url, title, count }) => (
@@ -14,7 +14,7 @@ const VideoList = ({ videoData }) => (
                 style={ {verticalAlign: "middle"} }
               />
             &nbsp; {title.length > 40 ? title.slice(0, 40) + '...' : title} &nbsp;
-            &nbsp; ({count} riff{count === 1 ? '' : 's'}) &nbsp; (View) &nbsp;
+            &nbsp; ({count} riff{count === 1 ? '' : 's'}{desc}) &nbsp; (View) &nbsp;
             </Link>
             <Link to={`/riff/${url}`}>(Riff)</Link>
           </h3>
