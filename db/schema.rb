@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_19_194501) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_08_051238) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -89,6 +89,21 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_19_194501) do
     t.index ["user_id"], name: "index_user_confirmations_on_user_id"
   end
 
+  create_table "user_options", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.float "auto_duration_word_rate", default: 0.4
+    t.float "auto_duration_constant", default: 0.5
+    t.integer "avatar_mode", default: 1
+    t.boolean "always_speak_text", default: false
+    t.string "default_voice"
+    t.boolean "pause_to_riff", default: true
+    t.boolean "play_after_riff", default: true
+    t.boolean "immediate_save", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_options_on_user_id"
+  end
+
   create_table "users", id: :serial, force: :cascade do |t|
     t.string "name", limit: 255
     t.string "email", limit: 255
@@ -119,6 +134,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_19_194501) do
   add_foreign_key "user_blocks", "users", column: "blockee_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
   add_foreign_key "user_confirmations", "users"
+  add_foreign_key "user_options", "users"
   add_foreign_key "videos_users", "users", name: "videos_users_user_id_foreign", on_update: :cascade, on_delete: :cascade
   add_foreign_key "videos_users", "videos", name: "videos_users_video_id_foreign", on_update: :cascade, on_delete: :nullify
 end

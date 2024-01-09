@@ -1,12 +1,17 @@
 Rails.application.routes.draw do
-
+  
   # Serve websocket cable requests in-process
   mount ActionCable.server => '/cable'
-
   
   #get 'rifftube/index' # remove?
   #get 'rifftube/riff' # remove?
   #get 'riff/:video_id', to: "rifftube#riff" # remove?
+  
+  #resources :user_options
+
+  get 'user_options/:id', to: "user_options#show"
+  get 'user_options/:id/edit', to: "user_options#edit"
+  patch 'user_options/:id', to: "user_options#update"
 
   resources :riffs
 

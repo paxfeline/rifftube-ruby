@@ -9,4 +9,5 @@ class User < ApplicationRecord
     
     has_many :riffs
     has_many :videos, through: :riffs
+    has_one :user_options
 end
