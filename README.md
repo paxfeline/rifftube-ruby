@@ -8,20 +8,65 @@ rake start
 
 
 TODO:
-- fix audio for view (if don't riff first)
-
 - display text riffs
 
 - where should cable files live? Maybe need to set up a copy when run (from the rails to react dir)
-
-- allow file uploads
+    - works ok on production, not at all on dev
 
 - Fix bug re: pressing cancel!!!!!
+    - this is fixed I believe
 
 
 
-isText means "is text only"
 
+
+An attempt at documentation:
+
+------
+
+User Options table columns:
+
+t.float "auto_duration_word_rate", default: 0.4
+    When auto-determining the duration to display a riff, how many seconds should be allocated per word.
+t.float "auto_duration_constant", default: 0.5
+    When auto-determining the duration to display a riff, a constant number of seconds to add.
+t.integer "avatar_mode", default: 1
+    0: No avatars displayed
+    1: Avatars pop up as the riff plays
+    2: "Theater mode", the avatars are all visible the whole time.
+t.boolean "always_speak_text", default: false
+    n/t
+t.string "default_voice"
+    Default speech voice (JSON containing voice, rate, and pitch)
+t.boolean "pause_to_riff", default: true
+    Pause the video when starting to riff?
+t.boolean "play_after_riff", default: true
+    Play the video upon closing riff dialog?
+    (Only applicable if pause_to_riff is true)
+t.boolean "immediate_save", default: false
+    Automatically saves the riff and closes the riff dialog upong releaseing the key
+    This may seem odd, but might be used by people who want to riff quickly and then go back and tweak things
+t.integer "threshold_mode"
+    TODO: Add default (0)
+    0: Only blessed users' riffs play/display
+    1: All users' riffs play/display
+    2: Special options (wait to implement)
+t.string "threshold_options"
+    JSON containing special theshold options (TBD_)
+t.datetime "created_at", null: false
+t.datetime "updated_at", null: false
+
+  Riff Flags table columns:
+    t.bigint "user_id", null: false
+    t.bigint "riff_id", null: false
+    t.string "type"
+    t.string "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+
+------
+
+isText means "is text only" (i.e. no recorded audio)
 
 edit riff form:
 
