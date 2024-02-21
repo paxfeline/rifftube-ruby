@@ -9,9 +9,10 @@ Rails.application.routes.draw do
   
   #resources :user_options
 
-  get 'user_options/:id', to: "user_options#show"
-  get 'user_options/:id/edit', to: "user_options#edit"
-  patch 'user_options/:id', to: "user_options#update"
+  get 'user_options', to: "user_options#show"
+  get 'user_options/edit', to: "user_options#edit"
+  patch 'user_options', to: "user_options#update"
+  get 'user_options/local/:id', to: "user_options#local"
 
   resources :riffs
 

@@ -48,7 +48,7 @@ t.boolean "immediate_save", default: false
     This may seem odd, but might be used by people who want to riff quickly and then go back and tweak things
 t.integer "threshold_mode"
     TODO: Add default (0)
-    0: Only blessed users' riffs play/display
+    0: Only users who meet the requirements'* riffs play/display
     1: All users' riffs play/display
     2: Special options (wait to implement)
 t.string "threshold_options"
@@ -56,6 +56,10 @@ t.string "threshold_options"
 t.datetime "created_at", null: false
 t.datetime "updated_at", null: false
 
+* Requirements:
+    A ratio of *at least* 5 follows to every 1 block.
+    This is arbitrary and may change.
+    
   Riff Flags table columns:
     t.bigint "user_id", null: false
     t.bigint "riff_id", null: false

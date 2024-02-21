@@ -29,8 +29,12 @@ class UserOptionsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user_options
-      @user = User.find(params[:id])
-      @user_options = @user.user_options
+      if params[:id] == "default"
+        @user_options = UserOptions.new
+      else
+        @user = User.find(params[:id])
+        @user_options = @user.user_options
+      end
       if @user_options.nil?
         @user_options = UserOptions.new
         @user_options.user = @user
