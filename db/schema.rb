@@ -101,7 +101,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_24_065104) do
     t.boolean "immediate_save", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "threshold_mode"
+    t.integer "threshold_mode", default: 0
     t.string "threshold_options"
     t.index ["user_id"], name: "index_user_options_on_user_id"
   end
