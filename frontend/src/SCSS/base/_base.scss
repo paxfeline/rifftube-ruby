@@ -1,16 +1,18 @@
+@use "../abstract/variables";
+
 @font-face {
   font-family: 'Limelight';
   src: local('Limelight'),
-    url(../../fonts/Limelight-Regular.ttf) format('truetype');
+    url(src/fonts/Limelight-Regular.ttf) format('truetype');
 }
 
 body,
 html {
   max-width: 100%;
   overflow-x: hidden;
-  background-color: $color-white;
+  background-color: variables.$color-white;
   font-family: 'Open Sans', sans-serif;
-  color: $color-black;
+  color: variables.$color-black;
   margin: 0;
   padding: 0;
 }

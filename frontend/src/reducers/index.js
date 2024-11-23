@@ -32,7 +32,7 @@ import audioPlayersReducer from './audioPlayers-reducer';
 export default combineReducers({
   riffs: riffsReducer,
   riffsAudio: riffsAudioReducer,
-  riffsMeta: riffsMetaReducer, // unused?
+  riffsMeta: riffsMetaReducer, // used for metabar, under edit interface
   mode: modeReducer,
   riffsPlaying: riffsPlayingReducer,
   name: nameReducer, // remove?

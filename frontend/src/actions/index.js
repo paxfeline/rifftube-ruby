@@ -377,7 +377,9 @@ export const getViewRiffs = (videoID) => {
       method: 'get',
       url: `/riffs?video_id=${videoID}`,
     }).then((res) => {
-      dispatch({ type: RECEIVE_RIFF_LIST, payload: res.data });
+      dispatch({ type: RECEIVE_RIFF_LIST, payload: res.data,
+        timestamp: Date.now() // used to come from server, but meh
+       });
     }).catch(err => console.log("error", err));
   };
 };

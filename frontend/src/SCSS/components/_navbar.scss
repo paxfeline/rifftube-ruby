@@ -1,35 +1,31 @@
+@use "../abstract/variables";
+
 .navbar {
   font-size: 3vh;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  width: 50rem;
-  position: absolute;
   top: 0;
   left: 0;
 
 
   .heading-primary-nav {
-    font-size: $medium;
-    color: $color-gray;
+    font-size: variables.$medium;
+    color: variables.$color-gray;
     font-weight: 700;
     font-family: Limelight;
 
   // @media (min-width: 700px) {
   //   font-size: $extra-large;
   // }
-}
-
-  @media (min-width: 700px) {
-    width: 70%;
   }
 
   a.navbar-home-link-active span.heading-primary-nav {
-    color: $color-primary;
+    color: variables.$color-primary;
   }
 
   .navbar-link-active {
-    border-bottom: 3px solid $color-primary;
+    border-bottom: 3px solid variables.$color-primary;
     transition: border-bottom 0.5s ease-in-out;
   }
   a {
@@ -40,11 +36,11 @@
     }
 
     &:hover {
-      color: $color-primary !important;
+      color: variables.$color-primary !important;
     }
   }
 
   @media (min-width: 700px) {
-    font-size: $medium;
+    font-size: variables.$medium;
   }
 }

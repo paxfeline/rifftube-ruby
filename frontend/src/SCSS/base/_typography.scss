@@ -1,13 +1,14 @@
+@use "../abstract/variables";
+
 a:hover {
-  color: $color-primary;
+  color: variables.$color-primary;
 }
 
 .heading-primary-main {
-  font-size: $extra-large;
-  color: $color-gray;
+  font-size: variables.$extra-large;
+  color: variables.$color-gray;
   font-weight: 700;
-  margin: $small;
-  margin-top: 3rem;
+  margin: variables.$small;
   font-family: Limelight;
 
   // @media (min-width: 700px) {
@@ -16,23 +17,19 @@ a:hover {
 }
 
 .heading-name {
-  font-size: $large;
-  color: $color-white;
+  font-size: variables.$large;
+  color: variables.$color-white;
   font-weight: 700;
-  margin: $small;
+  margin: variables.$small;
   margin-top: 3rem;
   font-family: Limelight;
 }
 
 .heading-qa {
-  font-size: $large;
-  color: $color-black;
+  font-size: variables.$large;
+  color: variables.$color-black;
   font-weight: 700;
-  margin: $small;
+  margin: variables.$small;
   margin-top: 3rem;
   font-family: Limelight;
-}
-
-.account-heading {
-  margin-top: 10rem;
 }

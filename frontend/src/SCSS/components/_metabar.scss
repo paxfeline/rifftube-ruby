@@ -1,7 +1,9 @@
+@use "../abstract/variables";
+
 .container-riff-meta {
   display: flex;
-  height: $small;
-  background-color: $color-dark-gray;
+  height: variables.$small;
+  background-color: variables.$color-dark-gray;
   position: relative;
   width: 97.75%;
 
@@ -11,20 +13,20 @@
   }
 
   .riff-meta {
-    background-color: $color-light-gray;
-    height: $small;
+    background-color: variables.$color-light-gray;
+    height: variables.$small;
     position: absolute;
   }
 
   .riff-own-meta {
-    background-color: $color-primary;
-    height: $small;
+    background-color: variables.$color-primary;
+    height: variables.$small;
     position: absolute;
   }
 }
 
 #meta-play-head {
-  height: $small;
+  height: variables.$small;
   background-color: yellow;
   width: 1px;
   position: absolute;

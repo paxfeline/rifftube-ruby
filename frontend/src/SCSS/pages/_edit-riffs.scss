@@ -1,12 +1,13 @@
+@use "../abstract/variables";
+
 #introDialog::backdrop
 {
   background-color: rgba(0, 0, 0, 0.75);
 }
 
 .youtube-section {
-  margin-top: 5vh;
   width: 80%;
-  font-size: $small;
+  font-size: variables.$small;
 
   a {
     font-size: 1.2rem;
@@ -107,8 +108,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: $color-white;
-  font-size: $small;
+  color: variables.$color-white;
+  font-size: variables.$small;
   height: 100vh;
   // ?? max-height: 60rem;
   // border: 4px solid $color-primary;
@@ -159,8 +160,8 @@
 
 .riff-detail {
   border-radius: 5px;
-  color: $color-black;
-  background-color: $color-white;
+  color: variables.$color-black;
+  background-color: variables.$color-white;
   //border: 5px solid $color-primary;
   width: 100%;
   min-height: 2.5em;
@@ -172,7 +173,7 @@
   flex-direction: row;
   align-items: stretch;
   justify-content: flex-start;
-  font-size: $small;
+  font-size: variables.$small;
 
   .riff-type-icon {
     align-items: center;
@@ -205,14 +206,14 @@
 }
 
 .google-login {
-  background-color: $color-primary;
-  color: $color-white;
-  border: 1px solid $color-primary;
+  background-color: variables.$color-primary;
+  color: variables.$color-white;
+  border: 1px solid variables.$color-primary;
   cursor: pointer;
 
   &:hover {
-    background-color: $color-white;
-    color: $color-primary;
+    background-color: variables.$color-white;
+    color: variables.$color-primary;
   }
 }
 
@@ -264,7 +265,7 @@
     width: 20%;
     margin-top: 0;
     scrollbar-color: white;
-    font-size: $small;
+    font-size: variables.$small;
   }
 }
 

@@ -21,6 +21,8 @@ const riffsReducer = (state = initialState, action) => {
       return ret;
     }
     case RECEIVE_RIFF_LIST:
+      let base = {};
+      Object.defineProperty(base, "timestamp", {value: Date.now()}); // fix initial view riff load
       return action.payload.reduce(
         (acc, cur) =>
         {
@@ -29,7 +31,7 @@ const riffsReducer = (state = initialState, action) => {
           acc[cur.id] = cur;
           return acc;
         },
-        {}
+        base
       );
     case UPDATE_RIFF_TIME_SUCCESS:
     {

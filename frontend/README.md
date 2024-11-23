@@ -1,17 +1,8 @@
-# RiffTube
+# React + Vite
 
-RiffTube is a toolkit for riffing any video on YouTube.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Built With
+Currently, two official plugins are available:
 
-- [React](https://reactjs.org)
-- [Redux](https://redux.js.org/)
-
-## Authors
-
-- **David Newberry** - [paxfeline](https://github.com/paxfeline)
-- **Joscelyn Owen** - [Joscelyn1](https://github.com/joscelyn1)
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
